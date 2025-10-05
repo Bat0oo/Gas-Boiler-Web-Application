@@ -69,6 +69,20 @@ namespace Gas_Boiler_Backend.Data
                     UpdatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc)  // ⭐ STATIC DATE
                 }
                     );
+
+            string adminPasswordHash = "$2a$12$xYluxINGkkohipBPd/xZLe2cJl2Y7dSomJAu5WT8MJRkd8u6J6nJW";
+            modelBuilder.Entity<User>().HasData(
+        new User
+        {
+            Id = 1, 
+            Username = "admin",
+            Email = "admin@example.com",
+            PasswordHash = adminPasswordHash,
+            Role = "Admin", 
+            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc)  // ⭐ STATIC DATE
+        }
+    );
+
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Gas_Boiler_Backend.Models
         [MaxLength(20)]
         public string Role { get; set; } = "User"; // "Admin" or "User"
 
-        public bool IsBlocked { get; set; } = false;
+        //public bool IsBlocked { get; set; } = false;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
