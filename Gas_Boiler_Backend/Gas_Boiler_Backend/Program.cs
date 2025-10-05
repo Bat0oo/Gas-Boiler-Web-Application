@@ -56,9 +56,10 @@ namespace Gas_Boiler_Backend
             {
                 options.AddPolicy("AllowAll", policy =>
                 {
-                    policy.AllowAnyOrigin()
+                    policy.WithOrigins("http://localhost:3000", "https://localhost:3000")
                           .AllowAnyMethod()
-                          .AllowAnyHeader();
+                          .AllowAnyHeader()
+                          .AllowCredentials();
                 });
             });
 
@@ -72,7 +73,11 @@ namespace Gas_Boiler_Backend
                 app.UseSwaggerUI();
             }
 
+            app.UseRouting(); 
+
             app.UseHttpsRedirection();
+
+            app.UseCors("AllowAll");
 
             app.UseAuthentication();
             app.UseAuthorization();
