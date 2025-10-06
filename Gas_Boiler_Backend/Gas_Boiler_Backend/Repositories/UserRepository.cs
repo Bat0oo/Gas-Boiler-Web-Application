@@ -33,7 +33,7 @@ namespace Gas_Boiler_Backend.Repositories
 
         public async Task<bool> EmailExistsAsync(string email)
         {
-            return await _context.Users.AnyAsync(u => u.Id == id);
+            return await _context.Users.AnyAsync(u => u.Email == email);
         }
 
         public async Task<bool> ExistsAsync(int id)
