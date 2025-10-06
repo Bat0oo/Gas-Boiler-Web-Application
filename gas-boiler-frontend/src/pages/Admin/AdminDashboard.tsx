@@ -2,34 +2,34 @@ import React from 'react';
 import GasBoilerMap from '../../components/GasBoilerMap';
 import Navbar from '../../components/Navbar';
 import { useAuth } from '../../context/AuthContext';
-import './Dashboard.css';
+import './AdminDashboard.css';
 
-const Dashboard: React.FC = () => {
+const AdminDashboard: React.FC = () => {
   const { user } = useAuth();
 
   return (
     <>
       <Navbar />
-      <div className="dashboard-container">
-        <h2>Dobrodošao, {user?.username}</h2>
-        <p>Ovde možeš videti sve svoje gasne kotlove na mapi i upravljati njima.</p>
+      <div className="admin-dashboard-container">
+        <h2>Admin panel</h2>
+        <p>Dobrodošao, {user?.username}! Ovde možeš pregledati sve korisnike i njihove gasne kotlove.</p>
 
         <div className="map-section">
           <GasBoilerMap token={localStorage.getItem('token') || undefined} />
         </div>
 
-        <div className="actions">
+        <div className="admin-actions">
           <button
-            onClick={() => window.location.href = '/gasboilers'}
+            onClick={() => window.location.href = '/admin/users'}
             className="btn"
           >
-            Prikaži sve kotlove
+            Pregled korisnika
           </button>
           <button
-            onClick={() => window.location.href = '/gasboilers/new'}
+            onClick={() => window.location.href = '/admin/system-parameters'}
             className="btn btn-primary"
           >
-            Dodaj novi kotao
+            Sistemski parametri
           </button>
         </div>
       </div>
@@ -37,4 +37,4 @@ const Dashboard: React.FC = () => {
   );
 };
 
-export default Dashboard;
+export default AdminDashboard;

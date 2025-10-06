@@ -53,6 +53,7 @@ namespace Gas_Boiler_Backend.Controllers
             }
         }
 
+        //[Authorize]
         [HttpGet("me")]
         public async Task<ActionResult<UserResponseDto>> GetCurrentUser()
         {

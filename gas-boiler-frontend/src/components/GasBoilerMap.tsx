@@ -22,7 +22,7 @@ interface Point {
 }
 
 interface Props {
-  token?: string; // ako koristis bearer token
+  token?: string;
   center?: LatLngExpression;
   zoom?: number;
 }
@@ -44,6 +44,7 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
     };
     load();
   }, [token]);
+console.log("BASE URL:", process.env.REACT_APP_API_BASE_URL);
 
   return (
     <div style={{ height: "600px", width: "100%" }}>
