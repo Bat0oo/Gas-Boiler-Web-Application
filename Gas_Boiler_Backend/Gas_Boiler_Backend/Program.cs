@@ -29,6 +29,11 @@ namespace Gas_Boiler_Backend
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IUserService, UserService>();
 
+            builder.Services.AddScoped<IGasBoilerRepository, GasBoilerRepository>();
+            builder.Services.AddScoped<IGasBoilerService, GasBoilerService>();
+
+            builder.Services.AddHttpClient<IOpenWeatherService, OpenWeatherService>();
+
             builder.Services.AddScoped<JwtHelper>();
 
             var jwtSettings = builder.Configuration.GetSection("JwtSettings");

@@ -11,44 +11,133 @@ namespace Gas_Boiler_Backend.Services
         {
             _repository = repository;
         }
-        public Task<GasBoilerDto> CreateAsync(GasBoilerCreateDto dto, int ownerUserId)
+        public async Task<GasBoilerDto> CreateAsync(GasBoilerCreateDto dto, int ownerUserId)
         {
-            throw new NotImplementedException();
+            var gb = new GasBoiler
+            {
+                Name = dto.Name,
+                MaxPower = dto.MaxPower,
+                Efficiency = dto.Efficiency,
+                CurrentPower = dto.CurrentPower,
+                UserId = ownerUserId,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            gb.BuildingObject = new BuildingObject
+            {
+                HeatingArea = dto.BuildingObject.HeatingArea,
+                DesiredTemperature = dto.BuildingObject.DesiredTemperature,
+                WallUValue = dto.BuildingObject.WallUValue,
+                WindowUValue = dto.BuildingObject.WindowUValue,
+                CeilingUValue = dto.BuildingObject.CeilingUValue,
+                FloorUValue = dto.BuildingObject.FloorUValue,
+                WallArea = dto.BuildingObject.WallArea,
+                WindowArea = dto.BuildingObject.WindowArea,
+                CeilingArea = dto.BuildingObject.CeilingArea,
+                FloorArea = dto.BuildingObject.FloorArea,
+                Latitude = dto.BuildingObject.Latitude,
+                Longitude = dto.BuildingObject.Longitude
+            };
+
+            await _repository.AddAsync(gb);
+            await _repository.SaveChangesAsync();
+
+            return MapToDto(gb);
         }
 
-        public Task<bool> DeleteAsync(int id, int requestingUserId, bool isAdmin)
+        public async Task<bool> DeleteAsync(int id, int requestingUserId, bool isAdmin)
         {
-            throw new NotImplementedException();
+            var gb = await _repository.GetByIdAsync(id);
+            if (gb == null) return false;
+            if (!isAdmin && gb.UserId != requestingUserId) return false;
+
+            await _repository.DeleteAsync(gb);
+            await _repository.SaveChangesAsync();
+            return true;
         }
 
-        public Task<IEnumerable<GasBoilerDto>> GetAllAsync()
+        public async Task<IEnumerable<GasBoilerDto>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var list = await _repository.GetAllAsync();
+            return list.Select(MapToDto);
         }
 
-        public Task<IEnumerable<GasBoilerDto>> GetAllForUserAsync(int userId)
+        public async Task<IEnumerable<GasBoilerDto>> GetAllForUserAsync(int userId)
         {
-            throw new NotImplementedException();
+            var list = await _repository.GetAllForUserAsync(userId);
+            return list.Select(MapToDto);
         }
 
-        public Task<GasBoilerDto?> GetByIdAsync(int id, int requestingUserId, bool isAdmin)
+        public async Task<GasBoilerDto?> GetByIdAsync(int id, int requestingUserId, bool isAdmin)
         {
-            throw new NotImplementedException();
+            var gb = await _repository.GetByIdAsync(id);
+            if (gb == null) return null;
+            if (!isAdmin && gb.UserId != requestingUserId) return null;
+            return MapToDto(gb);
         }
 
-        public Task<IEnumerable<object>> GetMapPointsAllAsync()
+        public async Task<IEnumerable<object>> GetMapPointsAllAsync()
         {
-            throw new NotImplementedException();
+            var points = await _repository.GetMapPointsAllAsync();
+            return points.Select(p => new
+            {
+                id = p.BoilerId,
+                name = p.Name,
+                lat = p.Lat,
+                lon = p.Lon,
+                currentPower = p.CurrentPower
+            });
         }
 
-        public Task<IEnumerable<object>> GetMapPointsForUserAsync(int userId)
+        public async Task<IEnumerable<object>> GetMapPointsForUserAsync(int userId)
         {
-            throw new NotImplementedException();
+            var points = await _repository.GetMapPointsForUserAsync(userId);
+            return points.Select(p => new
+            {
+                id = p.BoilerId,
+                name = p.Name,
+                lat = p.Lat,
+                lon = p.Lon,
+                currentPower = p.CurrentPower
+            });
         }
 
-        public Task<GasBoilerDto?> UpdateAsync(int id, GasBoilerUpdateDto dto, int requestingUserId, bool isAdmin)
+        public async Task<GasBoilerDto?> UpdateAsync(int id, GasBoilerUpdateDto dto, int requestingUserId, bool isAdmin)
         {
-            throw new NotImplementedException();
+            var gb = await _repository.GetByIdAsync(id);
+            if (gb == null) return null;
+            if (!isAdmin && gb.UserId != requestingUserId) return null;
+
+            gb.Name = dto.Name;
+            gb.MaxPower = dto.MaxPower;
+            gb.Efficiency = dto.Efficiency;
+            gb.CurrentPower = dto.CurrentPower;
+            gb.UpdatedAt = DateTime.UtcNow;
+
+            if (dto.BuildingObject != null)
+            {
+                if (gb.BuildingObject == null)
+                {
+                    gb.BuildingObject = new BuildingObject();
+                }
+                gb.BuildingObject.HeatingArea = dto.BuildingObject.HeatingArea;
+                gb.BuildingObject.DesiredTemperature = dto.BuildingObject.DesiredTemperature;
+                gb.BuildingObject.WallUValue = dto.BuildingObject.WallUValue;
+                gb.BuildingObject.WindowUValue = dto.BuildingObject.WindowUValue;
+                gb.BuildingObject.CeilingUValue = dto.BuildingObject.CeilingUValue;
+                gb.BuildingObject.FloorUValue = dto.BuildingObject.FloorUValue;
+                gb.BuildingObject.WallArea = dto.BuildingObject.WallArea;
+                gb.BuildingObject.WindowArea = dto.BuildingObject.WindowArea;
+                gb.BuildingObject.CeilingArea = dto.BuildingObject.CeilingArea;
+                gb.BuildingObject.FloorArea = dto.BuildingObject.FloorArea;
+                gb.BuildingObject.Latitude = dto.BuildingObject.Latitude;
+                gb.BuildingObject.Longitude = dto.BuildingObject.Longitude;
+            }
+
+            await _repository.UpdateAsync(gb);
+            await _repository.SaveChangesAsync();
+            return MapToDto(gb);
         }
 
         private GasBoilerDto MapToDto(GasBoiler gb)
