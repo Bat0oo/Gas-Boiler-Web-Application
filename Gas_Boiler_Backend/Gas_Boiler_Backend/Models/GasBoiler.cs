@@ -23,12 +23,6 @@ namespace Gas_Boiler_Backend.Models
         [Required]
         public double CurrentPower { get; set; } = 0; // Current power output in kW
 
-        [Required]
-        public double Latitude { get; set; }
-
-        [Required]
-        public double Longitude { get; set; }
-
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;

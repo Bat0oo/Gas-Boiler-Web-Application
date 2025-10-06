@@ -13,6 +13,6 @@ namespace Gas_Boiler_Backend.Interfaces
         Task<bool> DeleteAsync(int id);
         Task<bool> ExistsAsync(int id);
         Task<bool> EmailExistsAsync(string email);
-        Task<bool> UsernameExistsAsync(string username)
+        Task<bool> UsernameExistsAsync(string username);
     }
 }
