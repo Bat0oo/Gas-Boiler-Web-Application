@@ -39,6 +39,12 @@ namespace Gas_Boiler_Backend.Models
 
         [Required]
         public double FloorArea { get; set; }
+        [Required]
+        public double Latitude { get; set; }
+
+        [Required]
+        public double Longitude { get; set; }
+
 
         // Foreign key
         [Required]
