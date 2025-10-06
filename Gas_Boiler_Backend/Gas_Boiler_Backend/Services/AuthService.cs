@@ -3,35 +3,31 @@ using Gas_Boiler_Backend.DTO.Auth;
 using Gas_Boiler_Backend.Helpers;
 using Gas_Boiler_Backend.Interfaces;
 using Gas_Boiler_Backend.Models;
+using Gas_Boiler_Backend.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gas_Boiler_Backend.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly AppDbContext _context;
+        private readonly IUserRepository _userRepository;
         private readonly JwtHelper _jwtHelper;
 
-        public AuthService(AppDbContext context, JwtHelper jwtHelper)
+        public AuthService(IUserRepository userRepository, JwtHelper jwtHelper)
         {
-            _context = context;
+            _userRepository = userRepository;
             _jwtHelper = jwtHelper;
         }
 
         public async Task<AuthResponseDto> LoginAsync(LoginDto loginDto)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == loginDto.Email);
+            var user = await _userRepository.GetByEmailAsync(loginDto.Email);
 
             if (user == null)
-            {
                 throw new Exception("Invalid email or password");
-            }
-
 
             if (!BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash))
-            {
                 throw new Exception("Invalid email or password");
-            }
 
             var token = _jwtHelper.GenerateJwtToken(user);
 
@@ -47,41 +43,32 @@ namespace Gas_Boiler_Backend.Services
 
         public async Task<AuthResponseDto> RegisterAsync(RegisterDto registerDto)
         {
-            if (await _context.Users.AnyAsync(u => u.Email == registerDto.Email))
-            {
+            if (await _userRepository.EmailExistsAsync(registerDto.Email))
                 throw new Exception("User with this email already exists");
-            }
 
-            if (await _context.Users.AnyAsync(u => u.Username == registerDto.Username))
-            {
+            if (await _userRepository.UsernameExistsAsync(registerDto.Username))
                 throw new Exception("Username is already taken");
-            }
-
-            string passwordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password);
 
             var user = new User
             {
                 Username = registerDto.Username,
                 Email = registerDto.Email,
-                PasswordHash = passwordHash,
-                Role = "User", 
-                //IsBlocked = false,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password),
+                Role = "User",
                 CreatedAt = DateTime.UtcNow
             };
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-
-            var token = _jwtHelper.GenerateJwtToken(user);
+            var createdUser = await _userRepository.CreateAsync(user);
+            var token = _jwtHelper.GenerateJwtToken(createdUser);
 
             return new AuthResponseDto
             {
                 Token = token,
-                Username = user.Username,
-                Email = user.Email,
-                Role = user.Role,
-                UserId = user.Id
-            };
+                Username = createdUser.Username,
+                Email = createdUser.Email,
+                Role = createdUser.Role,
+                UserId = createdUser.Id
+            }; 
         }
 
     }
