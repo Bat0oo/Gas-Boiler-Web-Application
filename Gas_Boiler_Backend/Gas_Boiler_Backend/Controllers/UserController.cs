@@ -53,6 +53,7 @@ namespace Gas_Boiler_Backend.Controllers
             }
         }
 
+        //[Authorize]
         [HttpGet("me")]
         public async Task<ActionResult<UserResponseDto>> GetCurrentUser()
         {
@@ -113,5 +114,44 @@ namespace Gas_Boiler_Backend.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpPost("{id}/block")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> BlockUser(int id)
+        {
+            try
+            {
+                var result = await _userService.BlockUserAsync(id);
+
+                if (result)
+                    return Ok(new { message = "User blocked successfully" });
+
+                return NotFound(new { message = "User not found" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("{id}/unblock")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> UnblockUser(int id)
+        {
+            try
+            {
+                var result = await _userService.UnblockUserAsync(id);
+
+                if (result)
+                    return Ok(new { message = "User unblocked successfully" });
+
+                return NotFound(new { message = "User not found" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
     }
 }

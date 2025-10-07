@@ -77,6 +77,35 @@ namespace Gas_Boiler_Backend.Services
             return MapToResponseDto(updatedUser);
         }
 
+        public async Task<bool> BlockUserAsync(int id)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+
+            if (user == null)
+                throw new Exception("User not found");
+
+            if (user.Role == "Admin")
+                throw new Exception("Cannot block admin users");
+
+            user.IsBlocked = true;
+            await _userRepository.UpdateAsync(user);
+
+            return true;
+        }
+
+        public async Task<bool> UnblockUserAsync(int id)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+
+            if (user == null)
+                throw new Exception("User not found");
+
+            user.IsBlocked = false;
+            await _userRepository.UpdateAsync(user);
+
+            return true;
+        }
+
         private UserResponseDto MapToResponseDto(User user)
         {
             return new UserResponseDto
