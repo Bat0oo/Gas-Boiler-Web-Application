@@ -9,6 +9,7 @@ namespace Gas_Boiler_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize]
     public class GasBoilerController : ControllerBase
     {
         private readonly IGasBoilerService _service;
@@ -24,70 +25,124 @@ namespace Gas_Boiler_Backend.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetAll()
+        public async Task<ActionResult<IEnumerable<GasBoilerResponseDto>>> GetAll()
         {
-            if (IsAdmin())
+            try
             {
-                var all = await _service.GetAllAsync();
-                return Ok(all);
-            }
+                if (IsAdmin())
+                {
+                    var all = await _service.GetAllAsync();
+                    return Ok(all);
+                }
 
-            var userId = GetUserIdFromClaims();
-            var list = await _service.GetAllForUserAsync(userId);
-            return Ok(list);
+                var userId = GetUserIdFromClaims();
+                var userBoilers = await _service.GetAllForUserAsync(userId);
+                return Ok(userBoilers);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpGet("{id}")]
         [Authorize]
-        public async Task<IActionResult> Get(int id)
+        public async Task<ActionResult<GasBoilerResponseDto>> GetById(int id)
         {
-            var userId = GetUserIdFromClaims();
-            var dto = await _service.GetByIdAsync(id, userId, IsAdmin());
-            if (dto == null) return NotFound();
-            return Ok(dto);
+            try
+            {
+                var userId = GetUserIdFromClaims();
+                var gasBoiler = await _service.GetByIdAsync(id, userId, IsAdmin());
+
+                if (gasBoiler == null)
+                    return NotFound(new { message = "Gas boiler not found or access denied" });
+
+                return Ok(gasBoiler);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
+
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Create([FromBody] GasBoilerCreateDto dto)
+        public async Task<ActionResult<GasBoilerResponseDto>> Create([FromBody] GasBoilerCreateDto dto)
         {
-            var userId = GetUserIdFromClaims();
-            var created = await _service.CreateAsync(dto, userId);
-            return CreatedAtAction(nameof(Get), new { id = created.Id }, created);
+            try
+            {
+                var userId = GetUserIdFromClaims();
+                var created = await _service.CreateAsync(dto, userId);
+
+                return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpPut("{id}")]
         [Authorize]
-        public async Task<IActionResult> Update(int id, [FromBody] GasBoilerUpdateDto dto)
+        public async Task<ActionResult<GasBoilerResponseDto>> Update(int id, [FromBody] GasBoilerUpdateDto dto)
         {
-            var userId = GetUserIdFromClaims();
-            var updated = await _service.UpdateAsync(id, dto, userId, IsAdmin());
-            if (updated == null) return NotFound();
-            return Ok(updated);
+            try
+            {
+                var userId = GetUserIdFromClaims();
+                var updated = await _service.UpdateAsync(id, dto, userId, IsAdmin());
+
+                if (updated == null)
+                    return NotFound(new { message = "Gas boiler not found or access denied" });
+
+                return Ok(updated);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpDelete("{id}")]
         [Authorize]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var userId = GetUserIdFromClaims();
-            var success = await _service.DeleteAsync(id, userId, IsAdmin());
-            if (!success) return NotFound();
-            return NoContent();
+            try
+            {
+                var userId = GetUserIdFromClaims();
+                var success = await _service.DeleteAsync(id, userId, IsAdmin());
+
+                if (!success)
+                    return NotFound(new { message = "Gas boiler not found or access denied" });
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpGet("map")]
         [Authorize]
-        public async Task<IActionResult> MapPoints()
+        public async Task<ActionResult<IEnumerable<object>>> GetMapPoints()
         {
-            if (IsAdmin())
+            try
             {
-                var result = await _service.GetMapPointsAllAsync();
-                return Ok(result);
+                if (IsAdmin())
+                {
+                    var allPoints = await _service.GetMapPointsAllAsync();
+                    return Ok(allPoints);
+                }
+
+                var userId = GetUserIdFromClaims();
+                var userPoints = await _service.GetMapPointsForUserAsync(userId);
+                return Ok(userPoints);
             }
-            var userId = GetUserIdFromClaims();
-            var resultUser = await _service.GetMapPointsForUserAsync(userId);
-            return Ok(resultUser);
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 }

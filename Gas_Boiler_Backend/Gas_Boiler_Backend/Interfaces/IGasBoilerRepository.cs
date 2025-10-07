@@ -11,6 +11,7 @@ namespace Gas_Boiler_Backend.Interfaces
         Task UpdateAsync(GasBoiler gasBoiler);
         Task DeleteAsync(GasBoiler gasBoiler);
         Task SaveChangesAsync();
+        Task<bool> ExistsAsync(int id);
         Task<IEnumerable<(int BoilerId, double Lat, double Lon, string Name, double CurrentPower)>> GetMapPointsForUserAsync(int userId);
         Task<IEnumerable<(int BoilerId, double Lat, double Lon, string Name, double CurrentPower)>> GetMapPointsAllAsync();
 
