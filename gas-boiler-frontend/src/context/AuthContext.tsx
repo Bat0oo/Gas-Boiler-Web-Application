@@ -9,18 +9,21 @@ interface AuthContextType {
   logout: () => void;
   isAuthenticated: boolean;
   isAdmin: boolean;
+  loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<AuthResponse | null>(null);
+  const [loading, setLoading] = useState(true); // Start with loading true
 
   useEffect(() => {
     const currentUser = authService.getCurrentUser();
     if (currentUser) {
       setUser(currentUser);
     }
+    setLoading(false);
   }, []);
 
   const login = async (data: LoginData) => {
@@ -51,6 +54,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         logout,
         isAuthenticated: !!user,
         isAdmin: user?.role === 'Admin',
+        loading,
       }}
     >
       {children}
