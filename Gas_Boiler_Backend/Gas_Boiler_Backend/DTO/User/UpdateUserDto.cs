@@ -6,5 +6,9 @@
         public string? Email { get; set; }
         public string? CurrentPassword { get; set; }
         public string? NewPassword { get; set; }
+
+        // Only Admin can change those
+        public string? Role { get; set; }
+        public bool? IsBlocked { get; set; }
     }
 }
