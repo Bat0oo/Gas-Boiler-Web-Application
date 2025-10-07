@@ -19,30 +19,17 @@ const AppRoutes: React.FC = () => {
     <Routes>
       {user.role === 'Admin' ? (
   <>
-    <Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-    <Route path="/admin/users" element={<ProtectedRoute><UsersPage /></ProtectedRoute>} />
-    <Route path="/admin/system-parameters" element={<ProtectedRoute><SystemParametersPage /></ProtectedRoute>} />
+    <Route path="/admin/dashboard" element={<ProtectedRoute adminOnly><AdminDashboard /></ProtectedRoute>} />
+    <Route path="/admin/users" element={<ProtectedRoute adminOnly><UsersPage /></ProtectedRoute>} />
+    <Route path="/admin/system-parameters" element={<ProtectedRoute adminOnly><SystemParametersPage /></ProtectedRoute>} />
     <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
     <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
+    <Route path="/profile/:id" element={ <ProtectedRoute adminOnly> <Profile /> </ProtectedRoute>}/>
   </>
       ) : (
         <>
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/dashboard" element={ <ProtectedRoute> <Dashboard /> </ProtectedRoute>}/>
+          <Route path="/profile" element={ <ProtectedRoute> <Profile /> </ProtectedRoute> }/>
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </>
       )}
