@@ -73,6 +73,13 @@ namespace Gas_Boiler_Backend.Services
                 user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(updateDto.NewPassword);
             }
 
+            // Admin only
+            if (!string.IsNullOrEmpty(updateDto.Role))
+                user.Role = updateDto.Role;
+
+            if (updateDto.IsBlocked.HasValue)
+                user.IsBlocked = updateDto.IsBlocked.Value;
+
             var updatedUser = await _userRepository.UpdateAsync(user);
             return MapToResponseDto(updatedUser);
         }
