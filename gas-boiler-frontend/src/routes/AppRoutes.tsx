@@ -7,9 +7,23 @@ import Profile from '../pages/Profile/Profile';
 import ProtectedRoute from '../components/ProtectedRoute';
 import UsersPage from '../pages/Admin/UsersPage';
 import SystemParametersPage from '../pages/Admin/SystemParametersPage';
+import MyBoilersPage from '../pages/MyBoilers/MyBoilers';
 
 const AppRoutes: React.FC = () => {
-  const { user } = useAuth();
+  const { user,loading } = useAuth();
+
+    if (loading) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh' 
+      }}>
+        <div>Loading...</div>
+      </div>
+    );
+  }
 
   if (!user) {
     return <Navigate to="/login" replace />;
@@ -23,13 +37,14 @@ const AppRoutes: React.FC = () => {
     <Route path="/admin/users" element={<ProtectedRoute adminOnly><UsersPage /></ProtectedRoute>} />
     <Route path="/admin/system-parameters" element={<ProtectedRoute adminOnly><SystemParametersPage /></ProtectedRoute>} />
     <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-    <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
     <Route path="/profile/:id" element={ <ProtectedRoute adminOnly> <Profile /> </ProtectedRoute>}/>
+    <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
   </>
       ) : (
         <>
           <Route path="/dashboard" element={ <ProtectedRoute> <Dashboard /> </ProtectedRoute>}/>
           <Route path="/profile" element={ <ProtectedRoute> <Profile /> </ProtectedRoute> }/>
+          <Route path="/my-boilers" element={<ProtectedRoute><MyBoilersPage /></ProtectedRoute>} /> {}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </>
       )}

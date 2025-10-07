@@ -11,7 +11,7 @@ namespace Gas_Boiler_Backend.Services
         {
             _repository = repository;
         }
-        public async Task<GasBoilerDto> CreateAsync(GasBoilerCreateDto dto, int ownerUserId)
+        public async Task<GasBoilerResponseDto> CreateAsync(GasBoilerCreateDto dto, int ownerUserId)
         {
             var gb = new GasBoiler
             {
@@ -57,19 +57,19 @@ namespace Gas_Boiler_Backend.Services
             return true;
         }
 
-        public async Task<IEnumerable<GasBoilerDto>> GetAllAsync()
+        public async Task<IEnumerable<GasBoilerResponseDto>> GetAllAsync()
         {
             var list = await _repository.GetAllAsync();
             return list.Select(MapToDto);
         }
 
-        public async Task<IEnumerable<GasBoilerDto>> GetAllForUserAsync(int userId)
+        public async Task<IEnumerable<GasBoilerResponseDto>> GetAllForUserAsync(int userId)
         {
             var list = await _repository.GetAllForUserAsync(userId);
             return list.Select(MapToDto);
         }
 
-        public async Task<GasBoilerDto?> GetByIdAsync(int id, int requestingUserId, bool isAdmin)
+        public async Task<GasBoilerResponseDto?> GetByIdAsync(int id, int requestingUserId, bool isAdmin)
         {
             var gb = await _repository.GetByIdAsync(id);
             if (gb == null) return null;
@@ -103,7 +103,7 @@ namespace Gas_Boiler_Backend.Services
             });
         }
 
-        public async Task<GasBoilerDto?> UpdateAsync(int id, GasBoilerUpdateDto dto, int requestingUserId, bool isAdmin)
+        public async Task<GasBoilerResponseDto?> UpdateAsync(int id, GasBoilerUpdateDto dto, int requestingUserId, bool isAdmin)
         {
             var gb = await _repository.GetByIdAsync(id);
             if (gb == null) return null;
@@ -140,9 +140,9 @@ namespace Gas_Boiler_Backend.Services
             return MapToDto(gb);
         }
 
-        private GasBoilerDto MapToDto(GasBoiler gb)
+        private GasBoilerResponseDto MapToDto(GasBoiler gb)
         {
-            return new GasBoilerDto
+            return new GasBoilerResponseDto
             {
                 Id = gb.Id,
                 Name = gb.Name,
@@ -151,6 +151,8 @@ namespace Gas_Boiler_Backend.Services
                 CurrentPower = gb.CurrentPower,
                 CreatedAt = gb.CreatedAt,
                 UpdatedAt = gb.UpdatedAt,
+                UserId = gb.UserId,
+                UserName = gb.User?.Username ?? string.Empty,
                 BuildingObject = gb.BuildingObject == null ? null : new BuildingObjectDto
                 {
                     Id = gb.BuildingObject.Id,

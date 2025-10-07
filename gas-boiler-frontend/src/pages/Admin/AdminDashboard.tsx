@@ -15,23 +15,9 @@ const AdminDashboard: React.FC = () => {
         <p>Dobrodošao, {user?.username}! Ovde možeš pregledati sve korisnike i njihove gasne kotlove.</p>
 
         <div className="map-section">
-          <GasBoilerMap token={localStorage.getItem('token') || undefined} />
+          <GasBoilerMap token={localStorage.getItem('token')!} />
         </div>
 
-        <div className="admin-actions">
-          <button
-            onClick={() => window.location.href = '/admin/users'}
-            className="btn"
-          >
-            Pregled korisnika
-          </button>
-          <button
-            onClick={() => window.location.href = '/admin/system-parameters'}
-            className="btn btn-primary"
-          >
-            Sistemski parametri
-          </button>
-        </div>
       </div>
     </>
   );

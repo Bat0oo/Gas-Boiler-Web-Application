@@ -17,13 +17,21 @@ export const authService = {
     localStorage.removeItem('user');
   },
 
-  getCurrentUser: (): AuthResponse | null => {
+getCurrentUser: (): AuthResponse | null => {
     const userStr = localStorage.getItem('user');
-    if (userStr) {
-      return JSON.parse(userStr);
+    if (!userStr) return null;
+
+    try {
+      const parsed = JSON.parse(userStr);
+      if (parsed && parsed.token && parsed.email) {
+        return parsed;
+      }
+      return null;
+    } catch {
+      return null;
     }
-    return null;
   },
+
 
   isAuthenticated: (): boolean => {
     return !!localStorage.getItem('token');

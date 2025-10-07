@@ -15,22 +15,7 @@ const Dashboard: React.FC = () => {
         <p>Ovde možeš videti sve svoje gasne kotlove na mapi i upravljati njima.</p>
 
         <div className="map-section">
-          <GasBoilerMap token={localStorage.getItem('token') || undefined} />
-        </div>
-
-        <div className="actions">
-          <button
-            onClick={() => window.location.href = '/gasboilers'}
-            className="btn"
-          >
-            Prikaži sve kotlove
-          </button>
-          <button
-            onClick={() => window.location.href = '/gasboilers/new'}
-            className="btn btn-primary"
-          >
-            Dodaj novi kotao
-          </button>
+          <GasBoilerMap token={localStorage.getItem('token')!} />
         </div>
       </div>
     </>

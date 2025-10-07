@@ -31,7 +31,7 @@ const Navbar: React.FC = () => {
         ) : (
           <>
             <li><Link to="/dashboard">Dashboard</Link></li>
-            <li><Link to="/gasboilers">Moji kotlovi</Link></li>
+            <li><Link to="/my-boilers">Moji kotlovi</Link></li>
             <li><Link to="/profile">Profil</Link></li>
           </>
         )}
