@@ -29,6 +29,10 @@ namespace Gas_Boiler_Backend.Services
             if (!BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash))
                 throw new Exception("Invalid email or password");
 
+            if (user.IsBlocked)
+                throw new Exception("Your account has been blocked. Please contact an administrator.");
+
+
             var token = _jwtHelper.GenerateJwtToken(user);
 
             return new AuthResponseDto
@@ -55,6 +59,7 @@ namespace Gas_Boiler_Backend.Services
                 Email = registerDto.Email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password),
                 Role = "User",
+                IsBlocked = false,
                 CreatedAt = DateTime.UtcNow
             };
 
