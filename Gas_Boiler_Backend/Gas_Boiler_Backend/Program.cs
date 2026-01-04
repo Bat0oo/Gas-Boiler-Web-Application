@@ -24,6 +24,7 @@ namespace Gas_Boiler_Backend
 
             //reg repo
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IBuildingObjectRepository, BuildingObjectRepository>();
 
             //reg services
             builder.Services.AddScoped<IAuthService, AuthService>();
@@ -31,6 +32,7 @@ namespace Gas_Boiler_Backend
 
             builder.Services.AddScoped<IGasBoilerRepository, GasBoilerRepository>();
             builder.Services.AddScoped<IGasBoilerService, GasBoilerService>();
+            builder.Services.AddScoped<IBuildingObjectService, BuildingObjectService>();
 
             builder.Services.AddHttpClient<IOpenWeatherService, OpenWeatherService>();
 
