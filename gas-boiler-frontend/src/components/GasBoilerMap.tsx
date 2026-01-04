@@ -81,6 +81,7 @@ const handleCreateBoiler = async () => {
         efficiency: Math.max(0, Math.min(1, newBoilerEfficiency)),
         currentPower: 0,
         buildingObject: {
+          name: `Building for ${newBoilerName}`,
           latitude: newPosition.lat,
           longitude: newPosition.lng,
           heatingArea: 100,

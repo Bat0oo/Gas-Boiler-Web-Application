@@ -7,6 +7,7 @@ export interface GasBoilerPayload {
   efficiency: number;
   currentPower: number;
   buildingObject: {
+    name: string;
     latitude: number;
     longitude: number;
     heatingArea: number;
@@ -44,6 +45,7 @@ export interface GasBoilerFullResponse {
   userName: string;
   buildingObject?: {
     id: number;
+    name: string;
     heatingArea: number;
     desiredTemperature: number;
     wallUValue: number;
@@ -65,6 +67,7 @@ export interface GasBoilerUpdatePayload {
   efficiency: number;
   currentPower: number;
   buildingObject?: {
+    name: string;
     heatingArea: number;
     desiredTemperature: number;
     wallUValue: number;

@@ -26,6 +26,8 @@ namespace Gas_Boiler_Backend.Services
 
             gb.BuildingObject = new BuildingObject
             {
+                Name = dto.BuildingObject.Name,
+                UserId = ownerUserId,
                 HeatingArea = dto.BuildingObject.HeatingArea,
                 DesiredTemperature = dto.BuildingObject.DesiredTemperature,
                 WallUValue = dto.BuildingObject.WallUValue,
@@ -121,6 +123,7 @@ namespace Gas_Boiler_Backend.Services
                 {
                     gb.BuildingObject = new BuildingObject();
                 }
+                gb.BuildingObject.Name = dto.BuildingObject.Name;
                 gb.BuildingObject.HeatingArea = dto.BuildingObject.HeatingArea;
                 gb.BuildingObject.DesiredTemperature = dto.BuildingObject.DesiredTemperature;
                 gb.BuildingObject.WallUValue = dto.BuildingObject.WallUValue;
@@ -156,6 +159,7 @@ namespace Gas_Boiler_Backend.Services
                 BuildingObject = gb.BuildingObject == null ? null : new BuildingObjectDto
                 {
                     Id = gb.BuildingObject.Id,
+                    Name = gb.BuildingObject.Name,
                     HeatingArea = gb.BuildingObject.HeatingArea,
                     DesiredTemperature = gb.BuildingObject.DesiredTemperature,
                     WallUValue = gb.BuildingObject.WallUValue,
