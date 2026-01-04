@@ -10,7 +10,7 @@ namespace Gas_Boiler_Backend.Models
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(100)]
+        [MaxLength(200)]
         public string Name { get; set; } = string.Empty;
 
         [Required]
@@ -35,7 +35,13 @@ namespace Gas_Boiler_Backend.Models
         public User User { get; set; } = null!;
 
         // Navigation properties
-        public BuildingObject? BuildingObject { get; set; }
+
+        [Required]
+        public int BuildingObjectId { get; set; }
+
+        [Required]
+        public BuildingObject BuildingObject { get; set; } = null!; 
+
         public ICollection<HistoricalData> HistoricalData { get; set; } = new List<HistoricalData>();
         public ICollection<Alarm> Alarms { get; set; } = new List<Alarm>();
     }
