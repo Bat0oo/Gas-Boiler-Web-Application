@@ -1,0 +1,181 @@
+/* BuildingDetailsModal.css */
+
+.building-details-modal {
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.building-details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.building-details-header h2 {
+  margin: 0;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+.close-button:hover {
+  color: #1f2937;
+}
+
+.building-info-box {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #f9fafb;
+  border-radius: 8px;
+}
+
+.building-info-box p {
+  margin: 0.25rem 0;
+}
+
+.building-info-box strong {
+  color: #1f2937;
+}
+
+.building-details-divider {
+  margin: 1.5rem 0;
+  border: none;
+  border-top: 1px solid #e5e7eb;
+}
+
+.boilers-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.boilers-section-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.add-boiler-button {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+.no-boilers-message {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+}
+
+.boilers-list {
+  margin-top: 1rem;
+}
+
+.boiler-card {
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background-color: #ffffff;
+}
+
+.boiler-card-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+}
+
+.boiler-info {
+  flex: 1;
+}
+
+.boiler-info h4 {
+  margin: 0 0 0.5rem 0;
+  color: #1f2937;
+}
+
+.boiler-details {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.boiler-details p {
+  margin: 0.25rem 0;
+}
+
+.boiler-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-direction: column;
+}
+
+.boiler-edit-button {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.boiler-edit-button:hover {
+  background-color: #2563eb;
+}
+
+.boiler-delete-button {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.boiler-delete-button:hover {
+  background-color: #dc2626;
+}
+
+.building-action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.btn-edit-building {
+  background-color: #10b981;
+  color: white;
+  border: none;
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-edit-building:hover {
+  background-color: #059669;
+}
+
+.btn-delete-building {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-delete-building:hover {
+  background-color: #dc2626;
+}
+
+.loading-message {
+  text-align: center;
+  padding: 2rem;
+}

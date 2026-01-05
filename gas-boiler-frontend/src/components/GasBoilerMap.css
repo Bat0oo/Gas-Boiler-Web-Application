@@ -1,3 +1,55 @@
+/* GasBoilerMap.css - UPDATED WITH BUILDING POPUP STYLES */
+
+/* Map container */
+.map-container {
+  height: 600px;
+  width: 100%;
+}
+
+.leaflet-map {
+  height: 100%;
+  width: 100%;
+}
+
+/* Building popup styles */
+.building-popup {
+  padding: 0.5rem;
+}
+
+.building-popup-title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+  color: #1f2937;
+}
+
+.building-popup-info {
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.building-popup-info strong {
+  color: #1f2937;
+}
+
+.building-popup-button {
+  margin-top: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.building-popup-button:hover {
+  background-color: #2563eb;
+}
+
+/* Modal overlay (shared by all modals) */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -11,11 +63,12 @@
   z-index: 1000;
 }
 
+/* Base modal styles (shared by all modals) */
 .modal {
   background-color: #ffffff;
   padding: 2rem 2.5rem;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
   display: flex;
@@ -44,6 +97,7 @@
   margin-top: 0.3rem;
 }
 
+/* Modal buttons */
 .modal-buttons {
   display: flex;
   justify-content: flex-end;
@@ -66,6 +120,11 @@
   background-color: #2563eb;
 }
 
+.btn-primary:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
 .btn-secondary {
   background-color: #6b7280;
   color: white;
@@ -77,4 +136,9 @@
 
 .btn-secondary:hover {
   background-color: #4b5563;
+}
+
+.btn-secondary:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
 }

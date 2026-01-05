@@ -1,0 +1,59 @@
+/* CreateBuildingModal.css */
+
+.create-building-modal {
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.create-building-modal h2 {
+  text-align: center;
+  color: #1f2937;
+  margin-bottom: 1.5rem;
+}
+
+.create-building-modal label {
+  font-weight: 500;
+  color: #374151;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.8rem;
+}
+
+.create-building-modal input {
+  padding: 0.6rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+  margin-top: 0.3rem;
+}
+
+.create-building-modal input:disabled {
+  background-color: #f3f4f6;
+  cursor: not-allowed;
+}
+
+.create-building-modal hr {
+  margin: 1rem 0;
+  border: none;
+  border-top: 1px solid #e5e7eb;
+}
+
+.create-building-modal h3 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: #1f2937;
+}
+
+.create-building-modal .grid-two-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
