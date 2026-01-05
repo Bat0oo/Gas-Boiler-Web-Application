@@ -9,6 +9,15 @@ namespace Gas_Boiler_Backend.Models
         public int Id { get; set; }
 
         [Required]
+        [MaxLength(200)]
+        public string Name { get; set; } = string.Empty; 
+
+        [Required]
+        public int UserId { get; set; }  
+
+        public User? User { get; set; } 
+
+        [Required]
         public double HeatingArea { get; set; } // in m²
 
         [Required]
@@ -45,12 +54,6 @@ namespace Gas_Boiler_Backend.Models
         [Required]
         public double Longitude { get; set; }
 
-
-        // Foreign key
-        [Required]
-        public int GasBoilerId { get; set; }
-
-        [ForeignKey("GasBoilerId")]
-        public GasBoiler GasBoiler { get; set; } = null!;
+        public ICollection<GasBoiler> GasBoilers { get; set; } = new List<GasBoiler>();
     }
 }

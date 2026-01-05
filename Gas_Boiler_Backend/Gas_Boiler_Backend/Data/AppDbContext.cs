@@ -25,13 +25,19 @@ namespace Gas_Boiler_Backend.Data
                 .HasMany(u => u.GasBoilers)
                 .WithOne(gb => gb.User)
                 .HasForeignKey(gb => gb.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // GasBoiler - BuildingObject relationship (one-to-one)
+            // GasBoiler - BuildingObject relationship (one-to-many)
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.BuildingObjects)
+                .WithOne(b => b.User)
+                .HasForeignKey(b => b.UserId)
+                .OnDelete(DeleteBehavior.Restrict);  // Prevent deleting user if they have buildings
+
             modelBuilder.Entity<GasBoiler>()
-                .HasOne(gb => gb.BuildingObject)
-                .WithOne(bo => bo.GasBoiler)
-                .HasForeignKey<BuildingObject>(bo => bo.GasBoilerId)
+                .HasOne(g => g.BuildingObject)
+                .WithMany(b => b.GasBoilers)  // CHANGED: WithMany instead of WithOne
+                .HasForeignKey(g => g.BuildingObjectId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // GasBoiler - HistoricalData relationship
@@ -47,6 +53,42 @@ namespace Gas_Boiler_Backend.Data
                 .WithOne(a => a.GasBoiler)
                 .HasForeignKey(a => a.GasBoilerId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            //INDEXEX FOR PERFORMANCE
+
+            // User indexes
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Username)
+                .IsUnique();
+
+            // BuildingObject indexes
+            modelBuilder.Entity<BuildingObject>()
+                .HasIndex(b => b.UserId);
+
+            // GasBoiler indexes
+            modelBuilder.Entity<GasBoiler>()
+                .HasIndex(g => g.UserId);
+
+            modelBuilder.Entity<GasBoiler>()
+                .HasIndex(g => g.BuildingObjectId);  // Important for queries!
+
+            // HistoricalData indexes
+            modelBuilder.Entity<HistoricalData>()
+                .HasIndex(h => h.GasBoilerId);
+
+            modelBuilder.Entity<HistoricalData>()
+                .HasIndex(h => h.Timestamp);
+
+            // Alarm indexes
+            modelBuilder.Entity<Alarm>()
+                .HasIndex(a => a.GasBoilerId);
+
+            modelBuilder.Entity<Alarm>()
+                .HasIndex(a => a.IsResolved);
 
 
             modelBuilder.Entity<SystemParameters>().HasData(

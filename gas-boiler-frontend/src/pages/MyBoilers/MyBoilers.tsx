@@ -81,6 +81,7 @@ const MyBoilersPage: React.FC = () => {
               <tr>
                 <th>ID</th>
                 <th>Naziv</th>
+                <th>Naziv Objekta</th>
                 <th>Maks. Snaga (kW)</th>
                 <th>Efikasnost</th>
                 <th>Trenutna Snaga (kW)</th>
@@ -96,6 +97,7 @@ const MyBoilersPage: React.FC = () => {
                 <tr key={boiler.id}>
                   <td>{boiler.id}</td>
                   <td>{boiler.name}</td>
+                  <td>{boiler.buildingObject?.name ?? 'N/A'}</td>
                   <td>{boiler.maxPower.toFixed(2)}</td>
                   <td>{(boiler.efficiency * 100).toFixed(0)}%</td>
                   <td className="current-power">{boiler.currentPower.toFixed(2)}</td>

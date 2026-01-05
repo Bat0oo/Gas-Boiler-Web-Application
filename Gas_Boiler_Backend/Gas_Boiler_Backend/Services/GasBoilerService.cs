@@ -7,12 +7,27 @@ namespace Gas_Boiler_Backend.Services
     public class GasBoilerService : IGasBoilerService
     {
         private readonly IGasBoilerRepository _repository;
-        public GasBoilerService(IGasBoilerRepository repository)
+        private readonly IBuildingObjectRepository _buildingRepo;
+
+        // Added building repo injection
+        public GasBoilerService(
+            IGasBoilerRepository repository,
+            IBuildingObjectRepository buildingRepo)
         {
             _repository = repository;
+            _buildingRepo = buildingRepo;
         }
+
         public async Task<GasBoilerResponseDto> CreateAsync(GasBoilerCreateDto dto, int ownerUserId)
         {
+            var building = await _buildingRepo.GetByIdAsync(dto.BuildingObjectId);
+            if (building == null)
+                throw new KeyNotFoundException($"Building with ID {dto.BuildingObjectId} not found");
+
+            if (building.UserId != ownerUserId)
+                throw new UnauthorizedAccessException("You don't own this building");
+
+            // Create boiler (NO building creation anymore!)
             var gb = new GasBoiler
             {
                 Name = dto.Name,
@@ -20,29 +35,33 @@ namespace Gas_Boiler_Backend.Services
                 Efficiency = dto.Efficiency,
                 CurrentPower = dto.CurrentPower,
                 UserId = ownerUserId,
+                BuildingObjectId = dto.BuildingObjectId,  // Just link to existing building
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
-            };
-
-            gb.BuildingObject = new BuildingObject
-            {
-                HeatingArea = dto.BuildingObject.HeatingArea,
-                DesiredTemperature = dto.BuildingObject.DesiredTemperature,
-                WallUValue = dto.BuildingObject.WallUValue,
-                WindowUValue = dto.BuildingObject.WindowUValue,
-                CeilingUValue = dto.BuildingObject.CeilingUValue,
-                FloorUValue = dto.BuildingObject.FloorUValue,
-                WallArea = dto.BuildingObject.WallArea,
-                WindowArea = dto.BuildingObject.WindowArea,
-                CeilingArea = dto.BuildingObject.CeilingArea,
-                FloorArea = dto.BuildingObject.FloorArea,
-                Latitude = dto.BuildingObject.Latitude,
-                Longitude = dto.BuildingObject.Longitude
             };
 
             await _repository.AddAsync(gb);
             await _repository.SaveChangesAsync();
 
+            gb.BuildingObject = building;
+            return MapToDto(gb);
+        }
+
+        public async Task<GasBoilerResponseDto?> UpdateAsync(int id, GasBoilerUpdateDto dto, int requestingUserId, bool isAdmin)
+        {
+            var gb = await _repository.GetByIdAsync(id);
+            if (gb == null) return null;
+            if (!isAdmin && gb.UserId != requestingUserId) return null;
+
+            // Update boiler only (can't change building)
+            gb.Name = dto.Name;
+            gb.MaxPower = dto.MaxPower;
+            gb.Efficiency = dto.Efficiency;
+            gb.CurrentPower = dto.CurrentPower;
+            gb.UpdatedAt = DateTime.UtcNow;
+
+            await _repository.UpdateAsync(gb);
+            await _repository.SaveChangesAsync();
             return MapToDto(gb);
         }
 
@@ -92,6 +111,7 @@ namespace Gas_Boiler_Backend.Services
 
         public async Task<IEnumerable<object>> GetMapPointsForUserAsync(int userId)
         {
+            // NOTE: Use BuildingObject/map instead for better map display
             var points = await _repository.GetMapPointsForUserAsync(userId);
             return points.Select(p => new
             {
@@ -101,43 +121,6 @@ namespace Gas_Boiler_Backend.Services
                 lon = p.Lon,
                 currentPower = p.CurrentPower
             });
-        }
-
-        public async Task<GasBoilerResponseDto?> UpdateAsync(int id, GasBoilerUpdateDto dto, int requestingUserId, bool isAdmin)
-        {
-            var gb = await _repository.GetByIdAsync(id);
-            if (gb == null) return null;
-            if (!isAdmin && gb.UserId != requestingUserId) return null;
-
-            gb.Name = dto.Name;
-            gb.MaxPower = dto.MaxPower;
-            gb.Efficiency = dto.Efficiency;
-            gb.CurrentPower = dto.CurrentPower;
-            gb.UpdatedAt = DateTime.UtcNow;
-
-            if (dto.BuildingObject != null)
-            {
-                if (gb.BuildingObject == null)
-                {
-                    gb.BuildingObject = new BuildingObject();
-                }
-                gb.BuildingObject.HeatingArea = dto.BuildingObject.HeatingArea;
-                gb.BuildingObject.DesiredTemperature = dto.BuildingObject.DesiredTemperature;
-                gb.BuildingObject.WallUValue = dto.BuildingObject.WallUValue;
-                gb.BuildingObject.WindowUValue = dto.BuildingObject.WindowUValue;
-                gb.BuildingObject.CeilingUValue = dto.BuildingObject.CeilingUValue;
-                gb.BuildingObject.FloorUValue = dto.BuildingObject.FloorUValue;
-                gb.BuildingObject.WallArea = dto.BuildingObject.WallArea;
-                gb.BuildingObject.WindowArea = dto.BuildingObject.WindowArea;
-                gb.BuildingObject.CeilingArea = dto.BuildingObject.CeilingArea;
-                gb.BuildingObject.FloorArea = dto.BuildingObject.FloorArea;
-                gb.BuildingObject.Latitude = dto.BuildingObject.Latitude;
-                gb.BuildingObject.Longitude = dto.BuildingObject.Longitude;
-            }
-
-            await _repository.UpdateAsync(gb);
-            await _repository.SaveChangesAsync();
-            return MapToDto(gb);
         }
 
         private GasBoilerResponseDto MapToDto(GasBoiler gb)
@@ -153,6 +136,8 @@ namespace Gas_Boiler_Backend.Services
                 UpdatedAt = gb.UpdatedAt,
                 UserId = gb.UserId,
                 UserName = gb.User?.Username ?? string.Empty,
+                BuildingObjectId = gb.BuildingObjectId,
+                BuildingName = gb.BuildingObject?.Name ?? "Unknown",  
                 BuildingObject = gb.BuildingObject == null ? null : new BuildingObjectDto
                 {
                     Id = gb.BuildingObject.Id,

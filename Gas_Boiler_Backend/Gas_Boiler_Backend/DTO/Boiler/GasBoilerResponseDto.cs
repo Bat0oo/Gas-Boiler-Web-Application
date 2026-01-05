@@ -7,10 +7,16 @@
         public double MaxPower { get; set; }
         public double Efficiency { get; set; }
         public double CurrentPower { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
         public int UserId { get; set; }
         public string UserName { get; set; } = string.Empty;
+
+        public int BuildingObjectId { get; set; }
+        public string BuildingName { get; set; } = string.Empty;  
+
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+
+        // Full building details (for backward compatibility)
         public BuildingObjectDto? BuildingObject { get; set; }
     }
 }

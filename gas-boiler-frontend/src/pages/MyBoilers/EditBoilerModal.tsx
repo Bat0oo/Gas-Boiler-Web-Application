@@ -14,6 +14,7 @@ const EditBoilerModal: React.FC<Props> = ({ boiler, onClose, onSave, token }) =>
     name: boiler.name,
     maxPower: boiler.maxPower,
     efficiency: boiler.efficiency,
+    buildingName: boiler.buildingObject?.name ?? '',
     heatingArea: boiler.buildingObject?.heatingArea ?? 0,
     desiredTemperature: boiler.buildingObject?.desiredTemperature ?? 20,
     wallUValue: boiler.buildingObject?.wallUValue ?? 0.5,
@@ -51,6 +52,7 @@ const EditBoilerModal: React.FC<Props> = ({ boiler, onClose, onSave, token }) =>
         efficiency: formData.efficiency,
         currentPower: boiler.currentPower, // Keep current power unchanged
         buildingObject: {
+          name: formData.buildingName,
           heatingArea: formData.heatingArea,
           desiredTemperature: formData.desiredTemperature,
           wallUValue: formData.wallUValue,
@@ -142,7 +144,18 @@ const EditBoilerModal: React.FC<Props> = ({ boiler, onClose, onSave, token }) =>
 
           <div className="form-section">
             <h3>Objekat</h3>
-            
+
+            <div className="form-group">
+              <label>Naziv Objekta</label>
+              <input
+                type="text"
+                name="buildingName"
+                value={formData.buildingName}
+                onChange={(e) => setFormData(prev => ({ ...prev, buildingName: e.target.value }))}
+                required
+              />
+            </div>
+
             <div className="form-row">
               <div className="form-group">
                 <label>Površina Grejanja (m²)</label>
