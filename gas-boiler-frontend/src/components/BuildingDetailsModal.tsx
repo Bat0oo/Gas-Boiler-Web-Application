@@ -12,7 +12,7 @@ interface Props {
   onEditBuilding: (buildingId: number) => void;
   onDeleteBuilding: (buildingId: number) => void;
   onEditBoiler: (boilerId: number) => void;
-  onDeleteBoiler: (boilerId: number) => void;
+  onDeleteBoiler: (boilerId: number) => Promise<void>;
 }
 
 const BuildingDetailsModal: React.FC<Props> = ({
@@ -59,10 +59,15 @@ const BuildingDetailsModal: React.FC<Props> = ({
     }
   };
 
-  const handleDeleteBoiler = (boilerId: number) => {
+  const handleDeleteBoiler = async (boilerId: number) => {
     if (window.confirm('Da li ste sigurni da želite da obrišete ovaj kotao?')) {
-      onDeleteBoiler(boilerId);
-      loadBuilding(); // Refresh after delete
+      try {
+        await onDeleteBoiler(boilerId); // ← WAIT for delete to complete!
+        await loadBuilding(); // ← THEN refresh!
+      } catch (err) {
+        console.error('Greška prilikom brisanja kotla:', err);
+        alert('Greška prilikom brisanja kotla');
+      }
     }
   };
 
@@ -99,7 +104,6 @@ const BuildingDetailsModal: React.FC<Props> = ({
 
             <hr className="building-details-divider" />
 
-            {/* REMOVED "Kotlovi (X)" heading - just show button */}
             <div className="add-boiler-section">
               <button
                 onClick={() => onAddBoiler(building.id)}

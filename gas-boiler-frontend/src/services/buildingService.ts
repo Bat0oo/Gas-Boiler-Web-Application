@@ -1,29 +1,8 @@
-// services/buildingService.ts - NEW SERVICE FOR C# BACKEND
 import apiClient from './apiService';
-import {
-  Building,
-  BuildingDetail,
-  BuildingMapPoint,
-  CreateBuildingPayload,
-  UpdateBuildingPayload,
-} from '../types/buildingtypes';
+import { Building, BuildingMapPoint, BuildingDetail, CreateBuildingPayload, UpdateBuildingPayload } from '../types/buildingtypes';
 
 export const buildingService = {
-  /**
-   * GET /api/BuildingObject/map
-   * Get all buildings for map (marker data only)
-   */
-  getMapPoints: async (token: string): Promise<BuildingMapPoint[]> => {
-    const response = await apiClient.get<BuildingMapPoint[]>('/BuildingObject/map', {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return response.data;
-  },
-
-  /**
-   * GET /api/BuildingObject
-   * Get all buildings for current user
-   */
+  // Get all buildings (list view)
   getAllBuildings: async (token: string): Promise<Building[]> => {
     const response = await apiClient.get<Building[]>('/BuildingObject', {
       headers: { Authorization: `Bearer ${token}` },
@@ -31,10 +10,15 @@ export const buildingService = {
     return response.data;
   },
 
-  /**
-   * GET /api/BuildingObject/{id}
-   * Get building details with all boilers
-   */
+  // Get building map points (for map markers)
+  getMapPoints: async (token: string): Promise<BuildingMapPoint[]> => {
+    const response = await apiClient.get<BuildingMapPoint[]>('/BuildingObject/map', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  },
+
+  // Get single building by ID with boilers
   getBuildingById: async (id: number, token: string): Promise<BuildingDetail> => {
     const response = await apiClient.get<BuildingDetail>(`/BuildingObject/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
@@ -42,39 +26,31 @@ export const buildingService = {
     return response.data;
   },
 
-  /**
-   * POST /api/BuildingObject
-   * Create new building
-   */
-  createBuilding: async (
-    payload: CreateBuildingPayload,
-    token: string
-  ): Promise<Building> => {
+  // Create new building
+  createBuilding: async (payload: CreateBuildingPayload, token: string): Promise<Building> => {
     const response = await apiClient.post<Building>('/BuildingObject', payload, {
       headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
   },
 
-  /**
-   * PUT /api/BuildingObject/{id}
-   * Update existing building
-   */
+  // ========== NEW: UPDATE BUILDING METHOD ==========
   updateBuilding: async (
-    id: number,
-    payload: UpdateBuildingPayload,
+    id: number, 
+    payload: UpdateBuildingPayload, 
     token: string
   ): Promise<Building> => {
-    const response = await apiClient.put<Building>(`/BuildingObject/${id}`, payload, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const response = await apiClient.put<Building>(
+      `/BuildingObject/${id}`, 
+      payload,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
     return response.data;
   },
 
-  /**
-   * DELETE /api/BuildingObject/{id}
-   * Delete building (cascades to all boilers in building)
-   */
+  // Delete building
   deleteBuilding: async (id: number, token: string): Promise<void> => {
     await apiClient.delete(`/BuildingObject/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
