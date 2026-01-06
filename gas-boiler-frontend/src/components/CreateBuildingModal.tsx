@@ -1,4 +1,3 @@
-// components/CreateBuildingModal.tsx
 import React, { useState } from 'react';
 import { CreateBuildingPayload } from '../types/buildingtypes';
 import './CreateBuildingModal.css';
@@ -13,21 +12,12 @@ interface Props {
 const CreateBuildingModal: React.FC<Props> = ({ isOpen, position, onClose, onCreate }) => {
   const [name, setName] = useState('');
   const [heatingArea, setHeatingArea] = useState(100);
+  const [height, setHeight] = useState(2.7);
   const [desiredTemperature, setDesiredTemperature] = useState(22);
-  
-  // U-vrednosti (termička svojstva)
-  const [wallUValue, setWallUValue] = useState(0.3);
-  const [windowUValue, setWindowUValue] = useState(1.2);
-  const [ceilingUValue, setCeilingUValue] = useState(0.25);
-  const [floorUValue, setFloorUValue] = useState(0.5);
-  
-  // Površine
-  const [wallArea, setWallArea] = useState(150);
-  const [windowArea, setWindowArea] = useState(20);
-  const [ceilingArea, setCeilingArea] = useState(100);
-  const [floorArea, setFloorArea] = useState(100);
-
   const [loading, setLoading] = useState(false);
+
+  // Calculated volume for display
+  const calculatedVolume = heatingArea * height;
 
   const handleSubmit = async () => {
     if (!position || !name.trim()) {
@@ -42,15 +32,8 @@ const CreateBuildingModal: React.FC<Props> = ({ isOpen, position, onClose, onCre
         latitude: position.lat,
         longitude: position.lng,
         heatingArea,
+        height,
         desiredTemperature,
-        wallUValue,
-        windowUValue,
-        ceilingUValue,
-        floorUValue,
-        wallArea,
-        windowArea,
-        ceilingArea,
-        floorArea,
       };
 
       await onCreate(payload);
@@ -58,6 +41,7 @@ const CreateBuildingModal: React.FC<Props> = ({ isOpen, position, onClose, onCre
       // Reset form
       setName('');
       setHeatingArea(100);
+      setHeight(2.7);
       setDesiredTemperature(22);
       onClose();
     } catch (err) {
@@ -73,10 +57,10 @@ const CreateBuildingModal: React.FC<Props> = ({ isOpen, position, onClose, onCre
   return (
     <div className="modal-overlay">
       <div className="modal create-building-modal">
-        <h2>Kreiraj Zgradu</h2>
+        <h2>🏢 Kreiraj Zgradu</h2>
         
-        <label>
-          Naziv zgrade:
+        <div className="form-group">
+          <label>Naziv zgrade:</label>
           <input
             type="text"
             value={name}
@@ -84,136 +68,53 @@ const CreateBuildingModal: React.FC<Props> = ({ isOpen, position, onClose, onCre
             placeholder="npr. Moja Kuća"
             required
           />
-        </label>
+        </div>
 
-        <label>
-          Lokacija:
+        <div className="form-group">
+          <label>Lokacija:</label>
           <input
             type="text"
             value={position ? `${position.lat.toFixed(6)}, ${position.lng.toFixed(6)}` : ''}
             disabled
           />
-        </label>
+        </div>
 
-        <hr />
-
-        <h3>Osnovna svojstva</h3>
-
-        <label>
-          Površina grejanja (m²):
+        <div className="form-group">
+          <label>Površina grejanja (m²):</label>
           <input
             type="number"
             value={heatingArea}
             onChange={(e) => setHeatingArea(parseFloat(e.target.value) || 0)}
-            min="0"
+            min="1"
+            step="1"
           />
-        </label>
+        </div>
 
-        <label>
-          Željena temperatura (°C):
+        <div className="form-group">
+          <label>Visina plafona (m):</label>
+          <input
+            type="number"
+            step="0.1"
+            value={height}
+            onChange={(e) => setHeight(parseFloat(e.target.value) || 0)}
+            min="0.1"
+            max="10"
+          />
+          <span className="calculated-info">
+            📦 Zapremina: {calculatedVolume.toFixed(1)} m³
+          </span>
+        </div>
+
+        <div className="form-group">
+          <label>Željena temperatura (°C):</label>
           <input
             type="number"
             value={desiredTemperature}
             onChange={(e) => setDesiredTemperature(parseFloat(e.target.value) || 0)}
-            min="-50"
-            max="50"
+            min="0"
+            max="40"
+            step="1"
           />
-        </label>
-
-        <hr />
-
-        <h3>Termička svojstva (U-vrednosti W/m²·K)</h3>
-
-        <div className="grid-two-columns">
-          <label>
-            Zidovi:
-            <input
-              type="number"
-              step="0.01"
-              value={wallUValue}
-              onChange={(e) => setWallUValue(parseFloat(e.target.value) || 0)}
-              min="0"
-            />
-          </label>
-
-          <label>
-            Prozori:
-            <input
-              type="number"
-              step="0.01"
-              value={windowUValue}
-              onChange={(e) => setWindowUValue(parseFloat(e.target.value) || 0)}
-              min="0"
-            />
-          </label>
-
-          <label>
-            Plafon:
-            <input
-              type="number"
-              step="0.01"
-              value={ceilingUValue}
-              onChange={(e) => setCeilingUValue(parseFloat(e.target.value) || 0)}
-              min="0"
-            />
-          </label>
-
-          <label>
-            Pod:
-            <input
-              type="number"
-              step="0.01"
-              value={floorUValue}
-              onChange={(e) => setFloorUValue(parseFloat(e.target.value) || 0)}
-              min="0"
-            />
-          </label>
-        </div>
-
-        <hr />
-
-        <h3>Površine (m²)</h3>
-
-        <div className="grid-two-columns">
-          <label>
-            Zidovi:
-            <input
-              type="number"
-              value={wallArea}
-              onChange={(e) => setWallArea(parseFloat(e.target.value) || 0)}
-              min="0"
-            />
-          </label>
-
-          <label>
-            Prozori:
-            <input
-              type="number"
-              value={windowArea}
-              onChange={(e) => setWindowArea(parseFloat(e.target.value) || 0)}
-              min="0"
-            />
-          </label>
-
-          <label>
-            Plafon:
-            <input
-              type="number"
-              value={ceilingArea}
-              onChange={(e) => setCeilingArea(parseFloat(e.target.value) || 0)}
-              min="0"
-            />
-          </label>
-
-          <label>
-            Pod:
-            <input
-              type="number"
-              value={floorArea}
-              onChange={(e) => setFloorArea(parseFloat(e.target.value) || 0)}
-              min="0"
-            />
-          </label>
         </div>
 
         <div className="modal-buttons">
@@ -227,6 +128,10 @@ const CreateBuildingModal: React.FC<Props> = ({ isOpen, position, onClose, onCre
           <button onClick={onClose} className="btn-secondary" disabled={loading}>
             Otkaži
           </button>
+        </div>
+
+        <div className="info-note">
+          ℹ️ Termička svojstva i površine će biti automatski izračunati na osnovu standardnih vrednosti.
         </div>
       </div>
     </div>

@@ -1,44 +1,31 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Gas_Boiler_Backend.Models
+namespace Gas_Boiler_Backend.DTO.Building
 {
-    public class BuildingObject
+    public class BuildingObjectUpdateDto
     {
-        [Key]
-        public int Id { get; set; }
-
         [Required]
         [MaxLength(200)]
         public string Name { get; set; } = string.Empty;
 
-        [Required]
-        public int UserId { get; set; }
-
-        // Location
         [Required]
         public double Latitude { get; set; }
 
         [Required]
         public double Longitude { get; set; }
 
-        // Dimensions
         [Required]
         [Range(0.1, double.MaxValue)]
-        public double HeatingArea { get; set; } // m² (floor area to be heated)
+        public double HeatingArea { get; set; }
 
         [Required]
         [Range(0.1, 10)]
-        public double Height { get; set; } = 2.7; // m (ceiling height) - NEW PROPERTY!
+        public double Height { get; set; } 
 
-        // Calculated property: Volume
-        public double Volume => HeatingArea * Height; // m³
-
-        // Temperature
         [Required]
         [Range(-50, 50)]
-        public double DesiredTemperature { get; set; } // °C
+        public double DesiredTemperature { get; set; }
 
-        // U-values (thermal transmittance W/m²·K)
         [Required]
         [Range(0, 5)]
         public double WallUValue { get; set; }
@@ -55,7 +42,6 @@ namespace Gas_Boiler_Backend.Models
         [Range(0, 5)]
         public double FloorUValue { get; set; }
 
-        // Surface areas (m²)
         [Required]
         [Range(0, double.MaxValue)]
         public double WallArea { get; set; }
@@ -71,9 +57,5 @@ namespace Gas_Boiler_Backend.Models
         [Required]
         [Range(0, double.MaxValue)]
         public double FloorArea { get; set; }
-
-        // Navigation properties
-        public User? User { get; set; }
-        public ICollection<GasBoiler> GasBoilers { get; set; } = new List<GasBoiler>();
     }
 }
