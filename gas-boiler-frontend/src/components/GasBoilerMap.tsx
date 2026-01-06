@@ -1,4 +1,3 @@
-// components/GasBoilerMap.tsx - WITH EDIT FUNCTIONALITY
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import { useSearchParams } from 'react-router-dom';
@@ -12,8 +11,8 @@ import { CreateGasBoilerPayload } from '../types/gasBoilertypes';
 import CreateBuildingModal from './CreateBuildingModal';
 import BuildingDetailsModal from './BuildingDetailsModal';
 import CreateBoilerModal from './CreateBoilerModal';
-import EditBuildingModal from './EditBuildingModal'; // ← ADD THIS IMPORT
-import EditBoilerModal from '../pages/MyBoilers/EditBoilerModal'; // ← ADD THIS IMPORT
+import EditBuildingModal from './EditBuildingModal';
+import EditBoilerModal from '../pages/MyBoilers/EditBoilerModal';
 import './GasBoilerMap.css';
 import 'leaflet/dist/leaflet.css';
 
@@ -57,11 +56,11 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
     name: string;
   } | null>(null);
 
-  // ========== NEW: EDIT BUILDING MODAL ==========
+  // Edit Building Modal
   const [editBuildingOpen, setEditBuildingOpen] = useState(false);
   const [editingBuilding, setEditingBuilding] = useState<Building | null>(null);
 
-  // ========== NEW: EDIT BOILER MODAL ==========
+  // Edit Boiler Modal
   const [editBoilerOpen, setEditBoilerOpen] = useState(false);
   const [editingBoiler, setEditingBoiler] = useState<any>(null);
 
@@ -170,7 +169,7 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
     }
   };
 
-  // ========== NEW: EDIT BUILDING ==========
+  // Edit building
   const handleEditBuilding = async (buildingId: number) => {
     try {
       // Load full building data
@@ -184,7 +183,7 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
     }
   };
 
-  // ========== NEW: HANDLE BUILDING UPDATED ==========
+  // Handle building updated
   const handleBuildingUpdated = async (updatedBuilding: Building) => {
     await loadBuildings(); // Refresh map
     setEditBuildingOpen(false);
@@ -195,6 +194,7 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
     setBuildingDetailsOpen(true);
   };
 
+  // Edit boiler
   const handleEditBoiler = async (boilerId: number) => {
     try {
       // Load full boiler data
@@ -208,7 +208,7 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
     }
   };
 
-  // ========== NEW: HANDLE BOILER UPDATED ==========
+  // Handle boiler updated
   const handleBoilerUpdated = async (updatedBoiler: any) => {
     await loadBuildings(); // Refresh map
     setEditBoilerOpen(false);
@@ -232,14 +232,13 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
     }
   };
 
-  // Delete boiler
-  const handleDeleteBoiler = async (boilerId: number) => {
+  const handleDeleteBoiler = async (boilerId: number): Promise<void> => {
     try {
       await gasBoilerService.deleteGasBoiler(boilerId, token);
-      await loadBuildings();
+      await loadBuildings(); // Refresh map
     } catch (err) {
       console.error('Greška prilikom brisanja kotla:', err);
-      alert('Greška prilikom brisanja kotla');
+      throw err; // Re-throw so BuildingDetailsModal can catch it
     }
   };
 
@@ -321,9 +320,9 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
           setSelectedBuildingId(null);
         }}
         onAddBoiler={handleAddBoiler}
-        onEditBuilding={handleEditBuilding} // ← NOW WORKS!
+        onEditBuilding={handleEditBuilding}
         onDeleteBuilding={handleDeleteBuilding}
-        onEditBoiler={handleEditBoiler} // ← NOW WORKS!
+        onEditBoiler={handleEditBoiler}
         onDeleteBoiler={handleDeleteBoiler}
       />
 
@@ -339,7 +338,7 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
         onCreate={handleCreateBoiler}
       />
 
-      {/* ========== NEW: EDIT BUILDING MODAL ========== */}
+      {/* Edit Building Modal */}
       {editBuildingOpen && editingBuilding && (
         <EditBuildingModal
           isOpen={editBuildingOpen}
@@ -353,7 +352,7 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
         />
       )}
 
-      {/* ========== NEW: EDIT BOILER MODAL ========== */}
+      {/* Edit Boiler Modal */}
       {editBoilerOpen && editingBoiler && (
         <EditBoilerModal
           boiler={editingBoiler}
