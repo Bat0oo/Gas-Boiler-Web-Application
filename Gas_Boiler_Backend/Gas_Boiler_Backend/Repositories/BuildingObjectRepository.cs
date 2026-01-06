@@ -17,6 +17,7 @@ namespace Gas_Boiler_Backend.Repositories
         public async Task<BuildingObject?> GetByIdAsync(int id)
         {
             return await _context.BuildingObjects
+                .Include(b => b.GasBoilers)  
                 .FirstOrDefaultAsync(b => b.Id == id);
         }
 
@@ -37,6 +38,7 @@ namespace Gas_Boiler_Backend.Repositories
         public async Task<IEnumerable<BuildingObject>> GetByUserIdAsync(int userId)
         {
             return await _context.BuildingObjects
+                .Include(b => b.GasBoilers)
                 .Where(b => b.UserId == userId)
                 .ToListAsync();
         }

@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { buildingService } from '../../services/buildingService';
 import { Building } from '../../types/buildingtypes';
 import Navbar from '../../components/Navbar';
+import EditBuildingModal from '../../components/EditBuildingModal';
 import './AllBuildingsPage.css';
 
 const AllBuildingsPage: React.FC = () => {
@@ -13,6 +14,7 @@ const AllBuildingsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
+  const [editingBuilding, setEditingBuilding] = useState<Building | null>(null);
 
   useEffect(() => {
     loadBuildings();
@@ -39,8 +41,20 @@ const AllBuildingsPage: React.FC = () => {
   };
 
   const handleEdit = (buildingId: number) => {
-    // Will be implemented in PR #3
-    alert(`Edit building ${buildingId} - Coming in PR #3!`);
+    const building = buildings.find(b => b.id === buildingId);
+    if (building) {
+      setEditingBuilding(building);
+    }
+  };
+
+  const handleBuildingUpdated = (updatedBuilding: Building) => {
+    // Update buildings list
+    setBuildings(buildings.map(b => 
+      b.id === updatedBuilding.id ? updatedBuilding : b
+    ));
+    
+    // Close modal
+    setEditingBuilding(null);
   };
 
   const handleDelete = async (id: number) => {
@@ -173,6 +187,14 @@ const AllBuildingsPage: React.FC = () => {
           </p>
         </div>
       </div>
+
+      <EditBuildingModal
+        isOpen={editingBuilding !== null}
+        building={editingBuilding}
+        token={user?.token || ''}
+        onClose={() => setEditingBuilding(null)}
+        onSuccess={handleBuildingUpdated}
+      />
     </>
   );
 };
