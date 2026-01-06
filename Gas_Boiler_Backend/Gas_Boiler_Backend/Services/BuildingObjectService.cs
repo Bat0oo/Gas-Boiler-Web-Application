@@ -6,25 +6,20 @@ namespace Gas_Boiler_Backend.Services
 {
     public class BuildingObjectService : IBuildingObjectService
     {
-        private readonly IBuildingObjectRepository _buildingRepo;
+        private readonly IBuildingObjectRepository _repository;
 
-        public BuildingObjectService(IBuildingObjectRepository buildingRepo)
+        public BuildingObjectService(IBuildingObjectRepository repository)
         {
-            _buildingRepo = buildingRepo;
+            _repository = repository;
         }
 
+        // Match interface method names!
         public async Task<IEnumerable<BuildingObjectResponseDto>> GetAllBuildingsAsync(int userId, bool isAdmin)
         {
-            IEnumerable<BuildingObject> buildings;
-
-            if (isAdmin)
-            {
-                buildings = await _buildingRepo.GetAllAsync();
-            }
-            else
-            {
-                buildings = await _buildingRepo.GetByUserIdWithBoilersAsync(userId);
-            }
+            // Admin sees all buildings, regular users see only theirs
+            var buildings = isAdmin
+                ? await _repository.GetAllAsync()
+                : await _repository.GetByUserIdAsync(userId);
 
             return buildings.Select(b => new BuildingObjectResponseDto
             {
@@ -34,6 +29,8 @@ namespace Gas_Boiler_Backend.Services
                 Latitude = b.Latitude,
                 Longitude = b.Longitude,
                 HeatingArea = b.HeatingArea,
+                Height = b.Height,
+                Volume = b.Volume,
                 DesiredTemperature = b.DesiredTemperature,
                 WallUValue = b.WallUValue,
                 WindowUValue = b.WindowUValue,
@@ -43,20 +40,23 @@ namespace Gas_Boiler_Backend.Services
                 WindowArea = b.WindowArea,
                 CeilingArea = b.CeilingArea,
                 FloorArea = b.FloorArea,
-                BoilerCount = b.GasBoilers?.Count ?? 0
+                BoilerCount = b.GasBoilers.Count
             });
         }
 
         public async Task<BuildingObjectDetailDto?> GetBuildingByIdAsync(int id, int userId, bool isAdmin)
         {
-            var building = await _buildingRepo.GetByIdWithBoilersAsync(id);
-
+            var building = await _repository.GetByIdWithBoilersAsync(id);
             if (building == null)
+            {
                 return null;
+            }
 
-            // Authorization check
+            // Check ownership (admins bypass check)
             if (!isAdmin && building.UserId != userId)
+            {
                 return null;
+            }
 
             return new BuildingObjectDetailDto
             {
@@ -66,6 +66,8 @@ namespace Gas_Boiler_Backend.Services
                 Latitude = building.Latitude,
                 Longitude = building.Longitude,
                 HeatingArea = building.HeatingArea,
+                Height = building.Height,
+                Volume = building.Volume,
                 DesiredTemperature = building.DesiredTemperature,
                 WallUValue = building.WallUValue,
                 WindowUValue = building.WindowUValue,
@@ -75,6 +77,7 @@ namespace Gas_Boiler_Backend.Services
                 WindowArea = building.WindowArea,
                 CeilingArea = building.CeilingArea,
                 FloorArea = building.FloorArea,
+                BoilerCount = building.GasBoilers.Count,
                 GasBoilers = building.GasBoilers.Select(gb => new BuildingBoilerDto
                 {
                     Id = gb.Id,
@@ -88,16 +91,10 @@ namespace Gas_Boiler_Backend.Services
 
         public async Task<IEnumerable<BuildingMapPointDto>> GetMapPointsAsync(int userId, bool isAdmin)
         {
-            IEnumerable<BuildingObject> buildings;
-
-            if (isAdmin)
-            {
-                buildings = await _buildingRepo.GetAllAsync();
-            }
-            else
-            {
-                buildings = await _buildingRepo.GetByUserIdWithBoilersAsync(userId);
-            }
+            // Admin sees all buildings, regular users see only theirs
+            var buildings = isAdmin
+                ? await _repository.GetAllAsync()
+                : await _repository.GetByUserIdAsync(userId);
 
             return buildings.Select(b => new BuildingMapPointDto
             {
@@ -105,34 +102,58 @@ namespace Gas_Boiler_Backend.Services
                 Name = b.Name,
                 Latitude = b.Latitude,
                 Longitude = b.Longitude,
-                BoilerCount = b.GasBoilers?.Count ?? 0,
-                TotalMaxPower = b.GasBoilers?.Sum(gb => gb.MaxPower) ?? 0,
-                TotalCurrentPower = b.GasBoilers?.Sum(gb => gb.CurrentPower) ?? 0
+                BoilerCount = b.GasBoilers.Count,
+                TotalMaxPower = b.GasBoilers.Sum(gb => gb.MaxPower),
+                TotalCurrentPower = b.GasBoilers.Sum(gb => gb.CurrentPower)
             });
         }
 
+        // ADD THIS METHOD TO BuildingObjectService.cs
+        // REPLACE the existing CreateBuildingAsync method with this version
+
         public async Task<BuildingObjectResponseDto> CreateBuildingAsync(BuildingObjectCreateDto dto, int userId)
         {
+            // Auto-calculate perimeter (assuming approximately square building)
+            var perimeter = 4 * Math.Sqrt(dto.HeatingArea);
+
+            // Auto-calculate surface areas
+            var wallArea = perimeter * dto.Height;
+            var windowArea = wallArea * 0.15; // 15% of wall area is windows (default ratio)
+            var ceilingArea = dto.HeatingArea;
+            var floorArea = dto.HeatingArea;
+
+            // Default U-values (W/m²·K) - standard insulation values
+            // These will later come from SystemParameters
+            var defaultWallUValue = 0.3;
+            var defaultWindowUValue = 1.2;
+            var defaultCeilingUValue = 0.25;
+            var defaultFloorUValue = 0.5;
+
             var building = new BuildingObject
             {
                 Name = dto.Name,
-                UserId = userId,  // Set the owner
+                UserId = userId,
                 Latitude = dto.Latitude,
                 Longitude = dto.Longitude,
                 HeatingArea = dto.HeatingArea,
+                Height = dto.Height,
                 DesiredTemperature = dto.DesiredTemperature,
-                WallUValue = dto.WallUValue,
-                WindowUValue = dto.WindowUValue,
-                CeilingUValue = dto.CeilingUValue,
-                FloorUValue = dto.FloorUValue,
-                WallArea = dto.WallArea,
-                WindowArea = dto.WindowArea,
-                CeilingArea = dto.CeilingArea,
-                FloorArea = dto.FloorArea
+
+                // Auto-calculated U-values
+                WallUValue = defaultWallUValue,
+                WindowUValue = defaultWindowUValue,
+                CeilingUValue = defaultCeilingUValue,
+                FloorUValue = defaultFloorUValue,
+
+                // Auto-calculated surface areas
+                WallArea = wallArea,
+                WindowArea = windowArea,
+                CeilingArea = ceilingArea,
+                FloorArea = floorArea
             };
 
-            await _buildingRepo.AddAsync(building);
-            await _buildingRepo.SaveChangesAsync();
+            await _repository.AddAsync(building);
+            await _repository.SaveChangesAsync();
 
             return new BuildingObjectResponseDto
             {
@@ -142,6 +163,8 @@ namespace Gas_Boiler_Backend.Services
                 Latitude = building.Latitude,
                 Longitude = building.Longitude,
                 HeatingArea = building.HeatingArea,
+                Height = building.Height,
+                Volume = building.Volume,
                 DesiredTemperature = building.DesiredTemperature,
                 WallUValue = building.WallUValue,
                 WindowUValue = building.WindowUValue,
@@ -151,26 +174,29 @@ namespace Gas_Boiler_Backend.Services
                 WindowArea = building.WindowArea,
                 CeilingArea = building.CeilingArea,
                 FloorArea = building.FloorArea,
-                BoilerCount = 0  // New building has no boilers yet
+                BoilerCount = 0
             };
         }
-
         public async Task<BuildingObjectResponseDto> UpdateBuildingAsync(int id, BuildingObjectUpdateDto dto, int userId, bool isAdmin)
         {
-            var building = await _buildingRepo.GetByIdAsync(id);
+            var building = await _repository.GetByIdAsync(id);
 
             if (building == null)
+            {
                 throw new KeyNotFoundException($"Building with ID {id} not found");
+            }
 
-            // Authorization check
+            // Check ownership (admins bypass check)
             if (!isAdmin && building.UserId != userId)
+            {
                 throw new UnauthorizedAccessException("You don't have permission to update this building");
+            }
 
-            // Update properties
             building.Name = dto.Name;
             building.Latitude = dto.Latitude;
             building.Longitude = dto.Longitude;
             building.HeatingArea = dto.HeatingArea;
+            building.Height = dto.Height;
             building.DesiredTemperature = dto.DesiredTemperature;
             building.WallUValue = dto.WallUValue;
             building.WindowUValue = dto.WindowUValue;
@@ -181,11 +207,8 @@ namespace Gas_Boiler_Backend.Services
             building.CeilingArea = dto.CeilingArea;
             building.FloorArea = dto.FloorArea;
 
-            await _buildingRepo.UpdateAsync(building);
-            await _buildingRepo.SaveChangesAsync();
-
-            // Get boiler count
-            var buildingWithBoilers = await _buildingRepo.GetByIdWithBoilersAsync(id);
+            await _repository.UpdateAsync(building);
+            await _repository.SaveChangesAsync();
 
             return new BuildingObjectResponseDto
             {
@@ -195,6 +218,8 @@ namespace Gas_Boiler_Backend.Services
                 Latitude = building.Latitude,
                 Longitude = building.Longitude,
                 HeatingArea = building.HeatingArea,
+                Height = building.Height,
+                Volume = building.Volume,
                 DesiredTemperature = building.DesiredTemperature,
                 WallUValue = building.WallUValue,
                 WindowUValue = building.WindowUValue,
@@ -204,24 +229,27 @@ namespace Gas_Boiler_Backend.Services
                 WindowArea = building.WindowArea,
                 CeilingArea = building.CeilingArea,
                 FloorArea = building.FloorArea,
-                BoilerCount = buildingWithBoilers?.GasBoilers?.Count ?? 0
+                BoilerCount = building.GasBoilers.Count
             };
         }
 
         public async Task<bool> DeleteBuildingAsync(int id, int userId, bool isAdmin)
         {
-            var building = await _buildingRepo.GetByIdAsync(id);
+            var building = await _repository.GetByIdAsync(id);
 
             if (building == null)
+            {
                 return false;
+            }
 
-            // Authorization check
+            // Check ownership (admins bypass check)
             if (!isAdmin && building.UserId != userId)
-                throw new UnauthorizedAccessException("You don't have permission to delete this building");
+            {
+                return false;
+            }
 
-            // Delete will cascade to all boilers in this building (configured in AppDbContext)
-            await _buildingRepo.DeleteAsync(building);
-            await _buildingRepo.SaveChangesAsync();
+            await _repository.DeleteAsync(building);
+            await _repository.SaveChangesAsync();
             return true;
         }
     }

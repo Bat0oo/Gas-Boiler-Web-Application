@@ -5,6 +5,8 @@ export interface Building {
   latitude: number;
   longitude: number;
   heatingArea: number;
+  height: number;
+  volume: number;
   desiredTemperature: number;
   wallUValue: number;
   windowUValue: number;
@@ -39,11 +41,24 @@ export interface BuildingMapPoint {
   totalCurrentPower: number;
 }
 
+// SIMPLIFIED - Only user inputs!
 export interface CreateBuildingPayload {
   name: string;
   latitude: number;
   longitude: number;
   heatingArea: number;
+  height: number;
+  desiredTemperature: number;
+  // U-values and surface areas are auto-calculated in backend!
+}
+
+// Update still includes all fields (for editing existing buildings)
+export interface UpdateBuildingPayload {
+  name: string;
+  latitude: number;
+  longitude: number;
+  heatingArea: number;
+  height: number;
   desiredTemperature: number;
   wallUValue: number;
   windowUValue: number;
@@ -54,5 +69,3 @@ export interface CreateBuildingPayload {
   ceilingArea: number;
   floorArea: number;
 }
-
-export interface UpdateBuildingPayload extends CreateBuildingPayload {}

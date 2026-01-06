@@ -97,7 +97,7 @@ const MyBoilersPage: React.FC = () => {
                 <tr key={boiler.id}>
                   <td>{boiler.id}</td>
                   <td>{boiler.name}</td>
-                  <td>{boiler.buildingObject?.name ?? 'N/A'}</td>
+                  <td>{boiler.buildingName || 'N/A'}</td> {/* ← Use buildingName from DTO */}
                   <td>{boiler.maxPower.toFixed(2)}</td>
                   <td>{(boiler.efficiency * 100).toFixed(0)}%</td>
                   <td className="current-power">{boiler.currentPower.toFixed(2)}</td>
@@ -114,39 +114,42 @@ const MyBoilersPage: React.FC = () => {
                   <td>{boiler.buildingObject?.desiredTemperature.toFixed(1) ?? 'N/A'}</td>
                   <td>{new Date(boiler.createdAt).toLocaleDateString('sr-RS')}</td>
                   <td className="actions">
-                    <button
-                      onClick={() => handleEdit(boiler)}
-                      className="btn-edit"
-                      title="Izmeni"
-                    >
-                      ✏️
-                    </button>
-                    {deleteConfirm === boiler.id ? (
-                      <div className="delete-confirm">
-                        <button
-                          onClick={() => handleDelete(boiler.id)}
-                          className="btn-confirm-delete"
-                          title="Potvrdi brisanje"
-                        >
-                          ✓
-                        </button>
-                        <button
-                          onClick={() => setDeleteConfirm(null)}
-                          className="btn-cancel-delete"
-                          title="Otkaži"
-                        >
-                          ✗
-                        </button>
-                      </div>
-                    ) : (
+                    {/* Wrap actions in a div for centering */}
+                    <div className="actions-wrapper">
                       <button
-                        onClick={() => setDeleteConfirm(boiler.id)}
-                        className="btn-delete"
-                        title="Obriši"
+                        onClick={() => handleEdit(boiler)}
+                        className="btn-edit"
+                        title="Izmeni"
                       >
-                        🗑️
+                        ✏️
                       </button>
-                    )}
+                      {deleteConfirm === boiler.id ? (
+                        <div className="delete-confirm">
+                          <button
+                            onClick={() => handleDelete(boiler.id)}
+                            className="btn-confirm-delete"
+                            title="Potvrdi brisanje"
+                          >
+                            ✓
+                          </button>
+                          <button
+                            onClick={() => setDeleteConfirm(null)}
+                            className="btn-cancel-delete"
+                            title="Otkaži"
+                          >
+                            ✗
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => setDeleteConfirm(boiler.id)}
+                          className="btn-delete"
+                          title="Obriši"
+                        >
+                          🗑️
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}

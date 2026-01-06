@@ -1,4 +1,3 @@
-// components/BuildingDetailsModal.tsx
 import React, { useState, useEffect } from 'react';
 import { BuildingDetail } from '../types/buildingtypes';
 import { buildingService } from '../services/buildingService';
@@ -100,11 +99,11 @@ const BuildingDetailsModal: React.FC<Props> = ({
 
             <hr className="building-details-divider" />
 
-            <div className="boilers-section-header">
-              <h3>Kotlovi ({building.gasBoilers.length})</h3>
+            {/* REMOVED "Kotlovi (X)" heading - just show button */}
+            <div className="add-boiler-section">
               <button
                 onClick={() => onAddBoiler(building.id)}
-                className="btn-primary add-boiler-button"
+                className="btn-add-boiler"
               >
                 + Dodaj Kotao
               </button>
@@ -168,7 +167,7 @@ const BuildingDetailsModal: React.FC<Props> = ({
               >
                 Obriši Zgradu
               </button>
-              <button onClick={onClose} className="btn-secondary">
+              <button onClick={onClose} className="btn-close">
                 Zatvori
               </button>
             </div>
