@@ -37,30 +37,24 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
   
   const [searchParams, setSearchParams] = useSearchParams();
   
-  // Building markers on map
   const [buildings, setBuildings] = useState<BuildingMapPoint[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Create Building Modal
   const [createBuildingOpen, setCreateBuildingOpen] = useState(false);
   const [newBuildingPosition, setNewBuildingPosition] = useState<L.LatLng | null>(null);
 
-  // Building Details Modal
   const [buildingDetailsOpen, setBuildingDetailsOpen] = useState(false);
   const [selectedBuildingId, setSelectedBuildingId] = useState<number | null>(null);
 
-  // Create Boiler Modal
   const [createBoilerOpen, setCreateBoilerOpen] = useState(false);
   const [selectedBuildingForBoiler, setSelectedBuildingForBoiler] = useState<{
     id: number;
     name: string;
   } | null>(null);
 
-  // Edit Building Modal
   const [editBuildingOpen, setEditBuildingOpen] = useState(false);
   const [editingBuilding, setEditingBuilding] = useState<Building | null>(null);
 
-  // Edit Boiler Modal
   const [editBoilerOpen, setEditBoilerOpen] = useState(false);
   const [editingBoiler, setEditingBoiler] = useState<any>(null);
 
@@ -68,7 +62,6 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
     loadBuildings();
   }, [token]);
 
-  // Check URL for building ID
   useEffect(() => {
     const buildingIdFromUrl = searchParams.get('building');
     if (buildingIdFromUrl) {
@@ -85,7 +78,6 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
     setLoading(true);
     try {
       const data = await buildingService.getMapPoints(token);
-      console.log('Učitane zgrade:', data);
       setBuildings(data);
     } catch (err) {
       console.error('Greška prilikom učitavanja zgrada:', err);
@@ -94,16 +86,13 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
     }
   };
 
-  // Handle right-click to create building
   const MapEvents = () => {
     useMapEvents({
       contextmenu: (e) => {
-        console.log('Desni klik detected!', e.latlng);
         e.originalEvent.preventDefault();
         
-        // Admin check
         if (isAdmin) {
-          alert('Administratori ne mogu kreirati zgrade. Ovo je režim samo za pregled.');
+          alert('Administratori ne mogu kreirati zgrade. Samo možete pregledati.');
           return;
         }
         
@@ -114,10 +103,8 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
     return null;
   };
 
-  // Create building
   const handleCreateBuilding = async (payload: CreateBuildingPayload) => {
     try {
-      console.log('Kreiranje zgrade:', payload);
       await buildingService.createBuilding(payload, token);
       await loadBuildings();
       setCreateBuildingOpen(false);
@@ -128,17 +115,14 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
     }
   };
 
-  // Open building details
   const handleBuildingClick = (buildingId: number) => {
     setSelectedBuildingId(buildingId);
     setBuildingDetailsOpen(true);
   };
 
-  // Open create boiler modal
   const handleAddBoiler = (buildingId: number) => {
-    // Admin check
     if (isAdmin) {
-      alert('Administratori ne mogu kreirati kotlove. Ovo je režim samo za pregled.');
+      alert('Administratori ne mogu kreirati kotlove. Samo možete pregledati.');
       return;
     }
     
@@ -150,10 +134,8 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
     }
   };
 
-  // Create boiler
   const handleCreateBoiler = async (payload: CreateGasBoilerPayload) => {
     try {
-      console.log('Kreiranje kotla:', payload);
       await gasBoilerService.createGasBoiler(payload, token);
       await loadBuildings();
       setCreateBoilerOpen(false);
@@ -169,59 +151,66 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
     }
   };
 
-  // Edit building
+  // ========== CHANGED: Added admin check ==========
   const handleEditBuilding = async (buildingId: number) => {
+    if (isAdmin) {
+      alert('Administratori ne mogu menjati zgrade. Samo možete pregledati.');
+      return;
+    }
+    
     try {
-      // Load full building data
       const building = await buildingService.getBuildingById(buildingId, token);
       setEditingBuilding(building);
-      setBuildingDetailsOpen(false); // Close details modal
-      setEditBuildingOpen(true); // Open edit modal
+      setBuildingDetailsOpen(false);
+      setEditBuildingOpen(true);
     } catch (err) {
       console.error('Greška prilikom učitavanja zgrade:', err);
       alert('Greška prilikom učitavanja zgrade');
     }
   };
 
-  // Handle building updated
   const handleBuildingUpdated = async (updatedBuilding: Building) => {
-    await loadBuildings(); // Refresh map
+    await loadBuildings();
     setEditBuildingOpen(false);
     setEditingBuilding(null);
-    
-    // Reopen details modal with updated data
     setSelectedBuildingId(updatedBuilding.id);
     setBuildingDetailsOpen(true);
   };
 
-  // Edit boiler
+  // ========== CHANGED: Added admin check ==========
   const handleEditBoiler = async (boilerId: number) => {
+    if (isAdmin) {
+      alert('Administratori ne mogu menjati kotlove. Samo možete pregledati.');
+      return;
+    }
+    
     try {
-      // Load full boiler data
       const boiler = await gasBoilerService.getBoilerById(boilerId, token);
       setEditingBoiler(boiler);
-      setBuildingDetailsOpen(false); // Close details modal
-      setEditBoilerOpen(true); // Open edit modal
+      setBuildingDetailsOpen(false);
+      setEditBoilerOpen(true);
     } catch (err) {
       console.error('Greška prilikom učitavanja kotla:', err);
       alert('Greška prilikom učitavanja kotla');
     }
   };
 
-  // Handle boiler updated
   const handleBoilerUpdated = async (updatedBoiler: any) => {
-    await loadBuildings(); // Refresh map
+    await loadBuildings();
     setEditBoilerOpen(false);
     setEditingBoiler(null);
-    
-    // Reopen details modal
     if (selectedBuildingId) {
       setBuildingDetailsOpen(true);
     }
   };
 
-  // Delete building
+  // ========== CHANGED: Added admin check ==========
   const handleDeleteBuilding = async (buildingId: number) => {
+    if (isAdmin) {
+      alert('Administratori ne mogu brisati zgrade. Samo možete pregledati.');
+      return;
+    }
+    
     try {
       await buildingService.deleteBuilding(buildingId, token);
       await loadBuildings();
@@ -232,22 +221,27 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
     }
   };
 
+  // ========== CHANGED: Added admin check ==========
   const handleDeleteBoiler = async (boilerId: number): Promise<void> => {
+    if (isAdmin) {
+      alert('Administratori ne mogu brisati kotlove. Samo možete pregledati.');
+      return;
+    }
+    
     try {
       await gasBoilerService.deleteGasBoiler(boilerId, token);
-      await loadBuildings(); // Refresh map
+      await loadBuildings();
     } catch (err) {
       console.error('Greška prilikom brisanja kotla:', err);
-      throw err; // Re-throw so BuildingDetailsModal can catch it
+      throw err;
     }
   };
 
   return (
     <div className="map-container">
-      {/* Admin mode banner */}
       {isAdmin && (
         <div className="admin-mode-banner">
-          👔 Administrator Režim - Samo Pregled (ne možete kreirati zgrade ili kotlove)
+          👔 Administrator Režim - Samo Pregled (ne možete kreirati, menjati ili brisati)
         </div>
       )}
       
@@ -260,7 +254,6 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
         {!loading &&
           buildings.map((building) => {
             if (!building.latitude || !building.longitude) {
-              console.warn('Nevažeća zgrada:', building);
               return null;
             }
 
@@ -299,7 +292,6 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
         <MapEvents />
       </MapContainer>
 
-      {/* Create Building Modal */}
       <CreateBuildingModal
         isOpen={createBuildingOpen}
         position={newBuildingPosition}
@@ -310,7 +302,7 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
         onCreate={handleCreateBuilding}
       />
 
-      {/* Building Details Modal */}
+      {/* ========== CHANGED: Added isAdmin prop ========== */}
       <BuildingDetailsModal
         isOpen={buildingDetailsOpen}
         buildingId={selectedBuildingId}
@@ -324,9 +316,9 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
         onDeleteBuilding={handleDeleteBuilding}
         onEditBoiler={handleEditBoiler}
         onDeleteBoiler={handleDeleteBoiler}
+        isAdmin={isAdmin}
       />
 
-      {/* Create Boiler Modal */}
       <CreateBoilerModal
         isOpen={createBoilerOpen}
         buildingId={selectedBuildingForBoiler?.id || null}
@@ -338,7 +330,6 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
         onCreate={handleCreateBoiler}
       />
 
-      {/* Edit Building Modal */}
       {editBuildingOpen && editingBuilding && (
         <EditBuildingModal
           isOpen={editBuildingOpen}
@@ -352,7 +343,6 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
         />
       )}
 
-      {/* Edit Boiler Modal */}
       {editBoilerOpen && editingBoiler && (
         <EditBoilerModal
           boiler={editingBoiler}

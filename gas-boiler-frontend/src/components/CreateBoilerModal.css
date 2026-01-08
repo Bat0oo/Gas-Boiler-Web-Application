@@ -1,106 +1,284 @@
-.create-boiler-modal {
-  max-width: 500px;
+.building-details-modal {
+  max-width: 600px;
   max-height: 90vh;
   overflow-y: auto;
 }
 
-.create-boiler-modal h2 {
-  text-align: center;
-  color: #1f2937;
-  margin-bottom: 1.5rem;
-  font-size: 1.5rem;
-}
-
-/* Building info display - shows which building */
-.building-info-display {
-  background-color: #eff6ff;
-  border: 1px solid #3b82f6;
-  border-radius: 8px;
-  padding: 0.75rem;
-  margin-bottom: 1.5rem;
-  font-size: 0.95rem;
-  color: #1e40af;
-}
-
-.building-info-display strong {
-  color: #1e3a8a;
-}
-
-.form-group {
-  margin-bottom: 1.2rem;
-}
-
-.form-group label {
-  font-weight: 500;
-  color: #374151;
-  display: block;
-  margin-bottom: 0.5rem;
-  font-size: 0.95rem;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: border-color 0.2s;
-}
-
-.form-group input:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-/* Modal buttons - VERTICALLY STACKED, SAME SIZE */
-.modal-buttons {
+.building-details-header {
   display: flex;
-  flex-direction: column; /* Stack vertically */
-  gap: 0.75rem;
-  margin-top: 1.5rem;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
 }
 
-.btn-primary,
-.btn-secondary {
-  width: 100%; /* Full width */
-  padding: 0.875rem 1.5rem; /* Same padding = same height */
+.building-details-header h2 {
+  color: #1f2937;
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 0.25rem 0.5rem;
+  transition: color 0.2s;
+}
+
+.close-button:hover {
+  color: #1f2937;
+}
+
+/* ========== ADDED: Admin notice ========== */
+.admin-notice {
+  background-color: #fff7ed;
+  border: 1px solid #fb923c;
+  border-left: 4px solid #f97316;
+  color: #9a3412;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+/* ========== END ADDED ========== */
+
+.building-info-box {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.building-info-box p {
+  margin: 0.5rem 0;
+  color: #374151;
+  font-size: 0.95rem;
+}
+
+.building-info-box strong {
+  color: #1f2937;
+}
+
+.building-details-divider {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 1.5rem 0;
+}
+
+/* Add Boiler Section - Centered button, no heading */
+.add-boiler-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.btn-add-boiler {
+  background-color: #8b5cf6;
+  color: white;
+  padding: 0.75rem 2rem;
   border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
   border: none;
+  min-width: 180px;
 }
 
-.btn-primary {
-  background-color: #8b5cf6;
-  color: white;
-}
-
-.btn-primary:hover:not(:disabled) {
+.btn-add-boiler:hover {
   background-color: #7c3aed;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
 }
 
-.btn-primary:disabled {
-  background-color: #9ca3af;
-  cursor: not-allowed;
-  transform: none;
+.no-boilers-message {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  border: 1px dashed #d1d5db;
 }
 
-.btn-secondary {
-  background-color: #f3f4f6;
+/* Boilers List */
+.boilers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.boiler-card {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem;
+  transition: box-shadow 0.2s;
+}
+
+.boiler-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.boiler-card-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.boiler-info {
+  flex: 1;
+}
+
+.boiler-info h4 {
+  margin: 0 0 0.75rem 0;
+  color: #1f2937;
+  font-size: 1.1rem;
+}
+
+.boiler-details {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.boiler-details p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.boiler-details strong {
   color: #374151;
-  border: 1px solid #d1d5db;
 }
 
-.btn-secondary:hover:not(:disabled) {
-  background-color: #e5e7eb;
+/* Boiler Action Buttons - CONSISTENT SIZING */
+.boiler-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.btn-secondary:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.boiler-edit-button,
+.boiler-delete-button {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  min-width: 100px;
+}
+
+.boiler-edit-button {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.boiler-edit-button:hover {
+  background-color: #2563eb;
+  transform: translateY(-1px);
+}
+
+.boiler-delete-button {
+  background-color: #ef4444;
+  color: white;
+}
+
+.boiler-delete-button:hover {
+  background-color: #dc2626;
+  transform: translateY(-1px);
+}
+
+/* Building Action Buttons - UPDATED: Zatvori is now blue */
+.building-action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.btn-edit-building,
+.btn-delete-building,
+.btn-close {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  min-width: 130px; /* All same width */
+}
+
+.btn-edit-building {
+  background-color: #10b981;
+  color: white;
+}
+
+.btn-edit-building:hover {
+  background-color: #059669;
+  transform: translateY(-1px);
+}
+
+.btn-delete-building {
+  background-color: #ef4444;
+  color: white;
+}
+
+.btn-delete-building:hover {
+  background-color: #dc2626;
+  transform: translateY(-1px);
+}
+
+/* Zatvori button - Blue to differentiate from delete */
+.btn-close {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.btn-close:hover {
+  background-color: #2563eb;
+  transform: translateY(-1px);
+}
+
+/* Loading message */
+.loading-message {
+  text-align: center;
+  padding: 3rem;
+  color: #6b7280;
+  font-size: 1.1rem;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .boiler-card-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .boiler-actions {
+    flex-direction: row;
+    width: 100%;
+  }
+
+  .boiler-edit-button,
+  .boiler-delete-button {
+    flex: 1;
+  }
+
+  .building-action-buttons {
+    flex-direction: column;
+  }
+
+  .btn-edit-building,
+  .btn-delete-building,
+  .btn-close {
+    width: 100%;
+  }
 }

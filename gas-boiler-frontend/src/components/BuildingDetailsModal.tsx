@@ -13,6 +13,7 @@ interface Props {
   onDeleteBuilding: (buildingId: number) => void;
   onEditBoiler: (boilerId: number) => void;
   onDeleteBoiler: (boilerId: number) => Promise<void>;
+  isAdmin?: boolean; // ← ADDED
 }
 
 const BuildingDetailsModal: React.FC<Props> = ({
@@ -25,6 +26,7 @@ const BuildingDetailsModal: React.FC<Props> = ({
   onDeleteBuilding,
   onEditBoiler,
   onDeleteBoiler,
+  isAdmin = false, // ← ADDED
 }) => {
   const [building, setBuilding] = useState<BuildingDetail | null>(null);
   const [loading, setLoading] = useState(false);
@@ -62,8 +64,8 @@ const BuildingDetailsModal: React.FC<Props> = ({
   const handleDeleteBoiler = async (boilerId: number) => {
     if (window.confirm('Da li ste sigurni da želite da obrišete ovaj kotao?')) {
       try {
-        await onDeleteBoiler(boilerId); // ← WAIT for delete to complete!
-        await loadBuilding(); // ← THEN refresh!
+        await onDeleteBoiler(boilerId);
+        await loadBuilding();
       } catch (err) {
         console.error('Greška prilikom brisanja kotla:', err);
         alert('Greška prilikom brisanja kotla');
@@ -87,6 +89,13 @@ const BuildingDetailsModal: React.FC<Props> = ({
               </button>
             </div>
 
+            {/* ========== ADDED: Admin notice ========== */}
+            {isAdmin && (
+              <div className="admin-notice">
+                ℹ️ Administrator režim - samo pregled. Ne možete kreirati, menjati ili brisati.
+              </div>
+            )}
+
             <div className="building-info-box">
               <p>
                 <strong>Lokacija:</strong> {building.latitude.toFixed(6)}, {building.longitude.toFixed(6)}
@@ -104,18 +113,23 @@ const BuildingDetailsModal: React.FC<Props> = ({
 
             <hr className="building-details-divider" />
 
-            <div className="add-boiler-section">
-              <button
-                onClick={() => onAddBoiler(building.id)}
-                className="btn-add-boiler"
-              >
-                + Dodaj Kotao
-              </button>
-            </div>
+            {/* ========== CHANGED: Hide button for admin ========== */}
+            {!isAdmin && (
+              <div className="add-boiler-section">
+                <button
+                  onClick={() => onAddBoiler(building.id)}
+                  className="btn-add-boiler"
+                >
+                  + Dodaj Kotao
+                </button>
+              </div>
+            )}
 
             {building.gasBoilers.length === 0 ? (
               <div className="no-boilers-message">
-                Nema kotlova u ovoj zgradi. Kliknite "Dodaj Kotao" da dodate prvi.
+                {isAdmin 
+                  ? 'Nema kotlova u ovoj zgradi.'
+                  : 'Nema kotlova u ovoj zgradi. Kliknite "Dodaj Kotao" da dodate prvi.'}
               </div>
             ) : (
               <div className="boilers-list">
@@ -136,20 +150,24 @@ const BuildingDetailsModal: React.FC<Props> = ({
                           </p>
                         </div>
                       </div>
-                      <div className="boiler-actions">
-                        <button
-                          onClick={() => onEditBoiler(boiler.id)}
-                          className="boiler-edit-button"
-                        >
-                          Izmeni
-                        </button>
-                        <button
-                          onClick={() => handleDeleteBoiler(boiler.id)}
-                          className="boiler-delete-button"
-                        >
-                          Obriši
-                        </button>
-                      </div>
+                      
+                      {/* ========== CHANGED: Hide buttons for admin ========== */}
+                      {!isAdmin && (
+                        <div className="boiler-actions">
+                          <button
+                            onClick={() => onEditBoiler(boiler.id)}
+                            className="boiler-edit-button"
+                          >
+                            Izmeni
+                          </button>
+                          <button
+                            onClick={() => handleDeleteBoiler(boiler.id)}
+                            className="boiler-delete-button"
+                          >
+                            Obriši
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -159,18 +177,23 @@ const BuildingDetailsModal: React.FC<Props> = ({
             <hr className="building-details-divider" />
 
             <div className="building-action-buttons">
-              <button
-                onClick={() => onEditBuilding(building.id)}
-                className="btn-edit-building"
-              >
-                Izmeni Zgradu
-              </button>
-              <button
-                onClick={handleDeleteBuilding}
-                className="btn-delete-building"
-              >
-                Obriši Zgradu
-              </button>
+              {/* ========== CHANGED: Hide buttons for admin ========== */}
+              {!isAdmin && (
+                <>
+                  <button
+                    onClick={() => onEditBuilding(building.id)}
+                    className="btn-edit-building"
+                  >
+                    Izmeni Zgradu
+                  </button>
+                  <button
+                    onClick={handleDeleteBuilding}
+                    className="btn-delete-building"
+                  >
+                    Obriši Zgradu
+                  </button>
+                </>
+              )}
               <button onClick={onClose} className="btn-close">
                 Zatvori
               </button>

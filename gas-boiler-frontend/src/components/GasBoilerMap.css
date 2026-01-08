@@ -1,8 +1,9 @@
-/* GasBoilerMap.css - UPDATED WITH BUILDING POPUP STYLES */
+/* GasBoilerMap.css - WITH ADMIN BANNER STYLES */
 
 /* Map container */
 .map-container {
-  height: 600px;
+  position: relative; /* ← CHANGED: Added for banner positioning */
+  height: 100vh; /* ← CHANGED: Full viewport height */
   width: 100%;
 }
 
@@ -10,6 +11,47 @@
   height: 100%;
   width: 100%;
 }
+
+/* ========== ADDED: Admin mode banner ========== */
+.admin-mode-banner {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  background-color: #3b82f6;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-mode-banner {
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    transform: none;
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+    text-align: center;
+  }
+}
+/* ========== END ADDED ========== */
 
 /* Building popup styles */
 .building-popup {
