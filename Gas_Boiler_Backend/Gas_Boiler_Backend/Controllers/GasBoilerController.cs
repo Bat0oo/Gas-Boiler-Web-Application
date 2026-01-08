@@ -1,7 +1,6 @@
 ﻿using Gas_Boiler_Backend.DTO.Boiler;
 using Gas_Boiler_Backend.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -9,10 +8,11 @@ namespace Gas_Boiler_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class GasBoilerController : ControllerBase
     {
         private readonly IGasBoilerService _service;
+
         public GasBoilerController(IGasBoilerService service) => _service = service;
 
         private int GetUserIdFromClaims()
@@ -23,8 +23,9 @@ namespace Gas_Boiler_Backend.Controllers
 
         private bool IsAdmin() => User.IsInRole("Admin") || User.FindFirst(ClaimTypes.Role)?.Value == "Admin";
 
+        // Admin and User
+
         [HttpGet]
-        [Authorize]
         public async Task<ActionResult<IEnumerable<GasBoilerResponseDto>>> GetAll()
         {
             try
@@ -46,7 +47,6 @@ namespace Gas_Boiler_Backend.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize]
         public async Task<ActionResult<GasBoilerResponseDto>> GetById(int id)
         {
             try
@@ -65,9 +65,31 @@ namespace Gas_Boiler_Backend.Controllers
             }
         }
 
+        [HttpGet("map")]
+        public async Task<ActionResult<IEnumerable<object>>> GetMapPoints()
+        {
+            try
+            {
+                if (IsAdmin())
+                {
+                    var allPoints = await _service.GetMapPointsAllAsync();
+                    return Ok(allPoints);
+                }
+
+                var userId = GetUserIdFromClaims();
+                var userPoints = await _service.GetMapPointsForUserAsync(userId);
+                return Ok(userPoints);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        // User
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "User")]
         public async Task<ActionResult<GasBoilerResponseDto>> Create([FromBody] GasBoilerCreateDto dto)
         {
             try
@@ -84,7 +106,7 @@ namespace Gas_Boiler_Backend.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize]
+        [Authorize(Roles = "User")]
         public async Task<ActionResult<GasBoilerResponseDto>> Update(int id, [FromBody] GasBoilerUpdateDto dto)
         {
             try
@@ -104,7 +126,7 @@ namespace Gas_Boiler_Backend.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Roles = "User")]
         public async Task<ActionResult> Delete(int id)
         {
             try
@@ -116,28 +138,6 @@ namespace Gas_Boiler_Backend.Controllers
                     return NotFound(new { message = "Gas boiler not found or access denied" });
 
                 return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
-
-        [HttpGet("map")]
-        [Authorize]
-        public async Task<ActionResult<IEnumerable<object>>> GetMapPoints()
-        {
-            try
-            {
-                if (IsAdmin())
-                {
-                    var allPoints = await _service.GetMapPointsAllAsync();
-                    return Ok(allPoints);
-                }
-
-                var userId = GetUserIdFromClaims();
-                var userPoints = await _service.GetMapPointsForUserAsync(userId);
-                return Ok(userPoints);
             }
             catch (Exception ex)
             {
