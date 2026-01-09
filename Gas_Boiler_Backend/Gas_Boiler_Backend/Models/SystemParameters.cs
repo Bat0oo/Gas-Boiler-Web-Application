@@ -8,18 +8,38 @@ namespace Gas_Boiler_Backend.Models
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(50)]
-        public string ParameterName { get; set; } = string.Empty;
+        [Range(0.1, 3.0)]
+        public decimal WallUValue { get; set; } = 0.50m;
 
         [Required]
-        public double Value { get; set; }
+        [Range(0.5, 10.0)]
+        public decimal WindowUValue { get; set; } = 1.40m;
+
+        [Required]
+        [Range(0.1, 3.0)]
+        public decimal CeilingUValue { get; set; } = 0.25m;
+
+        [Required]
+        [Range(0.1, 3.0)]
+        public decimal FloorUValue { get; set; } = 0.40m;
+
+        [Required]
+        [Range(-30.0, 5.0)]
+        public decimal OutdoorDesignTemp { get; set; } = -15.0m;
+
+        [Required]
+        [Range(0.0, 20.0)]
+        public decimal GroundTemp { get; set; } = 10.0m;
+
+
+        [Required]
+        [Range(0.001, 1.0)]
+        public decimal GasPricePerKwh { get; set; } = 0.05m;
+
+        public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
+
 
         [MaxLength(100)]
-        public string Unit { get; set; } = string.Empty;
-
-        [MaxLength(200)]
-        public string Description { get; set; } = string.Empty;
-
-        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public string UpdatedBy { get; set; } = "System";
     }
 }
