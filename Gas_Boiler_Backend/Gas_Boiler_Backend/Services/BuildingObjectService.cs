@@ -186,8 +186,14 @@ namespace Gas_Boiler_Backend.Services
                 throw new KeyNotFoundException($"Building with ID {id} not found");
             }
 
-            // Check ownership (admins bypass check)
-            if (!isAdmin && building.UserId != userId)
+            // Block admin from updating - admins can only view
+            if (isAdmin)
+            {
+                throw new UnauthorizedAccessException("Administrators cannot modify buildings");
+            }
+
+            // Check ownership for regular users
+            if (building.UserId != userId)
             {
                 throw new UnauthorizedAccessException("You don't have permission to update this building");
             }
@@ -242,8 +248,14 @@ namespace Gas_Boiler_Backend.Services
                 return false;
             }
 
-            // Check ownership (admins bypass check)
-            if (!isAdmin && building.UserId != userId)
+            // Block admin from deleting - admins can only view
+            if (isAdmin)
+            {
+                return false;
+            }
+
+            // Check ownership for regular users
+            if (building.UserId != userId)
             {
                 return false;
             }

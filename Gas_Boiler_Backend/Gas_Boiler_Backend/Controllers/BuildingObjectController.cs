@@ -94,6 +94,7 @@ namespace Gas_Boiler_Backend.Controllers
         /// Create a new building
         /// </summary>
         [HttpPost]
+        [Authorize(Roles = "User")]
         public async Task<ActionResult<BuildingObjectResponseDto>> CreateBuilding([FromBody] BuildingObjectCreateDto dto)
         {
             try
@@ -121,6 +122,7 @@ namespace Gas_Boiler_Backend.Controllers
         /// Update an existing building
         /// </summary>
         [HttpPut("{id}")]
+        [Authorize(Roles = "User")]
         public async Task<ActionResult<BuildingObjectResponseDto>> UpdateBuilding(
             int id,
             [FromBody] BuildingObjectUpdateDto dto)
@@ -154,6 +156,7 @@ namespace Gas_Boiler_Backend.Controllers
         /// Delete a building (will also delete all its boilers due to cascade)
         /// </summary>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "User")]
         public async Task<ActionResult> DeleteBuilding(int id)
         {
             try

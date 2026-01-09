@@ -13,6 +13,7 @@ interface Props {
   onDeleteBuilding: (buildingId: number) => void;
   onEditBoiler: (boilerId: number) => void;
   onDeleteBoiler: (boilerId: number) => Promise<void>;
+  isAdmin?: boolean;
 }
 
 const BuildingDetailsModal: React.FC<Props> = ({
@@ -25,6 +26,7 @@ const BuildingDetailsModal: React.FC<Props> = ({
   onDeleteBuilding,
   onEditBoiler,
   onDeleteBoiler,
+  isAdmin = false,
 }) => {
   const [building, setBuilding] = useState<BuildingDetail | null>(null);
   const [loading, setLoading] = useState(false);
@@ -88,6 +90,7 @@ const BuildingDetailsModal: React.FC<Props> = ({
             </div>
 
             <div className="building-info-box">
+              <h3 className="section-label">Objekat: {building.name}</h3>
               <p>
                 <strong>Lokacija:</strong> {building.latitude.toFixed(6)}, {building.longitude.toFixed(6)}
               </p>
@@ -104,18 +107,24 @@ const BuildingDetailsModal: React.FC<Props> = ({
 
             <hr className="building-details-divider" />
 
-            <div className="add-boiler-section">
-              <button
-                onClick={() => onAddBoiler(building.id)}
-                className="btn-add-boiler"
-              >
-                + Dodaj Kotao
-              </button>
-            </div>
+            <h3 className="section-label">Kotlovi:</h3>
+
+            {!isAdmin && (
+              <div className="add-boiler-section">
+                <button
+                  onClick={() => onAddBoiler(building.id)}
+                  className="btn-add-boiler"
+                >
+                  + Dodaj Kotao
+                </button>
+              </div>
+            )}
 
             {building.gasBoilers.length === 0 ? (
               <div className="no-boilers-message">
-                Nema kotlova u ovoj zgradi. Kliknite "Dodaj Kotao" da dodate prvi.
+                {isAdmin
+                  ? 'Nema kotlova u ovoj zgradi.'
+                  : 'Nema kotlova u ovoj zgradi. Kliknite "Dodaj Kotao" da dodate prvi.'}
               </div>
             ) : (
               <div className="boilers-list">
@@ -137,18 +146,22 @@ const BuildingDetailsModal: React.FC<Props> = ({
                         </div>
                       </div>
                       <div className="boiler-actions">
-                        <button
-                          onClick={() => onEditBoiler(boiler.id)}
-                          className="boiler-edit-button"
-                        >
-                          Izmeni
-                        </button>
-                        <button
-                          onClick={() => handleDeleteBoiler(boiler.id)}
-                          className="boiler-delete-button"
-                        >
-                          Obriši
-                        </button>
+                        {!isAdmin && (
+                          <>
+                            <button
+                              onClick={() => onEditBoiler(boiler.id)}
+                              className="boiler-edit-button"
+                            >
+                              Izmeni
+                            </button>
+                            <button
+                              onClick={() => handleDeleteBoiler(boiler.id)}
+                              className="boiler-delete-button"
+                            >
+                              Obriši
+                            </button>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -159,18 +172,22 @@ const BuildingDetailsModal: React.FC<Props> = ({
             <hr className="building-details-divider" />
 
             <div className="building-action-buttons">
-              <button
-                onClick={() => onEditBuilding(building.id)}
-                className="btn-edit-building"
-              >
-                Izmeni Zgradu
-              </button>
-              <button
-                onClick={handleDeleteBuilding}
-                className="btn-delete-building"
-              >
-                Obriši Zgradu
-              </button>
+              {!isAdmin && (
+                <>
+                  <button
+                    onClick={() => onEditBuilding(building.id)}
+                    className="btn-edit-building"
+                  >
+                    Izmeni Zgradu
+                  </button>
+                  <button
+                    onClick={handleDeleteBuilding}
+                    className="btn-delete-building"
+                  >
+                    Obriši Zgradu
+                  </button>
+                </>
+              )}
               <button onClick={onClose} className="btn-close">
                 Zatvori
               </button>

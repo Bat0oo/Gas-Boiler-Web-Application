@@ -67,7 +67,7 @@ namespace Gas_Boiler_Backend.Controllers
 
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "User")]
         public async Task<ActionResult<GasBoilerResponseDto>> Create([FromBody] GasBoilerCreateDto dto)
         {
             try
@@ -84,7 +84,7 @@ namespace Gas_Boiler_Backend.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize]
+        [Authorize(Roles = "User")]
         public async Task<ActionResult<GasBoilerResponseDto>> Update(int id, [FromBody] GasBoilerUpdateDto dto)
         {
             try
@@ -104,7 +104,7 @@ namespace Gas_Boiler_Backend.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Roles = "User")]
         public async Task<ActionResult> Delete(int id)
         {
             try

@@ -171,6 +171,12 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
 
   // Edit building
   const handleEditBuilding = async (buildingId: number) => {
+    // Admin check
+    if (isAdmin) {
+      alert('Administratori ne mogu menjati zgrade. Ovo je režim samo za pregled.');
+      return;
+    }
+
     try {
       // Load full building data
       const building = await buildingService.getBuildingById(buildingId, token);
@@ -196,6 +202,12 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
 
   // Edit boiler
   const handleEditBoiler = async (boilerId: number) => {
+    // Admin check
+    if (isAdmin) {
+      alert('Administratori ne mogu menjati kotlove. Ovo je režim samo za pregled.');
+      return;
+    }
+
     try {
       // Load full boiler data
       const boiler = await gasBoilerService.getBoilerById(boilerId, token);
@@ -222,6 +234,12 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
 
   // Delete building
   const handleDeleteBuilding = async (buildingId: number) => {
+    // Admin check
+    if (isAdmin) {
+      alert('Administratori ne mogu brisati zgrade. Ovo je režim samo za pregled.');
+      return;
+    }
+
     try {
       await buildingService.deleteBuilding(buildingId, token);
       await loadBuildings();
@@ -233,6 +251,12 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
   };
 
   const handleDeleteBoiler = async (boilerId: number): Promise<void> => {
+    // Admin check
+    if (isAdmin) {
+      alert('Administratori ne mogu brisati kotlove. Ovo je režim samo za pregled.');
+      return;
+    }
+
     try {
       await gasBoilerService.deleteGasBoiler(boilerId, token);
       await loadBuildings(); // Refresh map
@@ -324,6 +348,7 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
         onDeleteBuilding={handleDeleteBuilding}
         onEditBoiler={handleEditBoiler}
         onDeleteBoiler={handleDeleteBoiler}
+        isAdmin={isAdmin}
       />
 
       {/* Create Boiler Modal */}
