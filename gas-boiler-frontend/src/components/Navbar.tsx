@@ -25,6 +25,8 @@ const Navbar: React.FC = () => {
           <>
             <li><Link to="/admin/dashboard">Dashboard</Link></li>
             <li><Link to="/admin/users">Korisnici</Link></li>
+            <li><Link to="/buildings">Zgrade</Link></li>
+            <li><Link to="/my-boilers">Kotlovi</Link></li>
             <li><Link to="/admin/system-parameters">Parametri</Link></li>
             <li><Link to="/profile">Profil</Link></li>
           </>
