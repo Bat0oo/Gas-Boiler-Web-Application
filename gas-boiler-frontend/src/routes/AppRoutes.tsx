@@ -9,7 +9,7 @@ import UsersPage from '../pages/Admin/UsersPage';
 import SystemParametersPage from '../pages/Admin/SystemParametersPage';
 import MyBoilersPage from '../pages/MyBoilers/MyBoilers';
 import AllBuildingsPage from '../pages/Buildings/AllBuildingsPage';
-
+import ViewSystemParametersPage from '../pages/ViewSystemParametersPage';
 const AppRoutes: React.FC = () => {
   const { user,loading } = useAuth();
 
@@ -49,6 +49,7 @@ const AppRoutes: React.FC = () => {
           <Route path="/profile" element={ <ProtectedRoute> <Profile /> </ProtectedRoute> }/>
           <Route path="/my-boilers" element={<ProtectedRoute><MyBoilersPage /></ProtectedRoute>} />
           <Route path="/buildings" element={<ProtectedRoute><AllBuildingsPage /></ProtectedRoute>} />
+          <Route path="/parameters" element={<ProtectedRoute><ViewSystemParametersPage /></ProtectedRoute>} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </>
       )}

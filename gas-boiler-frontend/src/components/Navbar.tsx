@@ -35,6 +35,7 @@ const Navbar: React.FC = () => {
             <li><Link to="/dashboard">Dashboard</Link></li>
             <li><Link to="/my-boilers">Moji kotlovi</Link></li>
             <li><Link to="/buildings">Moje zgrade</Link></li>
+            <li><Link to="/parameters">Parametri</Link></li> 
             <li><Link to="/profile">Profil</Link></li>
           </>
         )}

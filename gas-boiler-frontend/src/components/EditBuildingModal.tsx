@@ -12,46 +12,22 @@ interface Props {
 }
 
 const EditBuildingModal: React.FC<Props> = ({ isOpen, building, token, onClose, onSuccess }) => {
-  // ========== EDITABLE PROPERTIES ==========
   const [name, setName] = useState('');
   const [heatingArea, setHeatingArea] = useState(0);
   const [height, setHeight] = useState(2.7);
   const [desiredTemperature, setDesiredTemperature] = useState(22);
   
-  // ========== READ-ONLY PROPERTIES (FROM SYSTEM PARAMETERS) ==========
-  const [wallUValue, setWallUValue] = useState(0);
-  const [windowUValue, setWindowUValue] = useState(0);
-  const [ceilingUValue, setCeilingUValue] = useState(0);
-  const [floorUValue, setFloorUValue] = useState(0);
-  
-  const [wallArea, setWallArea] = useState(0);
-  const [windowArea, setWindowArea] = useState(0);
-  const [ceilingArea, setCeilingArea] = useState(0);
-  const [floorArea, setFloorArea] = useState(0);
-  
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Calculated volume
   const calculatedVolume = heatingArea * height;
 
-  // Load building data when modal opens
   useEffect(() => {
     if (isOpen && building) {
       setName(building.name);
       setHeatingArea(building.heatingArea);
       setHeight(building.height);
       setDesiredTemperature(building.desiredTemperature);
-      
-      setWallUValue(building.wallUValue);
-      setWindowUValue(building.windowUValue);
-      setCeilingUValue(building.ceilingUValue);
-      setFloorUValue(building.floorUValue);
-      setWallArea(building.wallArea);
-      setWindowArea(building.windowArea);
-      setCeilingArea(building.ceilingArea);
-      setFloorArea(building.floorArea);
-      
       setError('');
     }
   }, [isOpen, building]);
@@ -71,14 +47,14 @@ const EditBuildingModal: React.FC<Props> = ({ isOpen, building, token, onClose, 
         heatingArea,
         height,
         desiredTemperature,
-        wallUValue,
-        windowUValue,
-        ceilingUValue,
-        floorUValue,
-        wallArea,
-        windowArea,
-        ceilingArea,
-        floorArea,
+        wallUValue: building.wallUValue,
+        windowUValue: building.windowUValue,
+        ceilingUValue: building.ceilingUValue,
+        floorUValue: building.floorUValue,
+        wallArea: building.wallArea,
+        windowArea: building.windowArea,
+        ceilingArea: building.ceilingArea,
+        floorArea: building.floorArea,
       };
 
       const updated = await buildingService.updateBuilding(building.id, payload, token);
@@ -110,18 +86,16 @@ const EditBuildingModal: React.FC<Props> = ({ isOpen, building, token, onClose, 
         )}
 
         <form onSubmit={handleSubmit}>
-          {/* ========== EDITABLE PROPERTIES ========== */}
           <div className="form-section">
-            <h3>Osnovna svojstva</h3>
-
             <div className="form-group">
-              <label>Naziv zgrade:</label>
+              <label>Naziv objekta:</label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
                 disabled={loading}
+                placeholder="npr. Moja Kuća"
               />
             </div>
 
@@ -178,55 +152,6 @@ const EditBuildingModal: React.FC<Props> = ({ isOpen, building, token, onClose, 
                 required
                 disabled={loading}
               />
-            </div>
-          </div>
-
-          {/* ========== COMPACT READ-ONLY SECTIONS ========== */}
-          <div className="compact-readonly-section">
-            <div className="compact-header">
-              <h4>🔒 Sistemski Parametri (samo za prikaz)</h4>
-              <span className="compact-subtitle">Postavljeno od administratora</span>
-            </div>
-
-            {/* U-Values - Compact Grid */}
-            <div className="compact-grid">
-              <div className="compact-item">
-                <span className="compact-label">Zidovi:</span>
-                <span className="compact-value">{wallUValue.toFixed(2)} W/m²·K</span>
-              </div>
-              <div className="compact-item">
-                <span className="compact-label">Prozori:</span>
-                <span className="compact-value">{windowUValue.toFixed(2)} W/m²·K</span>
-              </div>
-              <div className="compact-item">
-                <span className="compact-label">Plafon:</span>
-                <span className="compact-value">{ceilingUValue.toFixed(2)} W/m²·K</span>
-              </div>
-              <div className="compact-item">
-                <span className="compact-label">Pod:</span>
-                <span className="compact-value">{floorUValue.toFixed(2)} W/m²·K</span>
-              </div>
-            </div>
-
-            {/* Surface Areas - Compact Grid */}
-            <div className="compact-divider"></div>
-            <div className="compact-grid">
-              <div className="compact-item">
-                <span className="compact-label">Površina zidova:</span>
-                <span className="compact-value">{wallArea.toFixed(1)} m²</span>
-              </div>
-              <div className="compact-item">
-                <span className="compact-label">Površina prozora:</span>
-                <span className="compact-value">{windowArea.toFixed(1)} m²</span>
-              </div>
-              <div className="compact-item">
-                <span className="compact-label">Površina plafona:</span>
-                <span className="compact-value">{ceilingArea.toFixed(1)} m²</span>
-              </div>
-              <div className="compact-item">
-                <span className="compact-label">Površina poda:</span>
-                <span className="compact-value">{floorArea.toFixed(1)} m²</span>
-              </div>
             </div>
           </div>
 
