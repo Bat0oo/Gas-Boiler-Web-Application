@@ -1,43 +1,24 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Gas_Boiler_Backend.Models
+﻿namespace Gas_Boiler_Backend.DTO.SystemParameters
 {
-    public class SystemParameters
+    public class SystemParametersResponseDto
     {
-        [Key]
         public int Id { get; set; }
 
-        [Required]
-        [Range(0.1, 3.0)]
+        // U-values (W/m²K)
         public decimal WallUValue { get; set; }
-
-        [Required]
-        [Range(0.5, 10.0)]
         public decimal WindowUValue { get; set; }
-
-        [Required]
-        [Range(0.1, 3.0)]
         public decimal CeilingUValue { get; set; }
-
-        [Required]
-        [Range(0.1, 3.0)]
         public decimal FloorUValue { get; set; }
 
-        [Required]
-        [Range(-30.0, 5.0)]
+        // Temperatures (°C)
         public decimal OutdoorDesignTemp { get; set; }
-
-        [Required]
-        [Range(0.0, 20.0)]
         public decimal GroundTemp { get; set; }
 
-        [Required]
-        [Range(0.001, 1.0)]
+        // Economic
         public decimal GasPricePerKwh { get; set; }
 
+        // Metadata
         public DateTime LastUpdated { get; set; }
-
-        [MaxLength(100)]
         public string UpdatedBy { get; set; } = string.Empty;
     }
 }

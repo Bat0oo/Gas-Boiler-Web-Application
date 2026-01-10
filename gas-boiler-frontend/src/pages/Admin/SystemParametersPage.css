@@ -1,0 +1,376 @@
+.system-params-container {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  background-color: #f9fafb;
+  min-height: calc(100vh - 80px);
+}
+
+.system-params-card {
+  background-color: white;
+  padding: 1.25rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 1000px;
+  height: fit-content;
+}
+
+/* Compact Header */
+.page-header {
+  text-align: center;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.page-header h1 {
+  font-size: 1.5rem;
+  color: #1f2937;
+  margin: 0 0 0.5rem 0;
+}
+
+.metadata-inline {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.metadata-inline span {
+  white-space: nowrap;
+}
+
+/* Alerts - Compact */
+.alert {
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 0.75rem;
+  font-weight: 500;
+  font-size: 0.85rem;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.alert-error {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border-left: 4px solid #dc2626;
+}
+
+.alert-success {
+  background-color: #d1fae5;
+  color: #065f46;
+  border-left: 4px solid #10b981;
+}
+
+/* Form - Compact */
+.params-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Grid Layout - 4 columns for U-values, 3 columns for rest */
+.params-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.params-grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* Parameter Item with Tooltip */
+.param-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  position: relative;
+  cursor: help;
+}
+
+/* Tooltip - Beautiful hover explanation */
+.param-item::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  background-color: #1f2937;
+  color: white;
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  white-space: normal;
+  width: 200px;
+  text-align: center;
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Tooltip arrow */
+.param-item::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #1f2937;
+  z-index: 1001;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+
+/* Show tooltip on hover */
+.param-item:hover::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(-12px);
+}
+
+.param-item:hover::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+.param-item label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.param-icon {
+  font-size: 1rem;
+}
+
+.param-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+
+/* Info icon - subtle indicator */
+.info-icon {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.param-item:hover .info-icon {
+  opacity: 1;
+  color: #3b82f6;
+}
+
+/* Input Wrapper - Fixed overflow */
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.param-input {
+  width: 100%;
+  padding: 0.45rem 0.6rem;
+  padding-right: 4.5rem; /* Extra space for unit label */
+  border: 2px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  background-color: white;
+  box-sizing: border-box;
+}
+
+.param-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.param-input:hover {
+  border-color: #d1d5db;
+}
+
+/* Unit Labels - Fixed positioning */
+.param-unit {
+  position: absolute;
+  right: 0.6rem;
+  color: #6b7280;
+  font-weight: 500;
+  font-size: 0.75rem;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.param-unit-small {
+  position: absolute;
+  right: 0.4rem;
+  color: #6b7280;
+  font-weight: 500;
+  font-size: 0.7rem;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* Hint text */
+.param-hint {
+  font-size: 0.7rem;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* Action Buttons */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 2px solid #e5e7eb;
+}
+
+.btn {
+  padding: 0.5rem 1.25rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+}
+
+.btn-secondary {
+  background-color: #6b7280;
+  color: white;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: #4b5563;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(107, 114, 128, 0.3);
+}
+
+/* Loading/Error States */
+.loading {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.2rem;
+  color: #6b7280;
+}
+
+.error {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.1rem;
+  color: #dc2626;
+  background-color: #fee2e2;
+  border-radius: 8px;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .params-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .params-grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Adjust tooltip width on smaller screens */
+  .param-item::after {
+    width: 180px;
+  }
+}
+
+@media (max-width: 768px) {
+  .system-params-container {
+    padding: 0.75rem;
+  }
+
+  .system-params-card {
+    padding: 1rem;
+  }
+
+  .page-header h1 {
+    font-size: 1.3rem;
+  }
+
+  .metadata-inline {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .params-grid,
+  .params-grid-3 {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Disable tooltips on mobile (no hover) */
+  .param-item::after,
+  .param-item::before {
+    display: none;
+  }
+}
+
+/* Force box-sizing */
+* {
+  box-sizing: border-box;
+}
