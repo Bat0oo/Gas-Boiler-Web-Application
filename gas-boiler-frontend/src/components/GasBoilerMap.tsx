@@ -265,9 +265,6 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
       <Marker
         key={building.id}
         position={[building.latitude, building.longitude]}
-        eventHandlers={{
-          click: () => handleBuildingClick(building.id),
-        }}
       >
         {/* Hover Tooltip - Shows on mouse over */}
         <Tooltip direction="top" offset={[0, -20]} opacity={0.95}>
