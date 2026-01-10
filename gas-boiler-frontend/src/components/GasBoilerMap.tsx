@@ -270,14 +270,6 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
         <Tooltip direction="top" offset={[0, -20]} opacity={0.95}>
           <div className="marker-tooltip">
             <div className="tooltip-title">🏢 {building.name}</div>
-            
-            {building.currentTemperature !== undefined && building.currentTemperature !== null && (
-              <div className="tooltip-weather">
-                🌡️ {building.currentTemperature.toFixed(1)}°C
-                {building.weatherDescription && ` • ${building.weatherDescription}`}
-              </div>
-            )}
-            
             <div className="tooltip-info">
               🔥 {building.boilerCount} kotla • ⚡ {building.totalMaxPower.toFixed(0)} kW
             </div>
@@ -288,16 +280,7 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
         <Popup>
           <div className="building-popup">
             <h3 className="building-popup-title">🏢 {building.name}</h3>
-            
-            {building.currentTemperature !== undefined && building.currentTemperature !== null && (
-              <div className="weather-section">
-                <p className="building-popup-info weather-highlight">
-                  <strong>🌡️ Spoljna:</strong> {building.currentTemperature.toFixed(1)}°C
-                  {building.weatherDescription && ` (${building.weatherDescription})`}
-                </p>
-              </div>
-            )}
-            
+
             <p className="building-popup-info">
               <strong>Broj kotlova:</strong> {building.boilerCount}
             </p>
@@ -332,7 +315,6 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
         onCreate={handleCreateBuilding}
       />
 
-      {/* ========== CHANGED: Added isAdmin prop ========== */}
       <BuildingDetailsModal
         isOpen={buildingDetailsOpen}
         buildingId={selectedBuildingId}

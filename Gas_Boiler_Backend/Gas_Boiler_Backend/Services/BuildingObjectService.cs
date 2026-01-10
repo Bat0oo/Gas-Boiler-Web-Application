@@ -111,8 +111,6 @@ namespace Gas_Boiler_Backend.Services
             };
         }
 
-        // Replace your existing GetMapPointsAsync method with this:
-
         public async Task<IEnumerable<BuildingMapPointDto>> GetMapPointsAsync(int userId, bool isAdmin)
         {
             // Admin sees all buildings, regular users see only theirs
@@ -120,39 +118,18 @@ namespace Gas_Boiler_Backend.Services
                 ? await _repository.GetAllAsync()
                 : await _repository.GetByUserIdAsync(userId);
 
-            var mapPoints = new List<BuildingMapPointDto>();
-
-            foreach (var building in buildings)
+            return buildings.Select(b => new BuildingMapPointDto
             {
-                // Fetch weather for this building
-                WeatherInfo? weather = null;
-                try
-                {
-                    weather = await _weatherService.GetWeatherInfoAsync(building.Latitude, building.Longitude);
-                }
-                catch (Exception ex)
-                {
-                    // Log but continue if weather fails
-                    Console.WriteLine($"Failed to fetch weather for building {building.Id}: {ex.Message}");
-                }
-
-                mapPoints.Add(new BuildingMapPointDto
-                {
-                    Id = building.Id,
-                    Name = building.Name,
-                    Latitude = building.Latitude,
-                    Longitude = building.Longitude,
-                    BoilerCount = building.GasBoilers.Count,
-                    TotalMaxPower = building.GasBoilers.Sum(gb => gb.MaxPower),
-                    TotalCurrentPower = building.GasBoilers.Sum(gb => gb.CurrentPower),
-
-                    // Weather data
-                    CurrentTemperature = weather?.Temperature,
-                    WeatherDescription = weather?.Description ?? string.Empty
-                });
-            }
-
-            return mapPoints;
+                Id = b.Id,
+                Name = b.Name,
+                Latitude = b.Latitude,
+                Longitude = b.Longitude,
+                BoilerCount = b.GasBoilers.Count,
+                TotalMaxPower = b.GasBoilers.Sum(gb => gb.MaxPower),
+                TotalCurrentPower = b.GasBoilers.Sum(gb => gb.CurrentPower)
+                // Weather is NOT fetched here to save API calls
+                // It's only fetched when viewing building details
+            });
         }
         public async Task<BuildingObjectResponseDto> CreateBuildingAsync(BuildingObjectCreateDto dto, int userId)
         {
