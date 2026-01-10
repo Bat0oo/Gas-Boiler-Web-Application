@@ -25,26 +25,10 @@ namespace Gas_Boiler_Backend.Repositories
 
         public async Task<SystemParameters> InitializeAsync()
         {
-            var parameters = new SystemParameters
-            {
-                WallUValue = 0.50m,      
-                WindowUValue = 1.40m,   
-                CeilingUValue = 0.25m,   
-                FloorUValue = 0.40m,     
-
-                OutdoorDesignTemp = -15.0m,  
-                GroundTemp = 10.0m,          
-
-                GasPricePerKwh = 0.05m,      
-
-                LastUpdated = DateTime.UtcNow,
-                UpdatedBy = "System"
-            };
-
-            _context.SystemParameters.Add(parameters);
-            await _context.SaveChangesAsync();
-            return parameters;
-
+            // This should rarely be called as seed data exists in AppDbContext
+            // If called, it means database was not properly initialized
+            throw new InvalidOperationException(
+                "SystemParameters not found in database. Please ensure database is properly initialized with seed data.");
         }
 
         public async Task<SystemParameters> UpdateAsync(SystemParameters parameters)

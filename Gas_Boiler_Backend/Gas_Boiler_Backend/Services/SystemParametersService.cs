@@ -43,7 +43,7 @@ namespace Gas_Boiler_Backend.Services
             parameters.GasPricePerKwh = updateDto.GasPricePerKwh;
 
             // Update metadata
-            parameters.LastUpdated = DateTime.UtcNow;
+            parameters.LastUpdated = DateTime.Now;
             parameters.UpdatedBy = username;
 
             var updated = await _repository.UpdateAsync(parameters);

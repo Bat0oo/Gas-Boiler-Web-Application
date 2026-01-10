@@ -103,7 +103,7 @@ namespace Gas_Boiler_Backend.Data
         FloorUValue = 0.40m,
         OutdoorDesignTemp = -15.0m,
         GroundTemp = 10.0m,              
-        GasPricePerKwh = 0.0055m,        
+        GasPricePerKwh = 0.05m,        
         LastUpdated = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
         UpdatedBy = "System"
     }
