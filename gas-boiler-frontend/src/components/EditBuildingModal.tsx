@@ -19,10 +19,10 @@ const EditBuildingModal: React.FC<Props> = ({ isOpen, building, token, onClose, 
   const [desiredTemperature, setDesiredTemperature] = useState(22);
   
   // ========== READ-ONLY PROPERTIES (FROM SYSTEM PARAMETERS) ==========
-  const [wallUValue, setWallUValue] = useState(0.3);
-  const [windowUValue, setWindowUValue] = useState(1.2);
-  const [ceilingUValue, setCeilingUValue] = useState(0.25);
-  const [floorUValue, setFloorUValue] = useState(0.5);
+  const [wallUValue, setWallUValue] = useState(0);
+  const [windowUValue, setWindowUValue] = useState(0);
+  const [ceilingUValue, setCeilingUValue] = useState(0);
+  const [floorUValue, setFloorUValue] = useState(0);
   
   const [wallArea, setWallArea] = useState(0);
   const [windowArea, setWindowArea] = useState(0);

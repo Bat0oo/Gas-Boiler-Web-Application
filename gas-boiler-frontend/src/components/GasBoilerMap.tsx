@@ -153,11 +153,12 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
 
   // ========== CHANGED: Added admin check ==========
   const handleEditBuilding = async (buildingId: number) => {
+    // Admin check
     if (isAdmin) {
-      alert('Administratori ne mogu menjati zgrade. Samo možete pregledati.');
+      alert('Administratori ne mogu menjati zgrade. Ovo je režim samo za pregled.');
       return;
     }
-    
+
     try {
       const building = await buildingService.getBuildingById(buildingId, token);
       setEditingBuilding(building);
@@ -179,11 +180,12 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
 
   // ========== CHANGED: Added admin check ==========
   const handleEditBoiler = async (boilerId: number) => {
+    // Admin check
     if (isAdmin) {
-      alert('Administratori ne mogu menjati kotlove. Samo možete pregledati.');
+      alert('Administratori ne mogu menjati kotlove. Ovo je režim samo za pregled.');
       return;
     }
-    
+
     try {
       const boiler = await gasBoilerService.getBoilerById(boilerId, token);
       setEditingBoiler(boiler);
@@ -206,11 +208,12 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
 
   // ========== CHANGED: Added admin check ==========
   const handleDeleteBuilding = async (buildingId: number) => {
+    // Admin check
     if (isAdmin) {
-      alert('Administratori ne mogu brisati zgrade. Samo možete pregledati.');
+      alert('Administratori ne mogu brisati zgrade. Ovo je režim samo za pregled.');
       return;
     }
-    
+
     try {
       await buildingService.deleteBuilding(buildingId, token);
       await loadBuildings();
@@ -223,11 +226,12 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
 
   // ========== CHANGED: Added admin check ==========
   const handleDeleteBoiler = async (boilerId: number): Promise<void> => {
+    // Admin check
     if (isAdmin) {
-      alert('Administratori ne mogu brisati kotlove. Samo možete pregledati.');
+      alert('Administratori ne mogu brisati kotlove. Ovo je režim samo za pregled.');
       return;
     }
-    
+
     try {
       await gasBoilerService.deleteGasBoiler(boilerId, token);
       await loadBuildings();

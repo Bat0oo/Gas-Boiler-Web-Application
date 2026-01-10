@@ -51,7 +51,12 @@ namespace Gas_Boiler_Backend.Services
         {
             var gb = await _repository.GetByIdAsync(id);
             if (gb == null) return null;
-            if (!isAdmin && gb.UserId != requestingUserId) return null;
+
+            // Block admin from updating - admins can only view
+            if (isAdmin) return null;
+
+            // Check ownership for regular users
+            if (gb.UserId != requestingUserId) return null;
 
             // Update boiler only (can't change building)
             gb.Name = dto.Name;
@@ -69,7 +74,12 @@ namespace Gas_Boiler_Backend.Services
         {
             var gb = await _repository.GetByIdAsync(id);
             if (gb == null) return false;
-            if (!isAdmin && gb.UserId != requestingUserId) return false;
+
+            // Block admin from deleting - admins can only view
+            if (isAdmin) return false;
+
+            // Check ownership for regular users
+            if (gb.UserId != requestingUserId) return false;
 
             await _repository.DeleteAsync(gb);
             await _repository.SaveChangesAsync();

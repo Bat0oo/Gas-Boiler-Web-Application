@@ -4,6 +4,57 @@
   margin: 0 auto;
 }
 
+/* ========== CHANGED: Sticky banner below navbar with animation ========== */
+.admin-mode-banner-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background-color: #3b82f6;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.banner-dismiss {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.banner-dismiss:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+/* ======================================================================== */
+
 .page-header {
   margin-bottom: 2rem;
 }
@@ -17,6 +68,48 @@
 .page-header p {
   color: #6b7280;
   font-size: 1rem;
+}
+
+/* Filter info box */
+.filter-info-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #eff6ff;
+  border: 2px solid #3b82f6;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.filter-text {
+  color: #1e40af;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.filter-text strong {
+  color: #1e3a8a;
+  font-weight: 700;
+}
+
+.btn-clear-filter {
+  background-color: #6b7280;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btn-clear-filter:hover {
+  background-color: #4b5563;
+  transform: translateY(-1px);
 }
 
 .loading {
@@ -75,7 +168,6 @@
   white-space: nowrap;
 }
 
-/* Center align action column header */
 .buildings-table th:last-child {
   text-align: center;
 }
@@ -129,7 +221,6 @@
   font-size: 0.85rem;
 }
 
-/* Actions column - CENTERED */
 .buildings-table td.actions {
   text-align: center;
 }
@@ -215,6 +306,15 @@
   .buildings-table td {
     padding: 0.75rem 0.5rem;
   }
+  
+  .filter-info-box {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .btn-clear-filter {
+    align-self: flex-start;
+  }
 }
 
 @media (max-width: 768px) {
@@ -228,5 +328,16 @@
   
   .buildings-table {
     min-width: 900px;
+  }
+  
+  .admin-mode-banner-sticky {
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+  }
+  
+  .banner-dismiss {
+    width: 24px;
+    height: 24px;
+    font-size: 0.9rem;
   }
 }

@@ -8,5 +8,6 @@
         public string Role { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
         public int GasBoilersCount { get; set; }
+        public bool IsBlocked { get; set; }
     }
 }

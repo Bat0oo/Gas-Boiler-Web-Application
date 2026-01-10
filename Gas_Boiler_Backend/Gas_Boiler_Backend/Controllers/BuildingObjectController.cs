@@ -81,7 +81,7 @@ namespace Gas_Boiler_Backend.Controllers
 
         [HttpPost]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult<BuildingObjectResponseDto>> Create([FromBody] BuildingObjectCreateDto dto)
+        public async Task<ActionResult<BuildingObjectResponseDto>> CreateBuilding([FromBody] BuildingObjectCreateDto dto)
         {
             try
             {
@@ -98,7 +98,9 @@ namespace Gas_Boiler_Backend.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult<BuildingObjectResponseDto>> Update(int id, [FromBody] BuildingObjectUpdateDto dto)
+        public async Task<ActionResult<BuildingObjectResponseDto>> UpdateBuilding(
+            int id,
+            [FromBody] BuildingObjectUpdateDto dto)
         {
             try
             {
@@ -118,7 +120,7 @@ namespace Gas_Boiler_Backend.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult> DeleteBuilding(int id)
         {
             try
             {

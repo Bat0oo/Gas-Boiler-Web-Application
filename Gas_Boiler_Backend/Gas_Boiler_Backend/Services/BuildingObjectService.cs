@@ -7,10 +7,14 @@ namespace Gas_Boiler_Backend.Services
     public class BuildingObjectService : IBuildingObjectService
     {
         private readonly IBuildingObjectRepository _repository;
+        private readonly ISystemParametersRepository _systemParametersRepository;
 
-        public BuildingObjectService(IBuildingObjectRepository repository)
+        public BuildingObjectService(
+            IBuildingObjectRepository repository,
+            ISystemParametersRepository systemParametersRepository)
         {
             _repository = repository;
+            _systemParametersRepository = systemParametersRepository;
         }
 
         // Match interface method names!
@@ -108,11 +112,15 @@ namespace Gas_Boiler_Backend.Services
             });
         }
 
-        // ADD THIS METHOD TO BuildingObjectService.cs
-        // REPLACE the existing CreateBuildingAsync method with this version
-
         public async Task<BuildingObjectResponseDto> CreateBuildingAsync(BuildingObjectCreateDto dto, int userId)
         {
+            // Fetch system parameters from database
+            var sysParams = await _systemParametersRepository.GetAsync();
+            if (sysParams == null)
+            {
+                throw new InvalidOperationException("System parameters not found. Please ensure database is properly initialized.");
+            }
+
             // Auto-calculate perimeter (assuming approximately square building)
             var perimeter = 4 * Math.Sqrt(dto.HeatingArea);
 
@@ -121,13 +129,6 @@ namespace Gas_Boiler_Backend.Services
             var windowArea = wallArea * 0.15; // 15% of wall area is windows (default ratio)
             var ceilingArea = dto.HeatingArea;
             var floorArea = dto.HeatingArea;
-
-            // Default U-values (W/m²·K) - standard insulation values
-            // These will later come from SystemParameters
-            var defaultWallUValue = 0.3;
-            var defaultWindowUValue = 1.2;
-            var defaultCeilingUValue = 0.25;
-            var defaultFloorUValue = 0.5;
 
             var building = new BuildingObject
             {
@@ -139,11 +140,11 @@ namespace Gas_Boiler_Backend.Services
                 Height = dto.Height,
                 DesiredTemperature = dto.DesiredTemperature,
 
-                // Auto-calculated U-values
-                WallUValue = defaultWallUValue,
-                WindowUValue = defaultWindowUValue,
-                CeilingUValue = defaultCeilingUValue,
-                FloorUValue = defaultFloorUValue,
+                // U-values from SystemParameters
+                WallUValue = (double)sysParams.WallUValue,
+                WindowUValue = (double)sysParams.WindowUValue,
+                CeilingUValue = (double)sysParams.CeilingUValue,
+                FloorUValue = (double)sysParams.FloorUValue,
 
                 // Auto-calculated surface areas
                 WallArea = wallArea,
@@ -186,8 +187,14 @@ namespace Gas_Boiler_Backend.Services
                 throw new KeyNotFoundException($"Building with ID {id} not found");
             }
 
-            // Check ownership (admins bypass check)
-            if (!isAdmin && building.UserId != userId)
+            // Block admin from updating - admins can only view
+            if (isAdmin)
+            {
+                throw new UnauthorizedAccessException("Administrators cannot modify buildings");
+            }
+
+            // Check ownership for regular users
+            if (building.UserId != userId)
             {
                 throw new UnauthorizedAccessException("You don't have permission to update this building");
             }
@@ -242,8 +249,14 @@ namespace Gas_Boiler_Backend.Services
                 return false;
             }
 
-            // Check ownership (admins bypass check)
-            if (!isAdmin && building.UserId != userId)
+            // Block admin from deleting - admins can only view
+            if (isAdmin)
+            {
+                return false;
+            }
+
+            // Check ownership for regular users
+            if (building.UserId != userId)
             {
                 return false;
             }

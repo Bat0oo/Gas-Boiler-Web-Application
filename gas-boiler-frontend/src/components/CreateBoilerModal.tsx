@@ -1,4 +1,3 @@
-// components/CreateBoilerModal.tsx
 import React, { useState } from 'react';
 import { CreateGasBoilerPayload } from '../types/gasBoilertypes';
 import './CreateBoilerModal.css';

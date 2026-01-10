@@ -49,6 +49,21 @@
   color: #1f2937;
 }
 
+.section-label {
+  color: #1f2937;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #8b5cf6;
+}
+
+.building-info-box .section-label {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #10b981;
+}
+
 .building-details-divider {
   border: none;
   border-top: 1px solid #e5e7eb;

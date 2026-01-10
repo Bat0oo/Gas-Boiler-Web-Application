@@ -90,27 +90,24 @@ namespace Gas_Boiler_Backend.Data
             modelBuilder.Entity<Alarm>()
                 .HasIndex(a => a.IsResolved);
 
+            modelBuilder.Entity<SystemParameters>()
+                .HasKey(sp => sp.Id);
 
             modelBuilder.Entity<SystemParameters>().HasData(
-                new SystemParameters
-                {
-                    Id = 1,
-                    ParameterName = "GroundTemperature",
-                    Value = 10,
-                    Unit = "°C",
-                    Description = "Average ground temperature",
-                    UpdatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc)  // ⭐ STATIC DATE
-                },
-                new SystemParameters
-                {
-                    Id = 2,
-                    ParameterName = "GasPricePerKWh",
-                    Value = 5.5,
-                    Unit = "RSD/kWh",
-                    Description = "Price of natural gas per kWh",
-                    UpdatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc)  // ⭐ STATIC DATE
-                }
-                    );
+    new SystemParameters
+    {
+        Id = 1,
+        WallUValue = 0.50m,
+        WindowUValue = 1.40m,
+        CeilingUValue = 0.25m,
+        FloorUValue = 0.40m,
+        OutdoorDesignTemp = -15.0m,
+        GroundTemp = 10.0m,              
+        GasPricePerKwh = 0.05m,        
+        LastUpdated = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+        UpdatedBy = "System"
+    }
+);
 
             string adminPasswordHash = "$2a$12$xYluxINGkkohipBPd/xZLe2cJl2Y7dSomJAu5WT8MJRkd8u6J6nJW";
             modelBuilder.Entity<User>().HasData(
