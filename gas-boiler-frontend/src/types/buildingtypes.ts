@@ -43,6 +43,8 @@ export interface BuildingMapPoint {
   boilerCount: number;
   totalMaxPower: number;
   totalCurrentPower: number;
+  currentTemperature?: number;
+  weatherDescription?: string;
 }
 
 // SIMPLIFIED - Only user inputs!
