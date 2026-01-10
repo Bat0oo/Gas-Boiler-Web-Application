@@ -64,8 +64,8 @@ const BuildingDetailsModal: React.FC<Props> = ({
   const handleDeleteBoiler = async (boilerId: number) => {
     if (window.confirm('Da li ste sigurni da želite da obrišete ovaj kotao?')) {
       try {
-        await onDeleteBoiler(boilerId); // ← WAIT for delete to complete!
-        await loadBuilding(); // ← THEN refresh!
+        await onDeleteBoiler(boilerId);
+        await loadBuilding();
       } catch (err) {
         console.error('Greška prilikom brisanja kotla:', err);
         alert('Greška prilikom brisanja kotla');
@@ -88,6 +88,13 @@ const BuildingDetailsModal: React.FC<Props> = ({
                 ✕
               </button>
             </div>
+
+            {/* ========== ADDED: Admin notice ========== */}
+            {isAdmin && (
+              <div className="admin-notice">
+                ℹ️ Administrator režim - samo pregled. Ne možete kreirati, menjati ili brisati.
+              </div>
+            )}
 
             <div className="building-info-box">
               <h3 className="section-label">Objekat: {building.name}</h3>
