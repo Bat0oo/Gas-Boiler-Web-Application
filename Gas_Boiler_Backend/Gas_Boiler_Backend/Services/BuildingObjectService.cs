@@ -8,13 +8,16 @@ namespace Gas_Boiler_Backend.Services
     {
         private readonly IBuildingObjectRepository _repository;
         private readonly ISystemParametersRepository _systemParametersRepository;
+        private readonly IWeatherService _weatherService;
 
         public BuildingObjectService(
             IBuildingObjectRepository repository,
-            ISystemParametersRepository systemParametersRepository)
+            ISystemParametersRepository systemParametersRepository,
+            IWeatherService weatherService)
         {
             _repository = repository;
             _systemParametersRepository = systemParametersRepository;
+            _weatherService = weatherService;
         }
 
         // Match interface method names!
@@ -62,6 +65,17 @@ namespace Gas_Boiler_Backend.Services
                 return null;
             }
 
+            WeatherInfo? weather = null;
+            try
+            {
+                weather = await _weatherService.GetWeatherInfoAsync(building.Latitude, building.Longitude);
+            }
+            catch (Exception ex)
+            {
+                // Log error but continue (weather is optional)
+                Console.WriteLine($"Failed to fetch weather: {ex.Message}");
+            }
+
             return new BuildingObjectDetailDto
             {
                 Id = building.Id,
@@ -89,7 +103,11 @@ namespace Gas_Boiler_Backend.Services
                     MaxPower = gb.MaxPower,
                     Efficiency = gb.Efficiency,
                     CurrentPower = gb.CurrentPower
-                }).ToList()
+                }).ToList(),
+
+                CurrentTemperature = weather?.Temperature,
+                WeatherDescription = weather?.Description ?? string.Empty,
+                WeatherIcon = weather?.Icon ?? string.Empty
             };
         }
 

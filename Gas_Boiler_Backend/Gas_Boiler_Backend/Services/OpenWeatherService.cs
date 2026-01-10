@@ -1,4 +1,5 @@
-﻿using Gas_Boiler_Backend.Interfaces;
+﻿using Gas_Boiler_Backend.DTO.OpenWeather;
+using Gas_Boiler_Backend.Interfaces;
 using System.Text.Json;
 
 namespace Gas_Boiler_Backend.Services
