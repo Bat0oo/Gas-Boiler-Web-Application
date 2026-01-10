@@ -1,7 +1,7 @@
 ﻿using Gas_Boiler_Backend.Data;
 using Gas_Boiler_Backend.Interfaces;
 using Gas_Boiler_Backend.Models;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gas_Boiler_Backend.Repositories
 {
