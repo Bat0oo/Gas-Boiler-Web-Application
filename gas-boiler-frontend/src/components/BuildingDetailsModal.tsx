@@ -39,21 +39,21 @@ const BuildingDetailsModal: React.FC<Props> = ({
 
   const loadBuilding = async () => {
     if (!buildingId) return;
-    
+
     setLoading(true);
     try {
       const data = await buildingService.getBuildingById(buildingId, token);
       setBuilding(data);
     } catch (err) {
-      console.error('Greška prilikom učitavanja zgrade:', err);
-      alert('Greška prilikom učitavanja zgrade');
+      console.error('Error loading building:', err);
+      alert('Error loading building');
     } finally {
       setLoading(false);
     }
   };
 
   const handleDeleteBuilding = () => {
-    if (window.confirm('Da li ste sigurni da želite da obrišete ovu zgradu? Svi kotlovi u zgradi će biti obrisani!')) {
+    if (window.confirm('Are you sure you want to delete this building? All boilers in this building will be deleted!')) {
       if (buildingId) {
         onDeleteBuilding(buildingId);
         onClose();
@@ -62,13 +62,13 @@ const BuildingDetailsModal: React.FC<Props> = ({
   };
 
   const handleDeleteBoiler = async (boilerId: number) => {
-    if (window.confirm('Da li ste sigurni da želite da obrišete ovaj kotao?')) {
+    if (window.confirm('Are you sure you want to delete this boiler?')) {
       try {
         await onDeleteBoiler(boilerId);
         await loadBuilding();
       } catch (err) {
-        console.error('Greška prilikom brisanja kotla:', err);
-        alert('Greška prilikom brisanja kotla');
+        console.error('Error deleting boiler:', err);
+        alert('Error deleting boiler');
       }
     }
   };
@@ -79,7 +79,7 @@ const BuildingDetailsModal: React.FC<Props> = ({
     <div className="modal-overlay">
       <div className="modal building-details-modal">
         {loading ? (
-          <div className="loading-message">Učitavanje...</div>
+          <div className="loading-message">Loading...</div>
         ) : (
           <>
             <div className="building-details-header">
@@ -89,40 +89,39 @@ const BuildingDetailsModal: React.FC<Props> = ({
               </button>
             </div>
 
-            {/* ========== ADDED: Admin notice ========== */}
             {isAdmin && (
               <div className="admin-notice">
-                ℹ️ Administrator režim - samo pregled. Ne možete kreirati, menjati ili brisati.
+                ℹ️ Administrator mode - view only. You cannot create, edit, or delete.
               </div>
             )}
 
             <div className="building-info-box">
-              <h3 className="section-label">Objekat: {building.name}</h3>
+              <h3 className="section-label">Building: {building.name}</h3>
               <p>
-                <strong>Lokacija:</strong> {building.latitude.toFixed(6)}, {building.longitude.toFixed(6)}
+                <strong>Location:</strong> {building.latitude.toFixed(6)}, {building.longitude.toFixed(6)}
               </p>
               <p>
-                <strong>Površina grejanja:</strong> {building.heatingArea} m²
+                <strong>Heating area:</strong> {building.heatingArea} m²
               </p>
               <p>
-                <strong>Željena temperatura:</strong> {building.desiredTemperature}°C
+                <strong>Desired temperature:</strong> {building.desiredTemperature}°C
               </p>
               <p>
-                <strong>Broj kotlova:</strong> {building.boilerCount}
+                <strong>Number of boilers:</strong> {building.boilerCount}
               </p>
               {building.currentTemperature !== undefined && building.currentTemperature !== null && (
   <>
     <hr style={{ margin: '1rem 0', border: 'none', borderTop: '1px solid #e5e7eb' }} />
     <div className="weather-info">
       <p className="weather-main">
-        <strong>🌡️ Spoljna temperatura:</strong> 
+        <strong>🌡️ Outdoor temperature:</strong>
         <span className="temp-value">{building.currentTemperature.toFixed(1)}°C</span>
       </p>
       {building.weatherDescription && (
         <p className="weather-desc">
-          <strong>Vreme:</strong> {building.weatherDescription}
+          <strong>Weather:</strong> {building.weatherDescription}
           {building.weatherIcon && (
-            <img 
+            <img
               src={`https://openweathermap.org/img/wn/${building.weatherIcon}.png`}
               alt={building.weatherDescription}
               className="weather-icon"
@@ -131,7 +130,7 @@ const BuildingDetailsModal: React.FC<Props> = ({
         </p>
       )}
       <p className="temp-diff">
-        <strong>Temperaturna razlika:</strong> {(building.desiredTemperature - (building.currentTemperature || 0)).toFixed(1)}°C
+        <strong>Temperature difference:</strong> {(building.desiredTemperature - (building.currentTemperature || 0)).toFixed(1)}°C
       </p>
     </div>
   </>
@@ -140,7 +139,7 @@ const BuildingDetailsModal: React.FC<Props> = ({
 
             <hr className="building-details-divider" />
 
-            <h3 className="section-label">Kotlovi:</h3>
+            <h3 className="section-label">Boilers:</h3>
 
             {!isAdmin && (
               <div className="add-boiler-section">
@@ -148,7 +147,7 @@ const BuildingDetailsModal: React.FC<Props> = ({
                   onClick={() => onAddBoiler(building.id)}
                   className="btn-add-boiler"
                 >
-                  + Dodaj Kotao
+                  + Add Boiler
                 </button>
               </div>
             )}
@@ -156,8 +155,8 @@ const BuildingDetailsModal: React.FC<Props> = ({
             {building.gasBoilers.length === 0 ? (
               <div className="no-boilers-message">
                 {isAdmin
-                  ? 'Nema kotlova u ovoj zgradi.'
-                  : 'Nema kotlova u ovoj zgradi. Kliknite "Dodaj Kotao" da dodate prvi.'}
+                  ? 'No boilers in this building.'
+                  : 'No boilers in this building. Click "Add Boiler" to add the first one.'}
               </div>
             ) : (
               <div className="boilers-list">
@@ -168,13 +167,13 @@ const BuildingDetailsModal: React.FC<Props> = ({
                         <h4>🔥 {boiler.name}</h4>
                         <div className="boiler-details">
                           <p>
-                            <strong>Maks. snaga:</strong> {boiler.maxPower} kW
+                            <strong>Max power:</strong> {boiler.maxPower} kW
                           </p>
                           <p>
-                            <strong>Trenutna snaga:</strong> {boiler.currentPower} kW
+                            <strong>Current power:</strong> {boiler.currentPower} kW
                           </p>
                           <p>
-                            <strong>Efikasnost:</strong> {(boiler.efficiency * 100).toFixed(0)}%
+                            <strong>Efficiency:</strong> {(boiler.efficiency * 100).toFixed(0)}%
                           </p>
                         </div>
                       </div>
@@ -185,13 +184,13 @@ const BuildingDetailsModal: React.FC<Props> = ({
                               onClick={() => onEditBoiler(boiler.id)}
                               className="boiler-edit-button"
                             >
-                              Izmeni
+                              Edit
                             </button>
                             <button
                               onClick={() => handleDeleteBoiler(boiler.id)}
                               className="boiler-delete-button"
                             >
-                              Obriši
+                              Delete
                             </button>
                           </>
                         )}
@@ -211,18 +210,18 @@ const BuildingDetailsModal: React.FC<Props> = ({
                     onClick={() => onEditBuilding(building.id)}
                     className="btn-edit-building"
                   >
-                    Izmeni Zgradu
+                    Edit Building
                   </button>
                   <button
                     onClick={handleDeleteBuilding}
                     className="btn-delete-building"
                   >
-                    Obriši Zgradu
+                    Delete Building
                   </button>
                 </>
               )}
               <button onClick={onClose} className="btn-close">
-                Zatvori
+                Close
               </button>
             </div>
           </>

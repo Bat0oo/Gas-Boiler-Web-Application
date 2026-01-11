@@ -73,7 +73,7 @@ const EditBuildingModal: React.FC<Props> = ({ isOpen, building, token, onClose, 
     <div className="modal-overlay">
       <div className="modal edit-building-modal">
         <div className="modal-header">
-          <h2>✏️ Izmeni Zgradu</h2>
+          <h2>✏️ Edit Building</h2>
           <button onClick={onClose} className="close-button" disabled={loading}>
             ✕
           </button>
@@ -88,30 +88,30 @@ const EditBuildingModal: React.FC<Props> = ({ isOpen, building, token, onClose, 
         <form onSubmit={handleSubmit}>
           <div className="form-section">
             <div className="form-group">
-              <label>Naziv objekta:</label>
+              <label>Building name:</label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
                 disabled={loading}
-                placeholder="npr. Moja Kuća"
+                placeholder="e.g. My House"
               />
             </div>
 
             <div className="form-group">
-              <label>Lokacija:</label>
+              <label>Location:</label>
               <input
                 type="text"
                 value={`${building.latitude.toFixed(6)}, ${building.longitude.toFixed(6)}`}
                 disabled
                 className="readonly-input"
               />
-              <span className="help-text">📍 Lokaciju nije moguće izmeniti</span>
+              <span className="help-text">📍 Location cannot be changed</span>
             </div>
 
             <div className="form-group">
-              <label>Površina grejanja (m²):</label>
+              <label>Heating area (m²):</label>
               <input
                 type="number"
                 value={heatingArea}
@@ -124,7 +124,7 @@ const EditBuildingModal: React.FC<Props> = ({ isOpen, building, token, onClose, 
             </div>
 
             <div className="form-group">
-              <label>Visina plafona (m):</label>
+              <label>Ceiling height (m):</label>
               <input
                 type="number"
                 step="0.1"
@@ -136,12 +136,12 @@ const EditBuildingModal: React.FC<Props> = ({ isOpen, building, token, onClose, 
                 disabled={loading}
               />
               <span className="calculated-info">
-                📦 Zapremina: {calculatedVolume.toFixed(1)} m³
+                📦 Volume: {calculatedVolume.toFixed(1)} m³
               </span>
             </div>
 
             <div className="form-group">
-              <label>Željena temperatura (°C):</label>
+              <label>Desired temperature (°C):</label>
               <input
                 type="number"
                 value={desiredTemperature}
@@ -161,7 +161,7 @@ const EditBuildingModal: React.FC<Props> = ({ isOpen, building, token, onClose, 
               className="btn-primary"
               disabled={loading || !name.trim()}
             >
-              {loading ? 'Čuvanje...' : 'Sačuvaj Izmene'}
+              {loading ? 'Saving...' : 'Save Changes'}
             </button>
             <button
               type="button"
@@ -169,7 +169,7 @@ const EditBuildingModal: React.FC<Props> = ({ isOpen, building, token, onClose, 
               className="btn-secondary"
               disabled={loading}
             >
-              Otkaži
+              Cancel
             </button>
           </div>
         </form>
