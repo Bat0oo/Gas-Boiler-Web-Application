@@ -35,6 +35,19 @@ namespace Gas_Boiler_Backend.Models
         [Range(0.001, 1.0)]
         public decimal GasPricePerKwh { get; set; }
 
+        [Required]
+        [Range(0.10, 0.40)]
+        public decimal WindowToWallRatio { get; set; } = 0.15m;
+
+        [Required]
+        [Range(1.00, 1.30)]
+        public decimal SafetyFactor { get; set; } = 1.15m;
+
+        [Required]
+        [Range(0.70, 0.98)]
+        public decimal DefaultBoilerEfficiency { get; set; } = 0.90m;
+
+
         public DateTime LastUpdated { get; set; }
 
         [MaxLength(100)]

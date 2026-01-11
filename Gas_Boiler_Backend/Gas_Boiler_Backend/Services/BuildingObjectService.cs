@@ -145,7 +145,7 @@ namespace Gas_Boiler_Backend.Services
 
             // Auto-calculate surface areas
             var wallArea = perimeter * dto.Height;
-            var windowArea = wallArea * 0.15; // 15% of wall area is windows (default ratio)
+            var windowArea = wallArea * (double)sysParams.WindowToWallRatio;
             var ceilingArea = dto.HeatingArea;
             var floorArea = dto.HeatingArea;
 
