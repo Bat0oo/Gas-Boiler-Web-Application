@@ -41,6 +41,9 @@ namespace Gas_Boiler_Backend.Services
             parameters.OutdoorDesignTemp = updateDto.OutdoorDesignTemp;
             parameters.GroundTemp = updateDto.GroundTemp;
             parameters.GasPricePerKwh = updateDto.GasPricePerKwh;
+            parameters.WindowToWallRatio = updateDto.WindowToWallRatio;           
+            parameters.SafetyFactor = updateDto.SafetyFactor;                     
+            parameters.DefaultBoilerEfficiency = updateDto.DefaultBoilerEfficiency;
 
             // Update metadata
             parameters.LastUpdated = DateTime.Now;
@@ -63,6 +66,9 @@ namespace Gas_Boiler_Backend.Services
                 GroundTemp = parameters.GroundTemp,
                 GasPricePerKwh = parameters.GasPricePerKwh,
                 LastUpdated = parameters.LastUpdated,
+                WindowToWallRatio = parameters.WindowToWallRatio,     
+                SafetyFactor = parameters.SafetyFactor,               
+                DefaultBoilerEfficiency = parameters.DefaultBoilerEfficiency,  
                 UpdatedBy = parameters.UpdatedBy
             };
         }

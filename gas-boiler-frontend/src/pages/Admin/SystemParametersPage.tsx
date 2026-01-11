@@ -22,6 +22,10 @@ const SystemParametersPage: React.FC = () => {
   const [groundTemp, setGroundTemp] = useState('');
   const [gasPricePerKwh, setGasPricePerKwh] = useState('');
 
+  const [windowToWallRatio, setWindowToWallRatio] = useState('');
+  const [safetyFactor, setSafetyFactor] = useState('');
+  const [defaultBoilerEfficiency, setDefaultBoilerEfficiency] = useState('');
+
   useEffect(() => {
     loadParameters();
   }, []);
@@ -40,6 +44,10 @@ const SystemParametersPage: React.FC = () => {
       setOutdoorDesignTemp(data.outdoorDesignTemp.toString());
       setGroundTemp(data.groundTemp.toString());
       setGasPricePerKwh(data.gasPricePerKwh.toString());
+
+      setWindowToWallRatio(data.windowToWallRatio.toString());
+      setSafetyFactor(data.safetyFactor.toString());
+      setDefaultBoilerEfficiency(data.defaultBoilerEfficiency.toString());
       
       setError('');
     } catch (err: any) {
@@ -64,6 +72,9 @@ const SystemParametersPage: React.FC = () => {
         outdoorDesignTemp: parseFloat(outdoorDesignTemp),
         groundTemp: parseFloat(groundTemp),
         gasPricePerKwh: parseFloat(gasPricePerKwh),
+        windowToWallRatio: parseFloat(windowToWallRatio),     
+        safetyFactor: parseFloat(safetyFactor),               
+        defaultBoilerEfficiency: parseFloat(defaultBoilerEfficiency), 
       });
 
       setParams(updated);
@@ -86,6 +97,9 @@ const SystemParametersPage: React.FC = () => {
       setOutdoorDesignTemp(params.outdoorDesignTemp.toString());
       setGroundTemp(params.groundTemp.toString());
       setGasPricePerKwh(params.gasPricePerKwh.toString());
+      setWindowToWallRatio(params.windowToWallRatio.toString());
+      setSafetyFactor(params.safetyFactor.toString());
+      setDefaultBoilerEfficiency(params.defaultBoilerEfficiency.toString());
       setError('');
       setSuccess('');
     }
@@ -302,6 +316,79 @@ const SystemParametersPage: React.FC = () => {
                   <span className="param-unit-small">EUR/kWh</span>
                 </div>
                 <span className="param-hint">0.001 - 1.0</span>
+              </div>
+                         </div>
+
+            {/* ROW 3: NEW BUILDING & CALCULATION PARAMETERS (3 columns) */}
+            <div className="params-grid params-grid-3">
+              
+              {/* Window to Wall Ratio */}
+              <div className="param-item" data-tooltip="Udeo površine prozora u odnosu na zid. Tipično 15%. Stare zgrade: 10-12%, Moderne: 15-20%, Kancelarije: 30-40%.">
+                <label>
+                  <span className="param-icon">🪟</span>
+                  <span className="param-name">Udeo prozora</span>
+                  <span className="info-icon">ℹ️</span>
+                </label>
+                <div className="input-wrapper">
+                  <input
+                    type="number"
+                    value={windowToWallRatio}
+                    onChange={(e) => setWindowToWallRatio(e.target.value)}
+                    step="0.01"
+                    min="0.10"
+                    max="0.40"
+                    required
+                    className="param-input"
+                  />
+                  <span className="param-unit">ratio</span>
+                </div>
+                <span className="param-hint">0.10 - 0.40</span>
+              </div>
+
+              {/* Safety Factor */}
+              <div className="param-item" data-tooltip="Faktor sigurnosti za projektovanje sistema grejanja. Dodaje rezervu za ekstremne uslove. Tipično 1.15 (15% rezerve).">
+                <label>
+                  <span className="param-icon">🛡️</span>
+                  <span className="param-name">Faktor sigurnosti</span>
+                  <span className="info-icon">ℹ️</span>
+                </label>
+                <div className="input-wrapper">
+                  <input
+                    type="number"
+                    value={safetyFactor}
+                    onChange={(e) => setSafetyFactor(e.target.value)}
+                    step="0.01"
+                    min="1.00"
+                    max="1.30"
+                    required
+                    className="param-input"
+                  />
+                  <span className="param-unit">×</span>
+                </div>
+                <span className="param-hint">1.00 - 1.30</span>
+              </div>
+
+              {/* Default Boiler Efficiency */}
+              <div className="param-item" data-tooltip="Podrazumevana efikasnost kotla za proračun troškova. Stari: 70-85%, Moderni: 90-95%, Visoka efikasnost: 95-98%.">
+                <label>
+                  <span className="param-icon">⚙️</span>
+                  <span className="param-name">Efikasnost kotla</span>
+                  <span className="info-icon">ℹ️</span>
+                </label>
+                <div className="input-wrapper">
+                  <input
+                    type="number"
+                    value={defaultBoilerEfficiency}
+                    onChange={(e) => setDefaultBoilerEfficiency(e.target.value)}
+                    step="0.01"
+                    min="0.70"
+                    max="0.98"
+                    required
+                    className="param-input"
+                  />
+                  <span className="param-unit">ratio</span>
+                </div>
+                <span className="param-hint">0.70 - 0.98</span>
               </div>
 
             </div>
