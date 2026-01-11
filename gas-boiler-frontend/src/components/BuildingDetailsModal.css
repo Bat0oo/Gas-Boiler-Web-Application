@@ -283,3 +283,51 @@
     width: 100%;
   }
 }
+
+.weather-info {
+  background-color: #eff6ff;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-top: 0.75rem;
+  border: 1px solid #bfdbfe;
+}
+
+.weather-info p {
+  margin: 0.35rem 0;
+}
+
+.weather-main {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+}
+
+.temp-value {
+  font-size: 1.25rem;
+  color: #2563eb;
+  font-weight: 700;
+}
+
+.weather-desc {
+  font-size: 0.9rem;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.weather-icon {
+  width: 30px;
+  height: 30px;
+  margin-left: 0.25rem;
+}
+
+.temp-diff {
+  font-size: 0.9rem;
+  color: #059669;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #bfdbfe;
+}

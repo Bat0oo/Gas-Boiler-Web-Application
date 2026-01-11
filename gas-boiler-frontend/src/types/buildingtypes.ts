@@ -21,6 +21,10 @@ export interface Building {
 
 export interface BuildingDetail extends Building {
   gasBoilers: BuildingBoiler[];
+  
+  currentTemperature?: number;
+  weatherDescription?: string;
+  weatherIcon?: string;
 }
 
 export interface BuildingBoiler {

@@ -110,6 +110,32 @@ const BuildingDetailsModal: React.FC<Props> = ({
               <p>
                 <strong>Broj kotlova:</strong> {building.boilerCount}
               </p>
+              {building.currentTemperature !== undefined && building.currentTemperature !== null && (
+  <>
+    <hr style={{ margin: '1rem 0', border: 'none', borderTop: '1px solid #e5e7eb' }} />
+    <div className="weather-info">
+      <p className="weather-main">
+        <strong>🌡️ Spoljna temperatura:</strong> 
+        <span className="temp-value">{building.currentTemperature.toFixed(1)}°C</span>
+      </p>
+      {building.weatherDescription && (
+        <p className="weather-desc">
+          <strong>Vreme:</strong> {building.weatherDescription}
+          {building.weatherIcon && (
+            <img 
+              src={`https://openweathermap.org/img/wn/${building.weatherIcon}.png`}
+              alt={building.weatherDescription}
+              className="weather-icon"
+            />
+          )}
+        </p>
+      )}
+      <p className="temp-diff">
+        <strong>Temperaturna razlika:</strong> {(building.desiredTemperature - (building.currentTemperature || 0)).toFixed(1)}°C
+      </p>
+    </div>
+  </>
+)}
             </div>
 
             <hr className="building-details-divider" />
