@@ -11,8 +11,8 @@ const AdminDashboard: React.FC = () => {
     <>
       <Navbar />
       <div className="admin-dashboard-container">
-        <h2>Admin panel</h2>
-        <p>Dobrodošao, {user?.username}! Ovde možeš pregledati sve korisnike i njihove gasne kotlove.</p>
+        <h2>Admin Panel</h2>
+        <p>Welcome, {user?.username}! Here you can view all users and their gas boilers.</p>
 
         <div className="map-section">
           <GasBoilerMap token={localStorage.getItem('token')!} />
