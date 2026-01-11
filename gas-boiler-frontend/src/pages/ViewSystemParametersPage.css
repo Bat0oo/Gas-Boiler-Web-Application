@@ -237,7 +237,32 @@
   }
 }
 
-/* Force box-sizing */
 * {
   box-sizing: border-box;
+}
+.params-section-compact.new-section {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border: 2px solid #3b82f6;
+}
+
+.params-section-compact.new-section .section-title-compact {
+  color: #1e40af;
+}
+
+/* NEW PARAMETER CARDS */
+.param-compact.new-param {
+  background-color: white;
+  border: 2px solid #3b82f6;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
+}
+
+.param-compact.new-param:hover {
+  border-color: #2563eb;
+  background-color: #eff6ff;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+}
+
+.param-compact.new-param .param-value-compact {
+  color: #2563eb;
 }

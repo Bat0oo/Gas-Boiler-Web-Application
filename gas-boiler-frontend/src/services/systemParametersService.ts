@@ -9,6 +9,9 @@ export interface SystemParameters {
   outdoorDesignTemp: number;
   groundTemp: number;
   gasPricePerKwh: number;
+  windowToWallRatio: number;  
+  safetyFactor: number;
+  defaultBoilerEfficiency: number;
   lastUpdated: string;
   updatedBy: string;
 }
@@ -21,6 +24,9 @@ export interface UpdateSystemParametersDto {
   outdoorDesignTemp: number;
   groundTemp: number;
   gasPricePerKwh: number;
+  windowToWallRatio: number;  
+  safetyFactor: number;
+  defaultBoilerEfficiency: number;
 }
 
 export const systemParametersService = {

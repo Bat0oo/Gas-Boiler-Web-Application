@@ -110,12 +110,33 @@ const ViewSystemParametersPage: React.FC = () => {
               </div>
             </div>
           </div>
+          <div className="params-section-compact new-section">
+            <h3 className="section-title-compact">🔧 Parametri zgrade i proračuna</h3>
+            <div className="params-grid-3">
+              <div className="param-compact new-param">
+                <div className="param-label-compact">🪟 Udeo prozora</div>
+                <div className="param-value-compact">
+                  {(params.windowToWallRatio * 100).toFixed(0)} <span className="unit-small">%</span>
+                </div>
+              </div>
+              <div className="param-compact new-param">
+                <div className="param-label-compact">🛡️ Faktor sigurnosti</div>
+                <div className="param-value-compact">
+                  {params.safetyFactor.toFixed(2)} <span className="unit-small">×</span>
+                </div>
+              </div>
+              <div className="param-compact new-param">
+                <div className="param-label-compact">⚙️ Efikasnost kotla</div>
+                <div className="param-value-compact">
+                  {(params.defaultBoilerEfficiency * 100).toFixed(0)} <span className="unit-small">%</span>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* Compact Explanation */}
           <div className="explanation-compact">
-            <strong>💡 Objašnjenja:</strong> U-vrednosti mere izolaciju (niže = bolje). Spoljna temp za dimenzionisanje. Temp tla za proračun poda. Cena gasa za procenu troškova.
-          </div>
-
+            <strong>💡 Objašnjenja:</strong> U-vrednosti mere izolaciju (niže = bolje). Spoljna temp za dimenzionisanje. Temp tla za proračun poda. Cena gasa za procenu troškova. Udeo prozora definiše odnos površine prozora i zida. Faktor sigurnosti dodaje rezervu za ekstremne uslove. Efikasnost kotla utiče na troškove grejanja.          </div>
         </div>
       </div>
     </>

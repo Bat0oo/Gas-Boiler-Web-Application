@@ -127,9 +127,10 @@ namespace Gas_Boiler_Backend.Services
                 BoilerCount = b.GasBoilers.Count,
                 TotalMaxPower = b.GasBoilers.Sum(gb => gb.MaxPower),
                 TotalCurrentPower = b.GasBoilers.Sum(gb => gb.CurrentPower)
+                // Weather is NOT fetched here to save API calls
+                // It's only fetched when viewing building details
             });
         }
-
         public async Task<BuildingObjectResponseDto> CreateBuildingAsync(BuildingObjectCreateDto dto, int userId)
         {
             // Fetch system parameters from database
@@ -144,7 +145,7 @@ namespace Gas_Boiler_Backend.Services
 
             // Auto-calculate surface areas
             var wallArea = perimeter * dto.Height;
-            var windowArea = wallArea * 0.15; // 15% of wall area is windows (default ratio)
+            var windowArea = wallArea * (double)sysParams.WindowToWallRatio;
             var ceilingArea = dto.HeatingArea;
             var floorArea = dto.HeatingArea;
 

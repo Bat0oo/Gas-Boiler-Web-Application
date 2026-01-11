@@ -33,5 +33,16 @@ namespace Gas_Boiler_Backend.DTO.SystemParameters
         [Required(ErrorMessage = "Gas price is required")]
         [Range(0.001, 1.0, ErrorMessage = "Gas price must be between 0.001 and 1.0 EUR/kWh")]
         public decimal GasPricePerKwh { get; set; }
+        [Required(ErrorMessage = "Window to wall ratio is required")]
+        [Range(0.10, 0.40, ErrorMessage = "Window to wall ratio must be between 0.10 and 0.40")]
+        public decimal WindowToWallRatio { get; set; }
+
+        [Required(ErrorMessage = "Safety factor is required")]
+        [Range(1.00, 1.30, ErrorMessage = "Safety factor must be between 1.00 and 1.30")]
+        public decimal SafetyFactor { get; set; }
+
+        [Required(ErrorMessage = "Default boiler efficiency is required")]
+        [Range(0.70, 0.98, ErrorMessage = "Default boiler efficiency must be between 0.70 and 0.98")]
+        public decimal DefaultBoilerEfficiency { get; set; }
     }
 }

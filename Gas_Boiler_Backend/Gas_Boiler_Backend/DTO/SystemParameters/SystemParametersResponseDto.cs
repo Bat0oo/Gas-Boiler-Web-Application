@@ -16,6 +16,9 @@
 
         // Economic
         public decimal GasPricePerKwh { get; set; }
+        public decimal WindowToWallRatio { get; set; }
+        public decimal SafetyFactor { get; set; }
+        public decimal DefaultBoilerEfficiency { get; set; }
 
         // Metadata
         public DateTime LastUpdated { get; set; }

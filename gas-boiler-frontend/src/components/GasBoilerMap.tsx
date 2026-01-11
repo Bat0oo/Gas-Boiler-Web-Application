@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup,Tooltip, useMapEvents } from 'react-leaflet';
 import { useSearchParams } from 'react-router-dom';
 import { LatLngExpression } from 'leaflet';
 import { useAuth } from '../context/AuthContext';
@@ -255,43 +255,52 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        {!loading &&
-          buildings.map((building) => {
-            if (!building.latitude || !building.longitude) {
-              return null;
-            }
+  {!loading &&
+  buildings.map((building) => {
+    if (!building.latitude || !building.longitude) {
+      return null;
+    }
 
-            return (
-              <Marker
-                key={building.id}
-                position={[building.latitude, building.longitude]}
-                eventHandlers={{
-                  click: () => handleBuildingClick(building.id),
-                }}
-              >
-                <Popup>
-                  <div className="building-popup">
-                    <h3 className="building-popup-title">🏢 {building.name}</h3>
-                    <p className="building-popup-info">
-                      <strong>Broj kotlova:</strong> {building.boilerCount}
-                    </p>
-                    <p className="building-popup-info">
-                      <strong>Ukupna snaga:</strong> {building.totalMaxPower.toFixed(1)} kW
-                    </p>
-                    <p className="building-popup-info">
-                      <strong>Trenutno:</strong> {building.totalCurrentPower.toFixed(1)} kW
-                    </p>
-                    <button
-                      onClick={() => handleBuildingClick(building.id)}
-                      className="building-popup-button"
-                    >
-                      Vidi Detalje
-                    </button>
-                  </div>
-                </Popup>
-              </Marker>
-            );
-          })}
+    return (
+      <Marker
+        key={building.id}
+        position={[building.latitude, building.longitude]}
+      >
+        {/* Hover Tooltip - Shows on mouse over */}
+        <Tooltip direction="top" offset={[0, -20]} opacity={0.95}>
+          <div className="marker-tooltip">
+            <div className="tooltip-title">🏢 {building.name}</div>
+            <div className="tooltip-info">
+              🔥 {building.boilerCount} kotla • ⚡ {building.totalMaxPower.toFixed(0)} kW
+            </div>
+          </div>
+        </Tooltip>
+
+        {/* Click Popup - Shows on click */}
+        <Popup>
+          <div className="building-popup">
+            <h3 className="building-popup-title">🏢 {building.name}</h3>
+
+            <p className="building-popup-info">
+              <strong>Broj kotlova:</strong> {building.boilerCount}
+            </p>
+            <p className="building-popup-info">
+              <strong>Ukupna snaga:</strong> {building.totalMaxPower.toFixed(1)} kW
+            </p>
+            <p className="building-popup-info">
+              <strong>Trenutno:</strong> {building.totalCurrentPower.toFixed(1)} kW
+            </p>
+            <button
+              onClick={() => handleBuildingClick(building.id)}
+              className="building-popup-button"
+            >
+              Vidi Detalje
+            </button>
+          </div>
+        </Popup>
+      </Marker>
+    );
+  })}
 
         <MapEvents />
       </MapContainer>
@@ -306,7 +315,6 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
         onCreate={handleCreateBuilding}
       />
 
-      {/* ========== CHANGED: Added isAdmin prop ========== */}
       <BuildingDetailsModal
         isOpen={buildingDetailsOpen}
         buildingId={selectedBuildingId}

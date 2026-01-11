@@ -184,3 +184,77 @@
   background-color: #9ca3af;
   cursor: not-allowed;
 }
+
+/* ADD THESE STYLES TO GasBoilerMap.css */
+
+/* ========== Hover Tooltip Styles ========== */
+.marker-tooltip {
+  text-align: center;
+  padding: 0;
+  min-width: 180px;
+}
+
+.tooltip-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #1f2937;
+  margin-bottom: 0.35rem;
+}
+
+.tooltip-weather {
+  font-size: 0.9rem;
+  color: #2563eb;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  background-color: #eff6ff;
+  border-radius: 4px;
+}
+
+.tooltip-info {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+/* Override Leaflet's default tooltip styles */
+.leaflet-tooltip {
+  background-color: white !important;
+  border: 2px solid #3b82f6 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  padding: 0.5rem 0.75rem !important;
+  font-family: inherit !important;
+}
+
+/* Tooltip arrow colors */
+.leaflet-tooltip-top:before {
+  border-top-color: #3b82f6 !important;
+}
+
+.leaflet-tooltip-bottom:before {
+  border-bottom-color: #3b82f6 !important;
+}
+
+.leaflet-tooltip-left:before {
+  border-left-color: #3b82f6 !important;
+}
+
+.leaflet-tooltip-right:before {
+  border-right-color: #3b82f6 !important;
+}
+
+/* Weather section in click popup */
+.weather-section {
+  background-color: #eff6ff;
+  padding: 0.5rem;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  border-left: 3px solid #3b82f6;
+}
+
+.weather-highlight {
+  margin: 0 !important;
+  color: #1e40af;
+  font-weight: 600;
+}
