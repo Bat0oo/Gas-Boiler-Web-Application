@@ -48,7 +48,7 @@ const Profile: React.FC = () => {
           isBlocked: data.isBlocked ?? false,
         });
       })
-      .catch(() => setError('Neuspešno učitavanje profila.'));
+      .catch(() => setError('Failed to load profile.'));
   }, [userIdToEdit]);
 
   const handleChange = (
@@ -75,13 +75,13 @@ const Profile: React.FC = () => {
 
     try {
       await apiClient.put(`/user/${userIdToEdit}`, formData);
-      setMessage('Profil je uspešno ažuriran.');
+      setMessage('Profile successfully updated.');
 
       if (id && user?.role === 'Admin') {
         setTimeout(() => navigate('/admin/users'), 1500);
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Greška pri ažuriranju profila.');
+      setError(err.response?.data?.message || 'Error updating profile.');
     }
   };
 
@@ -92,15 +92,15 @@ const Profile: React.FC = () => {
         <div className="profile-card">
           <h2>
             {id && user?.role === 'Admin'
-              ? `Uredi profil korisnika #${id}`
-              : 'Moj profil'}
+              ? `Edit user profile #${id}`
+              : 'My Profile'}
           </h2>
 
           {message && <div className="alert success">{message}</div>}
           {error && <div className="alert error">{error}</div>}
 
           <form onSubmit={handleSubmit}>
-            <label>Korisničko ime:</label>
+            <label>Username:</label>
             <input
               type="text"
               name="username"
@@ -118,27 +118,27 @@ const Profile: React.FC = () => {
               required
             />
 
-            <label>Trenutna lozinka:</label>
+            <label>Current password:</label>
             <input
               type="password"
               name="currentPassword"
               value={formData.currentPassword}
               onChange={handleChange}
-              placeholder="Unesi trenutnu lozinku"
+              placeholder="Enter current password"
             />
 
-            <label>Nova lozinka:</label>
+            <label>New password:</label>
             <input
               type="password"
               name="newPassword"
               value={formData.newPassword}
               onChange={handleChange}
-              placeholder="Unesi novu lozinku"
+              placeholder="Enter new password"
             />
 
             {user?.role === 'Admin' && (
               <>
-                <label>Uloga:</label>
+                <label>Role:</label>
                 <select
                   name="role"
                   value={formData.role}
@@ -155,13 +155,13 @@ const Profile: React.FC = () => {
                     checked={!!formData.isBlocked}
                     onChange={handleChange}
                   />
-                  Korisnik blokiran
+                  User blocked
                 </label>
               </>
             )}
 
             <button type="submit" className="btn-primary">
-              Sačuvaj izmene
+              Save changes
             </button>
 
             {id && user?.role === 'Admin' && (
@@ -170,7 +170,7 @@ const Profile: React.FC = () => {
                 className="btn-secondary"
                 onClick={() => navigate('/admin/users')}
               >
-                Nazad na listu korisnika
+                Back to user list
               </button>
             )}
           </form>

@@ -11,8 +11,8 @@ const Dashboard: React.FC = () => {
     <>
       <Navbar />
       <div className="dashboard-container">
-        <h2>Dobrodošao, {user?.username}</h2>
-        <p>Ovde možeš videti sve svoje gasne kotlove na mapi i upravljati njima.</p>
+        <h2>Welcome, {user?.username}</h2>
+        <p>Here you can view all your gas boilers on the map and manage them.</p>
 
         <div className="map-section">
           <GasBoilerMap token={localStorage.getItem('token')!} />

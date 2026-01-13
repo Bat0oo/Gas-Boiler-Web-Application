@@ -11,7 +11,6 @@ interface Props {
 }
 
 const EditBoilerModal: React.FC<Props> = ({ boiler, onClose, onSave, onEditBuilding, token }) => {
-  // ========== ONLY EDITABLE BOILER PROPERTIES ==========
   const [formData, setFormData] = useState({
     name: boiler.name,
     maxPower: boiler.maxPower,
@@ -22,7 +21,6 @@ const EditBoilerModal: React.FC<Props> = ({ boiler, onClose, onSave, onEditBuild
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Get building name - try multiple sources
   const buildingName = boiler.buildingName || boiler.buildingObject?.name || 'N/A';
   const buildingId = boiler.buildingObjectId || boiler.buildingObject?.id;
 
@@ -40,7 +38,6 @@ const EditBoilerModal: React.FC<Props> = ({ boiler, onClose, onSave, onEditBuild
     setError('');
 
     try {
-      // ========== SIMPLE PAYLOAD - ONLY BOILER PROPERTIES ==========
       const payload = {
         name: formData.name,
         maxPower: formData.maxPower,
@@ -67,19 +64,18 @@ const EditBoilerModal: React.FC<Props> = ({ boiler, onClose, onSave, onEditBuild
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>✏️ Izmeni Gasni Kotao</h2>
+          <h2>✏️ Edit Gas Boiler</h2>
           <button onClick={onClose} className="close-btn">&times;</button>
         </div>
 
         {error && <div className="error-message">{error}</div>}
 
         <form onSubmit={handleSubmit} className="edit-form">
-          {/* ========== EDITABLE BOILER PROPERTIES ========== */}
           <div className="form-section">
-            <h3>Osnovne Informacije</h3>
-            
+            <h3>Basic Informations</h3>
+
             <div className="form-group">
-              <label>Naziv Kotla</label>
+              <label>Boiler Name</label>
               <input
                 type="text"
                 name="name"
@@ -92,7 +88,7 @@ const EditBoilerModal: React.FC<Props> = ({ boiler, onClose, onSave, onEditBuild
 
             <div className="form-row">
               <div className="form-group">
-                <label>Maksimalna Snaga (kW)</label>
+                <label>Maximum Power (kW)</label>
                 <input
                   type="number"
                   name="maxPower"
@@ -107,7 +103,7 @@ const EditBoilerModal: React.FC<Props> = ({ boiler, onClose, onSave, onEditBuild
               </div>
 
               <div className="form-group">
-                <label>Efikasnost (0-1)</label>
+                <label>Efficiency (0-1)</label>
                 <input
                   type="number"
                   name="efficiency"
@@ -123,29 +119,28 @@ const EditBoilerModal: React.FC<Props> = ({ boiler, onClose, onSave, onEditBuild
             </div>
 
             <div className="form-group readonly-display">
-              <label>Trenutna Snaga (kW) - Samo za prikaz</label>
+              <label>Current Power (kW) - Display only</label>
               <input
                 type="number"
                 value={formData.currentPower}
                 disabled
                 className="readonly-input"
               />
-              <span className="help-text">📊 Trenutna radna snaga kotla (kontrolisano sistemom)</span>
+              <span className="help-text">📊 Current operating power of the boiler (controlled by system)</span>
             </div>
           </div>
 
-          {/* ========== READ-ONLY BUILDING INFO ========== */}
           <div className="form-section building-info-section">
-            <h3>Objekat</h3>
-            
+            <h3>Building</h3>
+
             <div className="building-info-box">
               <div className="building-info-row">
-                <label>Naziv Objekta:</label>
+                <label>Building Name:</label>
                 <span className="building-name">🏢 {buildingName}</span>
               </div>
-              
+
               <div className="info-notice">
-                ℹ️ Ostala svojstva objekta (površina, temperatura, U-vrednosti) mogu se izmeniti kroz opciju "Izmeni Zgradu"
+                ℹ️ Other building properties (area, temperature, U-values) can be changed through "Edit Building" option
               </div>
 
               {onEditBuilding && buildingId && (
@@ -155,27 +150,27 @@ const EditBoilerModal: React.FC<Props> = ({ boiler, onClose, onSave, onEditBuild
                   className="btn-edit-building"
                   disabled={loading}
                 >
-                  📝 Izmeni Zgradu
+                  📝 Edit Building
                 </button>
               )}
             </div>
           </div>
 
           <div className="modal-actions">
-            <button 
-              type="button" 
-              onClick={onClose} 
-              className="btn-secondary" 
+            <button
+              type="button"
+              onClick={onClose}
+              className="btn-secondary"
               disabled={loading}
             >
-              Otkaži
+              Cancel
             </button>
-            <button 
-              type="submit" 
-              className="btn-primary" 
+            <button
+              type="submit"
+              className="btn-primary"
               disabled={loading || !formData.name.trim()}
             >
-              {loading ? 'Čuvanje...' : 'Sačuvaj'}
+              {loading ? 'Saving...' : 'Save'}
             </button>
           </div>
         </form>
