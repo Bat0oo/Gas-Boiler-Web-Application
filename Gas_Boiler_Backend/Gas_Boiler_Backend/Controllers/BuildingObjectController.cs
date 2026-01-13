@@ -1,4 +1,5 @@
 ﻿using Gas_Boiler_Backend.DTO.Building;
+using Gas_Boiler_Backend.DTO.Calculations;
 using Gas_Boiler_Backend.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +13,12 @@ namespace Gas_Boiler_Backend.Controllers
     public class BuildingObjectController : ControllerBase
     {
         private readonly IBuildingObjectService _service;
+        private readonly IBuildingCalculatorService _heatLossCalculator;
 
-        public BuildingObjectController(IBuildingObjectService service)
+        public BuildingObjectController(IBuildingObjectService service, IBuildingCalculatorService heatLossCalculator)
         {
             _service = service;
+            _heatLossCalculator = heatLossCalculator;
         }
 
         private int GetUserIdFromClaims()
@@ -137,5 +140,36 @@ namespace Gas_Boiler_Backend.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpGet("{id}/calculations")]
+        [Authorize]
+        public async Task<ActionResult<HeatLossCalculationDto>> GetBuildingCalculations(int id)
+        {
+            try
+            {
+                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+                var isAdmin = User.IsInRole("Admin");
+
+                // Get the building with all related data
+                var building = await _service.GetBuildingByIdAsync(id, userId, isAdmin);
+
+                if (building == null)
+                    return NotFound(new { message = "Building not found" });
+
+                var buildingEntity = await _service.GetBuildingEntityAsync(id, userId, isAdmin);
+
+                if (buildingEntity == null)
+                    return NotFound(new { message = "Building not found" });
+
+                var calculations = await _heatLossCalculator.CalculateBuildingMetricsAsync(buildingEntity);
+
+                return Ok(calculations);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = $"Error calculating heat loss: {ex.Message}" });
+            }
+        }
+
     }
 }

@@ -284,5 +284,17 @@ namespace Gas_Boiler_Backend.Services
             await _repository.SaveChangesAsync();
             return true;
         }
+        public async Task<BuildingObject?> GetBuildingEntityAsync(int buildingId, int userId, bool isAdmin)
+        {
+            var building = await _repository.GetByIdAsync(buildingId);
+
+            if (building == null)
+                return null;
+
+            if (!isAdmin && building.UserId != userId)
+                return null;
+
+            return building;
+        }
     }
 }
