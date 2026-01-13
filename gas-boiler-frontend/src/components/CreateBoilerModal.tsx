@@ -25,17 +25,17 @@ const CreateBoilerModal: React.FC<Props> = ({
 
   const handleSubmit = async () => {
     if (!buildingId || !name.trim()) {
-      alert('Unesite naziv kotla');
+      alert('Enter boiler name');
       return;
     }
 
     if (maxPower <= 0) {
-      alert('Maksimalna snaga mora biti veća od 0');
+      alert('Maximum power must be greater than 0');
       return;
     }
 
     if (efficiency <= 0 || efficiency > 1) {
-      alert('Efikasnost mora biti između 0 i 1 (npr. 0.95 za 95%)');
+      alert('Efficiency must be between 0 and 1 (e.g. 0.95 for 95%)');
       return;
     }
 
@@ -51,15 +51,14 @@ const CreateBoilerModal: React.FC<Props> = ({
 
       await onCreate(payload);
 
-      // Reset form
       setName('');
       setMaxPower(24);
       setEfficiency(0.95);
       setCurrentPower(0);
       onClose();
     } catch (err) {
-      console.error('Greška prilikom kreiranja kotla:', err);
-      alert('Greška prilikom kreiranja kotla');
+      console.error('Error creating boiler:', err);
+      alert('Error creating boiler');
     } finally {
       setLoading(false);
     }
@@ -70,28 +69,28 @@ const CreateBoilerModal: React.FC<Props> = ({
   return (
     <div className="modal-overlay">
       <div className="modal create-boiler-modal">
-        <h2>Dodaj Kotao</h2>
+        <h2>Add Boiler</h2>
 
         <div className="building-info-banner">
           <p>
-            <strong>Zgrada:</strong> {buildingName}
+            <strong>Building:</strong> {buildingName}
           </p>
         </div>
 
         <label>
-          Naziv kotla:
+          Boiler name:
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="npr. Glavni Kotao"
+            placeholder="e.g. Main Boiler"
             required
             autoFocus
           />
         </label>
 
         <label>
-          Maksimalna snaga (kW):
+          Maximum power (kW):
           <input
             type="number"
             value={maxPower}
@@ -102,7 +101,7 @@ const CreateBoilerModal: React.FC<Props> = ({
         </label>
 
         <label>
-          Efikasnost (0-1, npr. 0.95 = 95%):
+          Efficiency (0-1, e.g. 0.95 = 95%):
           <input
             type="number"
             value={efficiency}
@@ -114,7 +113,7 @@ const CreateBoilerModal: React.FC<Props> = ({
         </label>
 
         <label>
-          Trenutna snaga (kW):
+          Current power (kW):
           <input
             type="number"
             value={currentPower}
@@ -130,10 +129,10 @@ const CreateBoilerModal: React.FC<Props> = ({
             className="btn-primary"
             disabled={loading || !name.trim()}
           >
-            {loading ? 'Dodavanje...' : 'Dodaj Kotao'}
+            {loading ? 'Adding...' : 'Add Boiler'}
           </button>
           <button onClick={onClose} className="btn-secondary" disabled={loading}>
-            Otkaži
+            Cancel
           </button>
         </div>
       </div>

@@ -20,25 +20,22 @@ const AllBuildingsPage: React.FC = () => {
   const [error, setError] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
   const [editingBuilding, setEditingBuilding] = useState<Building | null>(null);
-  
-  // ========== ADDED: Banner visibility state ==========
+
   const [showBanner, setShowBanner] = useState(true);
 
   useEffect(() => {
     loadBuildings();
   }, []);
 
-  // ========== ADDED: Auto-hide banner after 5 seconds ==========
   useEffect(() => {
     if (isAdmin && !filterUserId && showBanner) {
       const timer = setTimeout(() => {
         setShowBanner(false);
-      }, 5000); // Hide after 5 seconds
+      }, 5000);
 
       return () => clearTimeout(timer);
     }
   }, [isAdmin, filterUserId, showBanner]);
-  // ===========================================================
 
   const loadBuildings = async () => {
     if (!user?.token) return;
@@ -65,10 +62,10 @@ const AllBuildingsPage: React.FC = () => {
 
   const handleEdit = (buildingId: number) => {
     if (isAdmin) {
-      alert('Administratori ne mogu menjati zgrade. Samo možete pregledati.');
+      alert('Administrators cannot edit buildings. You can only view.');
       return;
     }
-    
+
     const building = buildings.find(b => b.id === buildingId);
     if (building) {
       setEditingBuilding(building);
@@ -76,7 +73,7 @@ const AllBuildingsPage: React.FC = () => {
   };
 
   const handleBuildingUpdated = (updatedBuilding: Building) => {
-    setBuildings(buildings.map(b => 
+    setBuildings(buildings.map(b =>
       b.id === updatedBuilding.id ? updatedBuilding : b
     ));
     setEditingBuilding(null);
@@ -84,12 +81,12 @@ const AllBuildingsPage: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     if (!user?.token) return;
-    
+
     if (isAdmin) {
-      alert('Administratori ne mogu brisati zgrade. Samo možete pregledati.');
+      alert('Administrators cannot delete buildings. You can only view.');
       return;
     }
-    
+
     try {
       await buildingService.deleteBuilding(id, user.token);
       setBuildings(buildings.filter(b => b.id !== id));
@@ -108,7 +105,7 @@ const AllBuildingsPage: React.FC = () => {
     return (
       <>
         <Navbar />
-        <div className="loading">Učitavanje...</div>
+        <div className="loading">Loading...</div>
       </>
     );
   }
@@ -116,33 +113,31 @@ const AllBuildingsPage: React.FC = () => {
   return (
     <>
       <Navbar />
-      
-      {/* ========== CHANGED: Admin banner with dismiss button and auto-hide ========== */}
+
       {isAdmin && !filterUserId && showBanner && (
         <div className="admin-mode-banner-sticky">
-          <span>🛡️ Administrator Režim - Samo Pregled (ne možete kreirati, menjati ili brisati)</span>
-          <button 
-            onClick={() => setShowBanner(false)} 
+          <span>🛡️ Administrator Mode - View Only (you cannot create, edit, or delete)</span>
+          <button
+            onClick={() => setShowBanner(false)}
             className="banner-dismiss"
-            title="Zatvori"
+            title="Close"
           >
             ✕
           </button>
         </div>
       )}
-      {/* ============================================================================== */}
-      
+
       <div className="all-buildings-page">
         <div className="page-header">
           {filterUsername ? (
             <>
-              <h1>🏢 Zgrade korisnika: {filterUsername}</h1>
-              <p>Pregled svih zgrada korisnika {filterUsername}</p>
+              <h1>🏢 Buildings of user: {filterUsername}</h1>
+              <p>View all buildings of user {filterUsername}</p>
             </>
           ) : (
             <>
-              <h1>🏢 {isAdmin ? 'Sve Zgrade' : 'Sve Zgrade'}</h1>
-              <p>{isAdmin ? 'Pregledajte sve zgrade svih korisnika' : 'Pregledajte i upravljajte svojim zgradama'}</p>
+              <h1>🏢 {isAdmin ? 'All Buildings' : 'All Buildings'}</h1>
+              <p>{isAdmin ? 'View all buildings of all users' : 'View and manage your buildings'}</p>
             </>
           )}
         </div>
@@ -150,10 +145,10 @@ const AllBuildingsPage: React.FC = () => {
         {filterUsername && (
           <div className="filter-info-box">
             <span className="filter-text">
-              📊 Prikazano: <strong>{filteredBuildings.length}</strong> {filteredBuildings.length === 1 ? 'zgrada' : 'zgrada'}
+              📊 Showing: <strong>{filteredBuildings.length}</strong> {filteredBuildings.length === 1 ? 'building' : 'buildings'}
             </span>
             <button onClick={handleClearFilter} className="btn-clear-filter">
-              ✕ Ukloni filter
+              ✕ Remove filter
             </button>
           </div>
         )}
@@ -163,11 +158,11 @@ const AllBuildingsPage: React.FC = () => {
         {filteredBuildings.length === 0 ? (
           <div className="no-data">
             {filterUsername ? (
-              <p>Korisnik "{filterUsername}" nema zgrada.</p>
+              <p>User "{filterUsername}" has no buildings.</p>
             ) : (
               <>
-                <p>Nemate kreiranih zgrada.</p>
-                <p>Kreirajte novu zgradu klikom desnim tasterom miša na mapu.</p>
+                <p>You have no buildings created.</p>
+                <p>Create a new building by right-clicking on the map.</p>
               </>
             )}
           </div>
@@ -177,14 +172,14 @@ const AllBuildingsPage: React.FC = () => {
               <thead>
                 <tr>
                   <th>ID</th>
-                  <th>Naziv</th>
-                  <th>Lokacija</th>
-                  <th>Površina (m²)</th>
-                  <th>Visina (m)</th>
-                  <th>Zapremina (m³)</th>
-                  <th>Željena Temp. (°C)</th>
-                  <th>Broj Kotlova</th>
-                  <th>Akcije</th>
+                  <th>Name</th>
+                  <th>Location</th>
+                  <th>Area (m²)</th>
+                  <th>Height (m)</th>
+                  <th>Volume (m³)</th>
+                  <th>Desired Temp. (°C)</th>
+                  <th>Number of Boilers</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -211,7 +206,7 @@ const AllBuildingsPage: React.FC = () => {
                         <button
                           onClick={() => handleViewDetails(building.id)}
                           className="btn-view"
-                          title="Pogledaj detalje"
+                          title="View details"
                         >
                           👁️
                         </button>
@@ -220,7 +215,7 @@ const AllBuildingsPage: React.FC = () => {
                             <button
                               onClick={() => handleEdit(building.id)}
                               className="btn-edit"
-                              title="Izmeni"
+                              title="Edit"
                             >
                               ✏️
                             </button>
@@ -229,14 +224,14 @@ const AllBuildingsPage: React.FC = () => {
                                 <button
                                   onClick={() => handleDelete(building.id)}
                                   className="btn-confirm-delete"
-                                  title="Potvrdi brisanje"
+                                  title="Confirm deletion"
                                 >
                                   ✓
                                 </button>
                                 <button
                                   onClick={() => setDeleteConfirm(null)}
                                   className="btn-cancel-delete"
-                                  title="Otkaži"
+                                  title="Cancel"
                                 >
                                   ✗
                                 </button>
@@ -245,7 +240,7 @@ const AllBuildingsPage: React.FC = () => {
                               <button
                                 onClick={() => setDeleteConfirm(building.id)}
                                 className="btn-delete"
-                                title="Obriši"
+                                title="Delete"
                               >
                                 🗑️
                               </button>
@@ -263,7 +258,7 @@ const AllBuildingsPage: React.FC = () => {
 
         <div className="page-footer">
           <p className="info-text">
-            💡 Kliknite na 👁️ da vidite detalje zgrade na mapi
+            💡 Click on 👁️ to view building details on the map
           </p>
         </div>
       </div>

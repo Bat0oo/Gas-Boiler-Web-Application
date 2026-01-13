@@ -19,15 +19,13 @@ const MyBoilersPage: React.FC = () => {
   const [error, setError] = useState('');
   const [editingBoiler, setEditingBoiler] = useState<GasBoilerFullResponse | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
-  
-  // ========== ADDED: Banner visibility state ==========
+
   const [showBanner, setShowBanner] = useState(true);
 
   useEffect(() => {
     loadBoilers();
   }, []);
 
-  // ========== ADDED: Auto-hide banner after 5 seconds ==========
   useEffect(() => {
     if (isAdmin && !filterUserId && showBanner) {
       const timer = setTimeout(() => {
@@ -59,7 +57,7 @@ const MyBoilersPage: React.FC = () => {
 
   const handleEdit = (boiler: GasBoilerFullResponse) => {
     if (isAdmin) {
-      alert('Administratori ne mogu menjati kotlove. Samo možete pregledati.');
+      alert('Administrators cannot edit boilers. You can only view.');
       return;
     }
     setEditingBoiler(boiler);
@@ -67,12 +65,12 @@ const MyBoilersPage: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     if (!user?.token) return;
-    
+
     if (isAdmin) {
-      alert('Administratori ne mogu brisati kotlove. Samo možete pregledati.');
+      alert('Administrators cannot delete boilers. You can only view.');
       return;
     }
-    
+
     try {
       await gasBoilerService.deleteGasBoiler(id, user.token);
       setBoilers(boilers.filter(b => b.id !== id));
@@ -93,39 +91,37 @@ const MyBoilersPage: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="loading">Učitavanje...</div>;
+    return <div className="loading">Loading...</div>;
   }
 
   return (
     <>
       <Navbar />
-      
-      {/* ========== CHANGED: Sticky banner below navbar with dismiss button ========== */}
+
       {isAdmin && !filterUserId && showBanner && (
         <div className="admin-mode-banner-sticky">
-          <span>🛡️ Administrator Režim - Samo Pregled (ne možete kreirati, menjati ili brisati)</span>
-          <button 
-            onClick={() => setShowBanner(false)} 
+          <span>🛡️ Administrator Mode - View Only (you cannot create, edit, or delete)</span>
+          <button
+            onClick={() => setShowBanner(false)}
             className="banner-dismiss"
-            title="Zatvori"
+            title="Close"
           >
             ✕
           </button>
         </div>
       )}
-      {/* ============================================================================= */}
-      
+
       <div className="my-boilers-page">
         <div className="page-header">
           {filterUsername ? (
             <>
-              <h1>🔥 Kotlovi korisnika: {filterUsername}</h1>
-              <p>Pregled svih kotlova korisnika {filterUsername}</p>
+              <h1>🔥 Boilers of user: {filterUsername}</h1>
+              <p>View all boilers of user {filterUsername}</p>
             </>
           ) : (
             <>
-              <h1>{isAdmin ? '🔥 Svi Kotlovi' : 'Moji Kotlovi'}</h1>
-              <p>{isAdmin ? 'Pregled svih kotlova svih korisnika' : 'Upravljajte svojim gasnim kotlovima'}</p>
+              <h1>{isAdmin ? '🔥 All Boilers' : 'My Boilers'}</h1>
+              <p>{isAdmin ? 'View all boilers of all users' : 'Manage your gas boilers'}</p>
             </>
           )}
         </div>
@@ -133,10 +129,10 @@ const MyBoilersPage: React.FC = () => {
         {filterUsername && (
           <div className="filter-info-box">
             <span className="filter-text">
-              📊 Prikazano: <strong>{filteredBoilers.length}</strong> {filteredBoilers.length === 1 ? 'kotao' : 'kotlova'}
+              📊 Showing: <strong>{filteredBoilers.length}</strong> {filteredBoilers.length === 1 ? 'boiler' : 'boilers'}
             </span>
             <button onClick={handleClearFilter} className="btn-clear-filter">
-              ✕ Ukloni filter
+              ✕ Remove filter
             </button>
           </div>
         )}
@@ -146,11 +142,11 @@ const MyBoilersPage: React.FC = () => {
         {filteredBoilers.length === 0 ? (
           <div className="no-data">
             {filterUsername ? (
-              <p>Korisnik "{filterUsername}" nema kotlova.</p>
+              <p>User "{filterUsername}" has no boilers.</p>
             ) : (
               <>
-                <p>Nemate kreiranih kotlova.</p>
-                <p>Kreirajte novi kotao klikom desnim tasterom miša na mapu.</p>
+                <p>You have no boilers created.</p>
+                <p>Create a new boiler by right-clicking on the map.</p>
               </>
             )}
           </div>
@@ -160,16 +156,16 @@ const MyBoilersPage: React.FC = () => {
               <thead>
                 <tr>
                   <th>ID</th>
-                  <th>Naziv</th>
-                  <th>Naziv Objekta</th>
-                  <th>Maks. Snaga (kW)</th>
-                  <th>Efikasnost</th>
-                  <th>Trenutna Snaga (kW)</th>
-                  <th>Lokacija</th>
-                  <th>Površina (m²)</th>
-                  <th>Željena Temp. (°C)</th>
-                  <th>Kreiran</th>
-                  <th>Akcije</th>
+                  <th>Name</th>
+                  <th>Building Name</th>
+                  <th>Max. Power (kW)</th>
+                  <th>Efficiency</th>
+                  <th>Current Power (kW)</th>
+                  <th>Location</th>
+                  <th>Area (m²)</th>
+                  <th>Desired Temp. (°C)</th>
+                  <th>Created</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -200,7 +196,7 @@ const MyBoilersPage: React.FC = () => {
                             <button
                               onClick={() => handleEdit(boiler)}
                               className="btn-edit"
-                              title="Izmeni"
+                              title="Edit"
                             >
                               ✏️
                             </button>
@@ -209,14 +205,14 @@ const MyBoilersPage: React.FC = () => {
                                 <button
                                   onClick={() => handleDelete(boiler.id)}
                                   className="btn-confirm-delete"
-                                  title="Potvrdi brisanje"
+                                  title="Confirm deletion"
                                 >
                                   ✓
                                 </button>
                                 <button
                                   onClick={() => setDeleteConfirm(null)}
                                   className="btn-cancel-delete"
-                                  title="Otkaži"
+                                  title="Cancel"
                                 >
                                   ✗
                                 </button>
@@ -225,7 +221,7 @@ const MyBoilersPage: React.FC = () => {
                               <button
                                 onClick={() => setDeleteConfirm(boiler.id)}
                                 className="btn-delete"
-                                title="Obriši"
+                                title="Delete"
                               >
                                 🗑️
                               </button>

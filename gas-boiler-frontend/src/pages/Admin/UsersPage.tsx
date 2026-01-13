@@ -34,7 +34,7 @@ const UsersList: React.FC = () => {
       setError('');
     } catch (err: any) {
       console.error('❌ Error loading users:', err);
-      setError('Greška prilikom učitavanja korisnika.');
+      setError('Error loading users.');
     } finally {
       setLoading(false);
     }
@@ -45,28 +45,26 @@ const UsersList: React.FC = () => {
   }, [user]);
 
   const handleBlockToggle = async (id: number, currentIsBlocked: boolean) => {
-    console.log(`🔄 Toggling block for user ${id}, current: ${currentIsBlocked ? 'Blokiran' : 'Aktivan'}`);
-    
+    console.log(`🔄 Toggling block for user ${id}, current: ${currentIsBlocked ? 'Blocked' : 'Active'}`);
+
     setProcessingUserId(id);
-    
+
     try {
       const endpoint = currentIsBlocked ? `/user/${id}/unblock` : `/user/${id}/block`;
       console.log(`📡 POST ${endpoint}`);
-      
+
       const response = await apiClient.post(endpoint);
       console.log('✅ API success:', response.data);
-      
-      // ========== METHOD 1: Immediate optimistic update ==========
+
       console.log('🔄 Method 1: Immediate optimistic update');
       setUsers(prevUsers => {
-        const updated = prevUsers.map(u => 
+        const updated = prevUsers.map(u =>
           u.id === id ? { ...u, isBlocked: !currentIsBlocked } : u
         );
         console.log('📊 Updated users state:', updated.find(u => u.id === id));
         return updated;
       });
-      
-      // ========== METHOD 2: Reload from server (after 500ms) ==========
+
       console.log('🔄 Method 2: Reloading from server in 500ms...');
       setTimeout(async () => {
         try {
@@ -78,12 +76,12 @@ const UsersList: React.FC = () => {
           console.error('❌ Failed to reload:', err);
         }
       }, 500);
-      
+
       console.log('✅ Block toggle complete!');
     } catch (err: any) {
       console.error('❌ Block toggle failed:', err);
       console.error('❌ Response:', err.response?.data);
-      alert(`Greška: ${err.response?.data?.message || 'Nepoznata greška'}`);
+      alert(`Error: ${err.response?.data?.message || 'Unknown error'}`);
     } finally {
       setProcessingUserId(null);
     }
@@ -111,7 +109,7 @@ const UsersList: React.FC = () => {
       <>
         <Navbar />
         <div className="userslist-container">
-          <div className="loading">⏳ Učitavanje korisnika...</div>
+          <div className="loading">⏳ Loading users...</div>
         </div>
       </>
     );
@@ -133,15 +131,15 @@ const UsersList: React.FC = () => {
       <Navbar />
       <div className="userslist-container">
         <div className="userslist-card">
-          <h2>👥 Spisak korisnika</h2>
+          <h2>👥 User List</h2>
           <p className="subtitle">
-            Ukupno korisnika: <strong>{users.length}</strong>
+            Total users: <strong>{users.length}</strong>
           </p>
 
           <div className="search-bar">
             <input
               type="text"
-              placeholder="🔍 Pretraži korisnike (ime, email, uloga)..."
+              placeholder="🔍 Search users (name, email, role)..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="search-input"
@@ -150,7 +148,7 @@ const UsersList: React.FC = () => {
               <button
                 onClick={() => setSearchTerm('')}
                 className="clear-search-btn"
-                title="Obriši pretragu"
+                title="Clear search"
               >
                 ✕
               </button>
@@ -160,28 +158,28 @@ const UsersList: React.FC = () => {
           {filteredUsers.length === 0 ? (
             <div className="no-users">
               {searchTerm
-                ? `Nema korisnika koji odgovaraju pretrazi "${searchTerm}"`
-                : 'Nema registrovanih korisnika.'}
+                ? `No users matching search "${searchTerm}"`
+                : 'No registered users.'}
             </div>
           ) : (
             <>
               {searchTerm && (
                 <p className="search-results">
-                  Pronađeno: <strong>{filteredUsers.length}</strong> korisnika
+                  Found: <strong>{filteredUsers.length}</strong> users
                 </p>
               )}
-              
+
               <div className="table-container">
                 <table>
                   <thead>
                     <tr>
                       <th>ID</th>
-                      <th>Korisničko ime</th>
+                      <th>Username</th>
                       <th>Email</th>
-                      <th>Uloga</th>
-                      <th>Broj kotlova</th>
+                      <th>Role</th>
+                      <th>Number of Boilers</th>
                       <th>Status</th>
-                      <th>Akcije</th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -199,12 +197,11 @@ const UsersList: React.FC = () => {
                           <span className="boiler-count">{u.gasBoilersCount}</span>
                         </td>
                         <td>
-                          {/* Show both the badge AND the raw value for debugging */}
                           <span
                             className={u.isBlocked ? 'status blocked' : 'status active'}
                             title={`DEBUG: isBlocked = ${u.isBlocked}`}
                           >
-                            {u.isBlocked ? 'Blokiran' : 'Aktivan'}
+                            {u.isBlocked ? 'Blocked' : 'Active'}
                           </span>
                         </td>
                         <td>
@@ -212,29 +209,29 @@ const UsersList: React.FC = () => {
                             <button
                               onClick={() => handleViewBuildings(u.id, u.username)}
                               className="btn-action btn-buildings"
-                              title="Vidi zgrade korisnika"
+                              title="View user buildings"
                             >
-                              🏢 Zgrade
+                              🏢 Buildings
                             </button>
                             <button
                               onClick={() => handleViewBoilers(u.id, u.username)}
                               className="btn-action btn-boilers"
-                              title="Vidi kotlove korisnika"
+                              title="View user boilers"
                             >
-                              🔥 Kotlovi
+                              🔥 Boilers
                             </button>
                             <button
                               onClick={() => handleBlockToggle(u.id, u.isBlocked)}
                               className={u.isBlocked ? 'btn-action btn-unblock' : 'btn-action btn-block'}
-                              title={u.isBlocked ? 'Odblokiraj korisnika' : 'Blokiraj korisnika'}
+                              title={u.isBlocked ? 'Unblock user' : 'Block user'}
                               disabled={processingUserId === u.id}
                             >
                               {processingUserId === u.id ? (
-                                '⏳ Učitavanje...'
+                                '⏳ Loading...'
                               ) : u.isBlocked ? (
-                                '✓ Odblokiraj'
+                                '✓ Unblock'
                               ) : (
-                                '🚫 Blokiraj'
+                                '🚫 Block'
                               )}
                             </button>
                           </div>

@@ -21,7 +21,7 @@ const CreateBuildingModal: React.FC<Props> = ({ isOpen, position, onClose, onCre
 
   const handleSubmit = async () => {
     if (!position || !name.trim()) {
-      alert('Unesite naziv zgrade');
+      alert('Enter building name');
       return;
     }
 
@@ -37,16 +37,15 @@ const CreateBuildingModal: React.FC<Props> = ({ isOpen, position, onClose, onCre
       };
 
       await onCreate(payload);
-      
-      // Reset form
+
       setName('');
       setHeatingArea(100);
       setHeight(2.7);
       setDesiredTemperature(22);
       onClose();
     } catch (err) {
-      console.error('Greška prilikom kreiranja zgrade:', err);
-      alert('Greška prilikom kreiranja zgrade');
+      console.error('Error creating building:', err);
+      alert('Error creating building');
     } finally {
       setLoading(false);
     }
@@ -57,21 +56,21 @@ const CreateBuildingModal: React.FC<Props> = ({ isOpen, position, onClose, onCre
   return (
     <div className="modal-overlay">
       <div className="modal create-building-modal">
-        <h2>🏢 Kreiraj Zgradu</h2>
-        
+        <h2>🏢 Create Building</h2>
+
         <div className="form-group">
-          <label>Naziv zgrade:</label>
+          <label>Building name:</label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="npr. Moja Kuća"
+            placeholder="e.g. My House"
             required
           />
         </div>
 
         <div className="form-group">
-          <label>Lokacija:</label>
+          <label>Location:</label>
           <input
             type="text"
             value={position ? `${position.lat.toFixed(6)}, ${position.lng.toFixed(6)}` : ''}
@@ -80,7 +79,7 @@ const CreateBuildingModal: React.FC<Props> = ({ isOpen, position, onClose, onCre
         </div>
 
         <div className="form-group">
-          <label>Površina grejanja (m²):</label>
+          <label>Heating area (m²):</label>
           <input
             type="number"
             value={heatingArea}
@@ -91,7 +90,7 @@ const CreateBuildingModal: React.FC<Props> = ({ isOpen, position, onClose, onCre
         </div>
 
         <div className="form-group">
-          <label>Visina plafona (m):</label>
+          <label>Ceiling height (m):</label>
           <input
             type="number"
             step="0.1"
@@ -101,12 +100,12 @@ const CreateBuildingModal: React.FC<Props> = ({ isOpen, position, onClose, onCre
             max="10"
           />
           <span className="calculated-info">
-            📦 Zapremina: {calculatedVolume.toFixed(1)} m³
+            📦 Volume: {calculatedVolume.toFixed(1)} m³
           </span>
         </div>
 
         <div className="form-group">
-          <label>Željena temperatura (°C):</label>
+          <label>Desired temperature (°C):</label>
           <input
             type="number"
             value={desiredTemperature}
@@ -123,15 +122,15 @@ const CreateBuildingModal: React.FC<Props> = ({ isOpen, position, onClose, onCre
             className="btn-primary"
             disabled={loading || !name.trim()}
           >
-            {loading ? 'Kreiranje...' : 'Kreiraj'}
+            {loading ? 'Creating...' : 'Create'}
           </button>
           <button onClick={onClose} className="btn-secondary" disabled={loading}>
-            Otkaži
+            Cancel
           </button>
         </div>
 
         <div className="info-note">
-          ℹ️ Termička svojstva i površine će biti automatski izračunati na osnovu standardnih vrednosti.
+          ℹ️ Thermal properties and areas will be automatically calculated based on standard values.
         </div>
       </div>
     </div>

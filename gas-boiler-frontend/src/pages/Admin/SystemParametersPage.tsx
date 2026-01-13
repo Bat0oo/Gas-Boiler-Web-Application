@@ -10,10 +10,9 @@ const SystemParametersPage: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  
+
   const [params, setParams] = useState<SystemParameters | null>(null);
-  
-  // Form state
+
   const [wallUValue, setWallUValue] = useState('');
   const [windowUValue, setWindowUValue] = useState('');
   const [ceilingUValue, setCeilingUValue] = useState('');
@@ -35,8 +34,7 @@ const SystemParametersPage: React.FC = () => {
     try {
       const data = await systemParametersService.getParameters();
       setParams(data);
-      
-      // Populate form
+
       setWallUValue(data.wallUValue.toString());
       setWindowUValue(data.windowUValue.toString());
       setCeilingUValue(data.ceilingUValue.toString());
@@ -48,7 +46,7 @@ const SystemParametersPage: React.FC = () => {
       setWindowToWallRatio(data.windowToWallRatio.toString());
       setSafetyFactor(data.safetyFactor.toString());
       setDefaultBoilerEfficiency(data.defaultBoilerEfficiency.toString());
-      
+
       setError('');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to load parameters');
@@ -72,14 +70,14 @@ const SystemParametersPage: React.FC = () => {
         outdoorDesignTemp: parseFloat(outdoorDesignTemp),
         groundTemp: parseFloat(groundTemp),
         gasPricePerKwh: parseFloat(gasPricePerKwh),
-        windowToWallRatio: parseFloat(windowToWallRatio),     
-        safetyFactor: parseFloat(safetyFactor),               
-        defaultBoilerEfficiency: parseFloat(defaultBoilerEfficiency), 
+        windowToWallRatio: parseFloat(windowToWallRatio),
+        safetyFactor: parseFloat(safetyFactor),
+        defaultBoilerEfficiency: parseFloat(defaultBoilerEfficiency),
       });
 
       setParams(updated);
-      setSuccess('✅ Parametri uspešno ažurirani!');
-      
+      setSuccess('✅ Parameters successfully updated!');
+
       setTimeout(() => setSuccess(''), 5000);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to update parameters');
@@ -110,7 +108,7 @@ const SystemParametersPage: React.FC = () => {
       <>
         <Navbar />
         <div className="system-params-container">
-          <div className="loading">⏳ Učitavanje...</div>
+          <div className="loading">⏳ Loading...</div>
         </div>
       </>
     );
@@ -121,7 +119,7 @@ const SystemParametersPage: React.FC = () => {
       <>
         <Navbar />
         <div className="system-params-container">
-          <div className="error">❌ Parametri nisu pronađeni</div>
+          <div className="error">❌ Parameters not found</div>
         </div>
       </>
     );
@@ -132,31 +130,26 @@ const SystemParametersPage: React.FC = () => {
       <Navbar />
       <div className="system-params-container">
         <div className="system-params-card">
-          {/* Compact Header */}
           <div className="page-header">
-            <h1>⚙️ Sistemski Parametri</h1>
+            <h1>⚙️ System Parameters</h1>
             <div className="metadata-inline">
-              <span>Poslednja izmena: {new Date(params.lastUpdated).toLocaleString('sr-RS')}</span>
+              <span>Last updated: {new Date(params.lastUpdated).toLocaleString('sr-RS')}</span>
               <span>•</span>
-              <span>Korisnik: {params.updatedBy}</span>
+              <span>User: {params.updatedBy}</span>
             </div>
           </div>
 
-          {/* Alerts */}
           {error && <div className="alert alert-error">❌ {error}</div>}
           {success && <div className="alert alert-success">{success}</div>}
 
-          {/* Compact Form */}
           <form onSubmit={handleSubmit} className="params-form">
-            
-            {/* ROW 1: U-VALUES (4 columns) */}
+
             <div className="params-grid">
-              
-              {/* Wall U-Value */}
-              <div className="param-item" data-tooltip="Koeficijent prolaza toplote kroz zid. Niža vrednost = bolja izolacija.">
+
+              <div className="param-item" data-tooltip="Heat transfer coefficient through wall. Lower value = better insulation.">
                 <label>
                   <span className="param-icon">🏗️</span>
-                  <span className="param-name">Zid</span>
+                  <span className="param-name">Wall</span>
                   <span className="info-icon">ℹ️</span>
                 </label>
                 <div className="input-wrapper">
@@ -175,11 +168,10 @@ const SystemParametersPage: React.FC = () => {
                 <span className="param-hint">0.3 - 1.5</span>
               </div>
 
-              {/* Window U-Value */}
-              <div className="param-item" data-tooltip="Koeficijent prolaza toplote kroz prozor. Niža vrednost = bolji prozor.">
+              <div className="param-item" data-tooltip="Heat transfer coefficient through window. Lower value = better window.">
                 <label>
                   <span className="param-icon">🪟</span>
-                  <span className="param-name">Prozor</span>
+                  <span className="param-name">Window</span>
                   <span className="info-icon">ℹ️</span>
                 </label>
                 <div className="input-wrapper">
@@ -198,11 +190,10 @@ const SystemParametersPage: React.FC = () => {
                 <span className="param-hint">1.1 - 5.8</span>
               </div>
 
-              {/* Ceiling U-Value */}
-              <div className="param-item" data-tooltip="Koeficijent prolaza toplote kroz plafon/krov. Koristi se za proračun gubitaka ka gore.">
+              <div className="param-item" data-tooltip="Heat transfer coefficient through ceiling/roof. Used for calculating upward heat losses.">
                 <label>
                   <span className="param-icon">🏠</span>
-                  <span className="param-name">Plafon</span>
+                  <span className="param-name">Ceiling</span>
                   <span className="info-icon">ℹ️</span>
                 </label>
                 <div className="input-wrapper">
@@ -221,11 +212,10 @@ const SystemParametersPage: React.FC = () => {
                 <span className="param-hint">0.15 - 2.0</span>
               </div>
 
-              {/* Floor U-Value */}
-              <div className="param-item" data-tooltip="Koeficijent prolaza toplote kroz pod. Koristi se za proračun gubitaka prema tlu.">
+              <div className="param-item" data-tooltip="Heat transfer coefficient through floor. Used for calculating heat losses to ground.">
                 <label>
                   <span className="param-icon">📐</span>
-                  <span className="param-name">Pod</span>
+                  <span className="param-name">Floor</span>
                   <span className="info-icon">ℹ️</span>
                 </label>
                 <div className="input-wrapper">
@@ -246,14 +236,12 @@ const SystemParametersPage: React.FC = () => {
 
             </div>
 
-            {/* ROW 2: TEMPERATURES + GAS PRICE (3 columns) */}
             <div className="params-grid params-grid-3">
-              
-              {/* Outdoor Design Temperature */}
-              <div className="param-item" data-tooltip="Najhladnija očekivana spoljna temperatura zimi. Koristi se za dimenzionisanje sistema grejanja.">
+
+              <div className="param-item" data-tooltip="Coldest expected outdoor temperature in winter. Used for heating system sizing.">
                 <label>
                   <span className="param-icon">❄️</span>
-                  <span className="param-name">Spoljna temp.</span>
+                  <span className="param-name">Outdoor temp.</span>
                   <span className="info-icon">ℹ️</span>
                 </label>
                 <div className="input-wrapper">
@@ -269,14 +257,13 @@ const SystemParametersPage: React.FC = () => {
                   />
                   <span className="param-unit">°C</span>
                 </div>
-                <span className="param-hint">-30 do 5</span>
+                <span className="param-hint">-30 to 5</span>
               </div>
 
-              {/* Ground Temperature */}
-              <div className="param-item" data-tooltip="Prosečna temperatura tla. Koristi se za proračun toplotnih gubitaka kroz pod.">
+              <div className="param-item" data-tooltip="Average ground temperature. Used for calculating heat losses through floor.">
                 <label>
                   <span className="param-icon">🌍</span>
-                  <span className="param-name">Temp. tla</span>
+                  <span className="param-name">Ground temp.</span>
                   <span className="info-icon">ℹ️</span>
                 </label>
                 <div className="input-wrapper">
@@ -295,11 +282,10 @@ const SystemParametersPage: React.FC = () => {
                 <span className="param-hint">0 - 20</span>
               </div>
 
-              {/* Gas Price */}
-              <div className="param-item" data-tooltip="Cena prirodnog gasa po kilovat-času. Koristi se za procenu troškova grejanja.">
+              <div className="param-item" data-tooltip="Natural gas price per kilowatt-hour. Used for heating cost estimation.">
                 <label>
                   <span className="param-icon">💰</span>
-                  <span className="param-name">Cena gasa</span>
+                  <span className="param-name">Gas price</span>
                   <span className="info-icon">ℹ️</span>
                 </label>
                 <div className="input-wrapper">
@@ -319,14 +305,12 @@ const SystemParametersPage: React.FC = () => {
               </div>
                          </div>
 
-            {/* ROW 3: NEW BUILDING & CALCULATION PARAMETERS (3 columns) */}
             <div className="params-grid params-grid-3">
-              
-              {/* Window to Wall Ratio */}
-              <div className="param-item" data-tooltip="Udeo površine prozora u odnosu na zid. Tipično 15%. Stare zgrade: 10-12%, Moderne: 15-20%, Kancelarije: 30-40%.">
+
+              <div className="param-item" data-tooltip="Window area ratio relative to wall. Typically 15%. Old buildings: 10-12%, Modern: 15-20%, Offices: 30-40%.">
                 <label>
                   <span className="param-icon">🪟</span>
-                  <span className="param-name">Udeo prozora</span>
+                  <span className="param-name">Window ratio</span>
                   <span className="info-icon">ℹ️</span>
                 </label>
                 <div className="input-wrapper">
@@ -345,11 +329,10 @@ const SystemParametersPage: React.FC = () => {
                 <span className="param-hint">0.10 - 0.40</span>
               </div>
 
-              {/* Safety Factor */}
-              <div className="param-item" data-tooltip="Faktor sigurnosti za projektovanje sistema grejanja. Dodaje rezervu za ekstremne uslove. Tipično 1.15 (15% rezerve).">
+              <div className="param-item" data-tooltip="Safety factor for heating system design. Adds reserve for extreme conditions. Typically 1.15 (15% reserve).">
                 <label>
                   <span className="param-icon">🛡️</span>
-                  <span className="param-name">Faktor sigurnosti</span>
+                  <span className="param-name">Safety factor</span>
                   <span className="info-icon">ℹ️</span>
                 </label>
                 <div className="input-wrapper">
@@ -368,11 +351,10 @@ const SystemParametersPage: React.FC = () => {
                 <span className="param-hint">1.00 - 1.30</span>
               </div>
 
-              {/* Default Boiler Efficiency */}
-              <div className="param-item" data-tooltip="Podrazumevana efikasnost kotla za proračun troškova. Stari: 70-85%, Moderni: 90-95%, Visoka efikasnost: 95-98%.">
+              <div className="param-item" data-tooltip="Default boiler efficiency for cost calculations. Old: 70-85%, Modern: 90-95%, High efficiency: 95-98%.">
                 <label>
                   <span className="param-icon">⚙️</span>
-                  <span className="param-name">Efikasnost kotla</span>
+                  <span className="param-name">Boiler efficiency</span>
                   <span className="info-icon">ℹ️</span>
                 </label>
                 <div className="input-wrapper">
@@ -393,7 +375,6 @@ const SystemParametersPage: React.FC = () => {
 
             </div>
 
-            {/* Action Buttons */}
             <div className="form-actions">
               <button
                 type="button"
@@ -401,14 +382,14 @@ const SystemParametersPage: React.FC = () => {
                 className="btn btn-secondary"
                 disabled={saving}
               >
-                🔄 Resetuj
+                🔄 Reset
               </button>
               <button
                 type="submit"
                 className="btn btn-primary"
                 disabled={saving}
               >
-                {saving ? '⏳ Čuvanje...' : '💾 Sačuvaj'}
+                {saving ? '⏳ Saving...' : '💾 Save'}
               </button>
             </div>
           </form>

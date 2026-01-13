@@ -30,7 +30,7 @@ const ViewSystemParametersPage: React.FC = () => {
       <>
         <Navbar />
         <div className="view-params-container">
-          <div className="loading">⏳ Učitavanje...</div>
+          <div className="loading">⏳ Loading...</div>
         </div>
       </>
     );
@@ -41,7 +41,7 @@ const ViewSystemParametersPage: React.FC = () => {
       <>
         <Navbar />
         <div className="view-params-container">
-          <div className="error">❌ Parametri nisu pronađeni</div>
+          <div className="error">❌ Parameters not found</div>
         </div>
       </>
     );
@@ -52,81 +52,77 @@ const ViewSystemParametersPage: React.FC = () => {
       <Navbar />
       <div className="view-params-container">
         <div className="view-params-card">
-          {/* Compact Header */}
           <div className="page-header">
-            <h1>📋 Sistemski Parametri</h1>
+            <h1>📋 System Parameters</h1>
             <div className="metadata-compact">
-              <span>Poslednja izmena: {new Date(params.lastUpdated).toLocaleString('sr-RS')}</span>
+              <span>Last updated: {new Date(params.lastUpdated).toLocaleString('sr-RS')}</span>
               <span>•</span>
-              <span>Korisnik: {params.updatedBy}</span>
+              <span>User: {params.updatedBy}</span>
             </div>
           </div>
 
           {error && <div className="alert alert-error">❌ {error}</div>}
 
-          {/* Compact Info */}
           <div className="info-notice-compact">
-            <strong>ℹ️</strong> Parametri postavljeni od administratora. Koriste se za proračune toplotnih gubitaka.
+            <strong>ℹ️</strong> Parameters set by administrator. Used for heat loss calculations.
           </div>
 
-          {/* ROW 1: U-Values (4 columns) */}
           <div className="params-section-compact">
-            <h3 className="section-title-compact">🏗️ U-vrednosti (W/m²K)</h3>
+            <h3 className="section-title-compact">🏗️ U-values (W/m²K)</h3>
             <div className="params-grid-4">
               <div className="param-compact">
-                <div className="param-label-compact">Zidovi</div>
+                <div className="param-label-compact">Walls - WallU</div>
                 <div className="param-value-compact">{params.wallUValue.toFixed(2)}</div>
               </div>
               <div className="param-compact">
-                <div className="param-label-compact">Prozori</div>
+                <div className="param-label-compact">Windows - WindowU</div>
                 <div className="param-value-compact">{params.windowUValue.toFixed(2)}</div>
               </div>
               <div className="param-compact">
-                <div className="param-label-compact">Plafon</div>
+                <div className="param-label-compact">Ceiling - CeilingU</div>
                 <div className="param-value-compact">{params.ceilingUValue.toFixed(2)}</div>
               </div>
               <div className="param-compact">
-                <div className="param-label-compact">Pod</div>
+                <div className="param-label-compact">Floor - FloorU</div>
                 <div className="param-value-compact">{params.floorUValue.toFixed(2)}</div>
               </div>
             </div>
           </div>
 
-          {/* ROW 2: Temperatures + Economics (3 columns) */}
           <div className="params-section-compact">
-            <h3 className="section-title-compact">🌡️ Temperature i Cene</h3>
+            <h3 className="section-title-compact">🌡️ Temperatures and Prices</h3>
             <div className="params-grid-3">
               <div className="param-compact temp">
-                <div className="param-label-compact">❄️ Spoljna</div>
+                <div className="param-label-compact">❄️ Outdoor</div>
                 <div className="param-value-compact">{params.outdoorDesignTemp.toFixed(1)} <span className="unit-small">°C</span></div>
               </div>
               <div className="param-compact temp">
-                <div className="param-label-compact">🌍 Tlo</div>
+                <div className="param-label-compact">🌍 Ground</div>
                 <div className="param-value-compact">{params.groundTemp.toFixed(1)} <span className="unit-small">°C</span></div>
               </div>
               <div className="param-compact price">
-                <div className="param-label-compact">💰 Cena gasa</div>
+                <div className="param-label-compact">💰 Gas price</div>
                 <div className="param-value-compact">{params.gasPricePerKwh.toFixed(3)} <span className="unit-small">€/kWh</span></div>
               </div>
             </div>
           </div>
           <div className="params-section-compact new-section">
-            <h3 className="section-title-compact">🔧 Parametri zgrade i proračuna</h3>
+            <h3 className="section-title-compact">🔧 Building and calculation parameters</h3>
             <div className="params-grid-3">
               <div className="param-compact new-param">
-                <div className="param-label-compact">🪟 Udeo prozora</div>
+                <div className="param-label-compact">🪟 Window ratio</div>
                 <div className="param-value-compact">
                   {(params.windowToWallRatio * 100).toFixed(0)} <span className="unit-small">%</span>
                 </div>
               </div>
               <div className="param-compact new-param">
-                <div className="param-label-compact">🛡️ Faktor sigurnosti</div>
+                <div className="param-label-compact">🛡️ Safety factor</div>
                 <div className="param-value-compact">
                   {params.safetyFactor.toFixed(2)} <span className="unit-small">×</span>
                 </div>
               </div>
               <div className="param-compact new-param">
-                <div className="param-label-compact">⚙️ Efikasnost kotla</div>
+                <div className="param-label-compact">⚙️ Boiler efficiency</div>
                 <div className="param-value-compact">
                   {(params.defaultBoilerEfficiency * 100).toFixed(0)} <span className="unit-small">%</span>
                 </div>
@@ -134,9 +130,9 @@ const ViewSystemParametersPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Compact Explanation */}
           <div className="explanation-compact">
-            <strong>💡 Objašnjenja:</strong> U-vrednosti mere izolaciju (niže = bolje). Spoljna temp za dimenzionisanje. Temp tla za proračun poda. Cena gasa za procenu troškova. Udeo prozora definiše odnos površine prozora i zida. Faktor sigurnosti dodaje rezervu za ekstremne uslove. Efikasnost kotla utiče na troškove grejanja.          </div>
+            <strong>💡 Explanations:</strong> U-values measure insulation (lower = better). Outdoor temp for system sizing. Ground temp for floor calculations. Gas price for cost estimation. Window ratio defines window-to-wall area ratio. Safety factor adds reserve for extreme conditions. Boiler efficiency affects heating costs.
+          </div>
         </div>
       </div>
     </>
