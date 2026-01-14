@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BuildingDetail } from '../types/buildingtypes';
 import { buildingService } from '../services/buildingService';
 import './BuildingDetailsModal.css';
+import { HeatLossCalculation } from '../types/buildingtypes';
 
 interface Props {
   isOpen: boolean;
@@ -31,9 +32,14 @@ const BuildingDetailsModal: React.FC<Props> = ({
   const [building, setBuilding] = useState<BuildingDetail | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const [calculations, setCalculations] = useState<HeatLossCalculation | null>(null);
+  const [calculationsLoading, setCalculationsLoading] = useState(false);
+  const [calculationsError, setCalculationsError] = useState('');
+
   useEffect(() => {
     if (isOpen && buildingId) {
       loadBuilding();
+      loadCalculations();
     }
   }, [isOpen, buildingId]);
 
@@ -72,6 +78,23 @@ const BuildingDetailsModal: React.FC<Props> = ({
       }
     }
   };
+
+  const loadCalculations = async () => {
+  if (!buildingId) return;
+  
+  setCalculationsLoading(true);
+  setCalculationsError('');
+  
+  try {
+    const calcs = await buildingService.getCalculations(buildingId, token);
+    setCalculations(calcs);
+  } catch (err: any) {
+    console.error('Error loading calculations:', err);
+    setCalculationsError('Failed to load calculations');
+  } finally {
+    setCalculationsLoading(false);
+  }
+};
 
   if (!isOpen || !building) return null;
 
@@ -135,7 +158,120 @@ const BuildingDetailsModal: React.FC<Props> = ({
     </div>
   </>
 )}
-            </div>
+</div>
+{calculationsLoading && (
+  <div className="calculations-section">
+    <h3>⚡ Calculations</h3>
+    <p className="loading-text">Calculating heat loss...</p>
+  </div>
+)}
+
+{calculationsError && (
+  <div className="calculations-section">
+    <h3>⚡ Calculations</h3>
+    <p className="error-text">{calculationsError}</p>
+  </div>
+)}
+
+{!calculationsLoading && !calculationsError && calculations && (
+  <div className="calculations-section">
+    <h3>⚡ Heat Loss & Cost Analysis</h3>
+    
+    {/* Required Power vs Available */}
+    <div className="power-summary">
+      <div className="power-item">
+        <span className="power-label">Required Power:</span>
+        <span className="power-value required">{calculations.requiredPowerKw.toFixed(2)} kW</span>
+      </div>
+      <div className="power-item">
+        <span className="power-label">Available Power:</span>
+        <span className="power-value available">{calculations.currentBoilerCapacityKw.toFixed(2)} kW</span>
+      </div>
+      <div className={`capacity-status ${calculations.hasSufficientCapacity ? 'sufficient' : 'insufficient'}`}>
+        {calculations.hasSufficientCapacity ? (
+          <>
+            ✅ Sufficient capacity 
+            <span className="surplus">(+{Math.abs(calculations.capacityDeficitKw).toFixed(2)} kW surplus)</span>
+          </>
+        ) : (
+          <>
+            ⚠️ Insufficient capacity 
+            <span className="deficit">({Math.abs(calculations.capacityDeficitKw).toFixed(2)} kW deficit)</span>
+          </>
+        )}
+      </div>
+    </div>
+
+    {/* Heat Loss Breakdown */}
+    <div className="heat-loss-breakdown">
+      <h4>Heat Loss Breakdown</h4>
+      <div className="breakdown-grid">
+        <div className="breakdown-item">
+          <span className="breakdown-icon">🧱</span>
+          <span className="breakdown-label">Walls</span>
+          <span className="breakdown-value">{(calculations.wallHeatLoss / 1000).toFixed(2)} kW</span>
+        </div>
+        <div className="breakdown-item">
+          <span className="breakdown-icon">🪟</span>
+          <span className="breakdown-label">Windows</span>
+          <span className="breakdown-value">{(calculations.windowHeatLoss / 1000).toFixed(2)} kW</span>
+        </div>
+        <div className="breakdown-item">
+          <span className="breakdown-icon">🏠</span>
+          <span className="breakdown-label">Ceiling</span>
+          <span className="breakdown-value">{(calculations.ceilingHeatLoss / 1000).toFixed(2)} kW</span>
+        </div>
+        <div className="breakdown-item">
+          <span className="breakdown-icon">📐</span>
+          <span className="breakdown-label">Floor</span>
+          <span className="breakdown-value">{(calculations.floorHeatLoss / 1000).toFixed(2)} kW</span>
+        </div>
+      </div>
+      
+      <div className="breakdown-total">
+        <div className="total-line">
+          <span>Subtotal:</span>
+          <span>{(calculations.totalHeatLossBeforeSafety / 1000).toFixed(2)} kW</span>
+        </div>
+        <div className="total-line">
+          <span>Safety Factor (×{calculations.safetyFactor}):</span>
+          <span>+{((calculations.totalHeatLoss - calculations.totalHeatLossBeforeSafety) / 1000).toFixed(2)} kW</span>
+        </div>
+        <div className="total-line final">
+          <span>Total Heat Loss:</span>
+          <span>{(calculations.totalHeatLoss / 1000).toFixed(2)} kW</span>
+        </div>
+      </div>
+    </div>
+
+    {/* Cost Estimates */}
+    <div className="cost-estimates">
+      <h4>💰 Estimated Costs</h4>
+      <div className="cost-grid">
+        <div className="cost-item">
+          <span className="cost-period">Daily</span>
+          <span className="cost-amount">€{calculations.dailyCostEur.toFixed(2)}</span>
+          <span className="cost-energy">{calculations.dailyEnergyKwh.toFixed(1)} kWh</span>
+        </div>
+        <div className="cost-item">
+          <span className="cost-period">Monthly</span>
+          <span className="cost-amount">€{calculations.monthlyCostEur.toFixed(2)}</span>
+          <span className="cost-energy">{(calculations.dailyEnergyKwh * 30).toFixed(0)} kWh</span>
+        </div>
+        <div className="cost-item">
+          <span className="cost-period">Annual</span>
+          <span className="cost-amount">€{calculations.annualCostEur.toFixed(2)}</span>
+          <span className="cost-energy">{(calculations.dailyEnergyKwh * 365).toFixed(0)} kWh</span>
+        </div>
+      </div>
+      <div className="cost-info">
+        <span>⚙️ Avg. Efficiency: {(calculations.boilerEfficiency * 100).toFixed(0)}%</span>
+        <span>•</span>
+        <span>💵 Gas Price: €{calculations.gasPricePerKwh.toFixed(3)}/kWh</span>
+      </div>
+    </div>
+  </div>
+)}
 
             <hr className="building-details-divider" />
 

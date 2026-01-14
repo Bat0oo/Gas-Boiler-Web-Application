@@ -1,5 +1,5 @@
 import apiClient from './apiService';
-import { Building, BuildingMapPoint, BuildingDetail, CreateBuildingPayload, UpdateBuildingPayload } from '../types/buildingtypes';
+import { Building, BuildingMapPoint, BuildingDetail, CreateBuildingPayload, UpdateBuildingPayload, HeatLossCalculation } from '../types/buildingtypes';
 
 export const buildingService = {
   // Get all buildings (list view)
@@ -34,7 +34,7 @@ export const buildingService = {
     return response.data;
   },
 
-  // ========== NEW: UPDATE BUILDING METHOD ==========
+  // Update building
   updateBuilding: async (
     id: number, 
     payload: UpdateBuildingPayload, 
@@ -55,5 +55,14 @@ export const buildingService = {
     await apiClient.delete(`/BuildingObject/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
+  },
+  getCalculations: async (buildingId: number, token: string): Promise<HeatLossCalculation> => {
+    const response = await apiClient.get<HeatLossCalculation>(
+      `/BuildingObject/${buildingId}/calculations`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    return response.data;
   },
 };

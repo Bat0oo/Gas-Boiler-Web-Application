@@ -2,6 +2,7 @@
   max-width: 600px;
   max-height: 90vh;
   overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .building-details-header {
@@ -330,4 +331,243 @@
   margin-top: 0.5rem;
   padding-top: 0.5rem;
   border-top: 1px solid #bfdbfe;
+}
+
+/* Calculations Section */
+.calculations-section {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-radius: 12px;
+  border: 2px solid #38bdf8;
+}
+
+.calculations-section h3 {
+  margin: 0 0 1rem 0;
+  color: #0c4a6e;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.calculations-section h4 {
+  margin: 1rem 0 0.75rem 0;
+  color: #0369a1;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.loading-text, .error-text {
+  text-align: center;
+  padding: 2rem 0;
+  color: #64748b;
+  font-style: italic;
+}
+
+.error-text {
+  color: #dc2626;
+}
+
+/* Power Summary */
+.power-summary {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  border: 1px solid #bae6fd;
+}
+
+.power-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+.power-label {
+  font-weight: 600;
+  color: #475569;
+}
+
+.power-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.power-value.required {
+  color: #dc2626;
+}
+
+.power-value.available {
+  color: #16a34a;
+}
+
+.capacity-status {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 6px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.capacity-status.sufficient {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #86efac;
+}
+
+.capacity-status.insufficient {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+
+.surplus {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #15803d;
+}
+
+.deficit {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #b91c1c;
+}
+
+/* Heat Loss Breakdown */
+.heat-loss-breakdown {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  border: 1px solid #bae6fd;
+}
+
+.breakdown-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.breakdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: #f8fafc;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.breakdown-icon {
+  font-size: 1.5rem;
+}
+
+.breakdown-label {
+  flex: 1;
+  font-weight: 500;
+  color: #475569;
+}
+
+.breakdown-value {
+  font-weight: 700;
+  color: #0c4a6e;
+  font-size: 1.1rem;
+}
+
+.breakdown-total {
+  border-top: 2px solid #e2e8f0;
+  padding-top: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.total-line {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.35rem 0;
+  color: #475569;
+}
+
+.total-line.final {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0c4a6e;
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 2px solid #cbd5e1;
+}
+
+/* Cost Estimates */
+.cost-estimates {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #bae6fd;
+}
+
+.cost-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.cost-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border-radius: 8px;
+  border: 2px solid #fbbf24;
+}
+
+.cost-period {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #92400e;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.cost-amount {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #78350f;
+  margin-bottom: 0.25rem;
+}
+
+.cost-energy {
+  font-size: 0.8rem;
+  color: #92400e;
+  font-weight: 500;
+}
+
+.cost-info {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: #64748b;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .breakdown-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .cost-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .power-value {
+    font-size: 1.2rem;
+  }
+  
+  .cost-amount {
+    font-size: 1.3rem;
+  }
 }
