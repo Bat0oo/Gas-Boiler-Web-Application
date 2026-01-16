@@ -47,7 +47,6 @@ export interface BuildingMapPoint {
   weatherDescription?: string;
 }
 
-// SIMPLIFIED - Only user inputs!
 export interface CreateBuildingPayload {
   name: string;
   latitude: number;
@@ -55,10 +54,8 @@ export interface CreateBuildingPayload {
   heatingArea: number;
   height: number;
   desiredTemperature: number;
-  // U-values and surface areas are auto-calculated in backend!
 }
 
-// Update still includes all fields (for editing existing buildings)
 export interface UpdateBuildingPayload {
   name: string;
   latitude: number;
@@ -74,4 +71,39 @@ export interface UpdateBuildingPayload {
   windowArea: number;
   ceilingArea: number;
   floorArea: number;
+}
+
+export interface HeatLossCalculation {
+  // Individual heat losses (Watts)
+  wallHeatLoss: number;
+  windowHeatLoss: number;
+  ceilingHeatLoss: number;
+  floorHeatLoss: number;
+  
+  // Total heat loss
+  totalHeatLossBeforeSafety: number;
+  safetyFactor: number;
+  totalHeatLoss: number;
+  requiredPowerKw: number;
+  
+  // Temperature data
+  indoorTemperature: number;
+  outdoorTemperature: number;
+  groundTemperature: number;
+  temperatureDifference: number;
+  
+  // Cost calculations
+  dailyEnergyKwh: number;
+  dailyCostEur: number;
+  monthlyCostEur: number;
+  annualCostEur: number;
+  
+  // Efficiency & Price
+  boilerEfficiency: number;
+  gasPricePerKwh: number;
+  
+  // Capacity
+  currentBoilerCapacityKw: number;
+  hasSufficientCapacity: boolean;
+  capacityDeficitKw: number;
 }
