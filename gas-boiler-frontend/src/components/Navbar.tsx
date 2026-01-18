@@ -23,7 +23,8 @@ const Navbar: React.FC = () => {
       <ul className="navbar-links">
         {user.role === 'Admin' ? (
           <>
-            <li><Link to="/admin/dashboard">Dashboard</Link></li>
+            <li><Link to="/dashboard">Dashboard</Link></li>
+            <li><Link to="/admin/map">Map</Link></li>
             <li><Link to="/admin/users">Users</Link></li>
             <li><Link to="/buildings">Buildings</Link></li>
             <li><Link to="/my-boilers">Boilers</Link></li>
@@ -33,6 +34,7 @@ const Navbar: React.FC = () => {
         ) : (
           <>
             <li><Link to="/dashboard">Dashboard</Link></li>
+            <li><Link to="/map">Map</Link></li>
             <li><Link to="/my-boilers">My Boilers</Link></li>
             <li><Link to="/buildings">My Buildings</Link></li>
             <li><Link to="/parameters">Parameters</Link></li>

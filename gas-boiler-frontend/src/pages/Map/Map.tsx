@@ -2,9 +2,9 @@ import React from 'react';
 import GasBoilerMap from '../../components/GasBoilerMap';
 import Navbar from '../../components/Navbar';
 import { useAuth } from '../../context/AuthContext';
-import './Dashboard.css';
+import './Map.css';
 
-const Dashboard: React.FC = () => {
+const Map: React.FC = () => {
   const { user } = useAuth();
 
   return (
@@ -22,4 +22,4 @@ const Dashboard: React.FC = () => {
   );
 };
 
-export default Dashboard;
+export default Map;

@@ -37,6 +37,7 @@ namespace Gas_Boiler_Backend
             builder.Services.AddScoped<IBuildingObjectService, BuildingObjectService>();
             builder.Services.AddScoped<ISystemParametersService, SystemParametersService>();
             builder.Services.AddScoped<IBuildingCalculatorService, BuildingCalculatorService>();
+            builder.Services.AddScoped<IDashboardService, DashboardService>();
 
             builder.Services.AddHttpClient<IWeatherService, OpenWeatherService>();
 

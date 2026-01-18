@@ -16,7 +16,6 @@ import EditBoilerModal from '../pages/MyBoilers/EditBoilerModal';
 import './GasBoilerMap.css';
 import 'leaflet/dist/leaflet.css';
 
-// Fix leaflet's default icon path
 import L from 'leaflet';
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({

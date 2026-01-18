@@ -2,9 +2,9 @@ import React from 'react';
 import GasBoilerMap from '../../components/GasBoilerMap';
 import Navbar from '../../components/Navbar';
 import { useAuth } from '../../context/AuthContext';
-import './AdminDashboard.css';
+import './AdminMap.css';
 
-const AdminDashboard: React.FC = () => {
+const AdminMap: React.FC = () => {
   const { user } = useAuth();
 
   return (
@@ -23,4 +23,4 @@ const AdminDashboard: React.FC = () => {
   );
 };
 
-export default AdminDashboard;
+export default AdminMap;
