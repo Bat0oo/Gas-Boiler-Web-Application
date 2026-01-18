@@ -100,7 +100,7 @@ const BuildingDetailsModal: React.FC<Props> = ({
 
   return (
     <div className="modal-overlay">
-      <div className="modal building-details-modal">
+      <div className="building-details-modal">
         {loading ? (
           <div className="loading-message">Loading...</div>
         ) : (

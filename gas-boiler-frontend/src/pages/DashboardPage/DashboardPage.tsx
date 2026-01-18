@@ -6,6 +6,7 @@ import { dashboardService } from '../../services/dashboardService';
 import { buildingService } from '../../services/buildingService';
 import { DashboardStats } from '../../types/dashboardtypes';
 import { Building } from '../../types/buildingtypes';
+import BuildingDetailsModal from '../../components/BuildingDetailsModal';
 import './DashboardPage.css';
 
 const DashboardPage: React.FC = () => {
@@ -16,6 +17,9 @@ const DashboardPage: React.FC = () => {
   const [buildings, setBuildings] = useState<Building[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  const [selectedBuildingId, setSelectedBuildingId] = useState<number | null>(null);
+  const [showBuildingModal, setShowBuildingModal] = useState(false);
 
   useEffect(() => {
     loadDashboard();
@@ -42,9 +46,43 @@ const DashboardPage: React.FC = () => {
     }
   };
 
-  const handleBuildingClick = (buildingId: number) => {
-    navigate('/map', { state: { openBuildingId: buildingId } });
-  };
+const handleBuildingClick = (buildingId: number) => {
+  setSelectedBuildingId(buildingId);
+  setShowBuildingModal(true);
+};
+
+const handleAddBoiler = (buildingId: number) => {
+  // Navigate to boilers page or show add boiler modal
+  navigate('/boilers');
+};
+
+const handleEditBuilding = (buildingId: number) => {
+  // Navigate to edit building or show edit modal
+  console.log('Edit building:', buildingId);
+};
+
+const handleDeleteBuilding = async (buildingId: number) => {
+  try {
+    if (!user?.token) return;
+    await buildingService.deleteBuilding(buildingId, user.token);
+    setShowBuildingModal(false);
+    loadDashboard(); // Reload dashboard data
+  } catch (err) {
+    console.error('Error deleting building:', err);
+  }
+};
+
+const handleEditBoiler = (boilerId: number) => {
+  console.log('Edit boiler:', boilerId);
+};
+
+const handleDeleteBoiler = async (boilerId: number) => {
+  try {
+    console.log('Delete boiler:', boilerId);
+  } catch (err) {
+    console.error('Error deleting boiler:', err);
+  }
+};
 
   if (loading) {
     return (
@@ -243,6 +281,20 @@ const DashboardPage: React.FC = () => {
         </div>
 
       </div>
+      {showBuildingModal && selectedBuildingId && (
+        <BuildingDetailsModal
+          isOpen={showBuildingModal}
+          buildingId={selectedBuildingId}
+          token={user!.token}
+          onClose={() => setShowBuildingModal(false)}
+          onAddBoiler={handleAddBoiler}
+          onEditBuilding={handleEditBuilding}
+          onDeleteBuilding={handleDeleteBuilding}
+          onEditBoiler={handleEditBoiler}
+          onDeleteBoiler={handleDeleteBoiler}
+          isAdmin={user?.role === 'Admin'}
+        />
+      )}
     </>
   );
 };
