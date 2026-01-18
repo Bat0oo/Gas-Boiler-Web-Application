@@ -1,8 +1,8 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import Dashboard from '../pages/Dashboard/Dashboard';
-import AdminDashboard from '../pages/Admin/AdminDashboard';
+import Map from '../pages/Map/Map';
+import AdminMap from '../pages/Admin/AdminMap';
 import Profile from '../pages/Profile/Profile';
 import ProtectedRoute from '../components/ProtectedRoute';
 import UsersPage from '../pages/Admin/UsersPage';
@@ -34,23 +34,23 @@ const AppRoutes: React.FC = () => {
     <Routes>
       {user.role === 'Admin' ? (
   <>
-    <Route path="/admin/dashboard" element={<ProtectedRoute adminOnly><AdminDashboard /></ProtectedRoute>} />
+    <Route path="/admin/map" element={<ProtectedRoute adminOnly><AdminMap /></ProtectedRoute>} />
     <Route path="/admin/users" element={<ProtectedRoute adminOnly><UsersPage /></ProtectedRoute>} />
     <Route path="/admin/system-parameters" element={<ProtectedRoute adminOnly><SystemParametersPage /></ProtectedRoute>} />
     <Route path="/buildings" element={<ProtectedRoute adminOnly><AllBuildingsPage /></ProtectedRoute>} />
     <Route path="/my-boilers" element={<ProtectedRoute adminOnly><MyBoilersPage /></ProtectedRoute>} />
     <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
     <Route path="/profile/:id" element={ <ProtectedRoute adminOnly> <Profile /> </ProtectedRoute>}/>
-    <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
+    <Route path="*" element={<Navigate to="/admin/map" replace />} />
   </>
       ) : (
         <>
-          <Route path="/dashboard" element={ <ProtectedRoute> <Dashboard /> </ProtectedRoute>}/>
+          <Route path="/map" element={ <ProtectedRoute> <Map /> </ProtectedRoute>}/>
           <Route path="/profile" element={ <ProtectedRoute> <Profile /> </ProtectedRoute> }/>
           <Route path="/my-boilers" element={<ProtectedRoute><MyBoilersPage /></ProtectedRoute>} />
           <Route path="/buildings" element={<ProtectedRoute><AllBuildingsPage /></ProtectedRoute>} />
           <Route path="/parameters" element={<ProtectedRoute><ViewSystemParametersPage /></ProtectedRoute>} />
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          <Route path="*" element={<Navigate to="/map" replace />} />
         </>
       )}
     </Routes>
