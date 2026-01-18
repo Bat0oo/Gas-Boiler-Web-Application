@@ -30,7 +30,6 @@ const Navbar: React.FC = () => {
             <li><Link to="/my-boilers">Boilers</Link></li>
             <li><Link to="/admin/system-parameters">Parameters</Link></li>
             <li><Link to="/profile">Profile</Link></li>
-            <li><Link to="/admin/map">Map</Link></li>
           </>
         ) : (
           <>
