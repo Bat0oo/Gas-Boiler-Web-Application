@@ -15,6 +15,7 @@ namespace Gas_Boiler_Backend.Data
         public DbSet<HistoricalData> HistoricalData { get; set; }
         public DbSet<Alarm> Alarms { get; set; }
         public DbSet<SystemParameters> SystemParameters { get; set; }
+        public DbSet<BuildingReading> BuildingReadings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
