@@ -27,17 +27,20 @@ namespace Gas_Boiler_Backend
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IBuildingObjectRepository, BuildingObjectRepository>();
             builder.Services.AddScoped<ISystemParametersRepository, SystemParametersRepository>();
+            builder.Services.AddScoped<IGasBoilerRepository, GasBoilerRepository>();
+            builder.Services.AddScoped<IBuildingReadingRepository, BuildingReadingRepository>();
+
 
             //reg services
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IUserService, UserService>();
 
-            builder.Services.AddScoped<IGasBoilerRepository, GasBoilerRepository>();
             builder.Services.AddScoped<IGasBoilerService, GasBoilerService>();
             builder.Services.AddScoped<IBuildingObjectService, BuildingObjectService>();
             builder.Services.AddScoped<ISystemParametersService, SystemParametersService>();
             builder.Services.AddScoped<IBuildingCalculatorService, BuildingCalculatorService>();
             builder.Services.AddScoped<IDashboardService, DashboardService>();
+            builder.Services.AddScoped<IHistoricalDataService, HistoricalDataService>();
 
             builder.Services.AddHttpClient<IWeatherService, OpenWeatherService>();
 
