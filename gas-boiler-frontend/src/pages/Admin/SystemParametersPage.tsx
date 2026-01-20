@@ -3,6 +3,7 @@ import Navbar from '../../components/Navbar';
 import { useAuth } from '../../context/AuthContext';
 import { systemParametersService, SystemParameters } from '../../services/systemParametersService';
 import './SystemParametersPage.css';
+import { historicalDataService } from '../../services/historicalDataService';
 
 const SystemParametersPage: React.FC = () => {
   const { user } = useAuth();
@@ -25,8 +26,14 @@ const SystemParametersPage: React.FC = () => {
   const [safetyFactor, setSafetyFactor] = useState('');
   const [defaultBoilerEfficiency, setDefaultBoilerEfficiency] = useState('');
 
+  // Historical data states
+  const [readingsCount, setReadingsCount] = useState<number>(0);
+  const [isSeeding, setIsSeeding] = useState(false);
+  const [seedMessage, setSeedMessage] = useState('');
+
   useEffect(() => {
     loadParameters();
+    loadReadingsCount(); // Load count on mount
   }, []);
 
   const loadParameters = async () => {
@@ -52,6 +59,34 @@ const SystemParametersPage: React.FC = () => {
       setError(err.response?.data?.message || 'Failed to load parameters');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadReadingsCount = async () => {
+    try {
+      const count = await historicalDataService.getReadingsCount(user!.token);
+      setReadingsCount(count);
+    } catch (err) {
+      console.error('Error loading readings count:', err);
+    }
+  };
+
+  const handleGenerateTestData = async () => {
+    if (!window.confirm('Generate 30 days of test data for all buildings? This will add approximately 720 readings per building.')) {
+      return;
+    }
+
+    setIsSeeding(true);
+    setSeedMessage('');
+
+    try {
+      const response = await historicalDataService.seedData(user!.token, 30);
+      setSeedMessage(`✅ ${response.message}`);
+      await loadReadingsCount(); // Reload count
+    } catch (err: any) {
+      setSeedMessage(`❌ Error: ${err.response?.data?.message || err.message}`);
+    } finally {
+      setIsSeeding(false);
     }
   };
 
@@ -145,7 +180,7 @@ const SystemParametersPage: React.FC = () => {
           <form onSubmit={handleSubmit} className="params-form">
 
             <div className="params-grid">
-
+              {/* ... all your existing parameter inputs ... */}
               <div className="param-item" data-tooltip="Heat transfer coefficient through wall. Lower value = better insulation.">
                 <label>
                   <span className="param-icon">🏗️</span>
@@ -233,11 +268,9 @@ const SystemParametersPage: React.FC = () => {
                 </div>
                 <span className="param-hint">0.3 - 1.5</span>
               </div>
-
             </div>
 
             <div className="params-grid params-grid-3">
-
               <div className="param-item" data-tooltip="Coldest expected outdoor temperature in winter. Used for heating system sizing.">
                 <label>
                   <span className="param-icon">❄️</span>
@@ -303,10 +336,9 @@ const SystemParametersPage: React.FC = () => {
                 </div>
                 <span className="param-hint">0.001 - 1.0</span>
               </div>
-                         </div>
+            </div>
 
             <div className="params-grid params-grid-3">
-
               <div className="param-item" data-tooltip="Window area ratio relative to wall. Typically 15%. Old buildings: 10-12%, Modern: 15-20%, Offices: 30-40%.">
                 <label>
                   <span className="param-icon">🪟</span>
@@ -372,7 +404,6 @@ const SystemParametersPage: React.FC = () => {
                 </div>
                 <span className="param-hint">0.70 - 0.98</span>
               </div>
-
             </div>
 
             <div className="form-actions">
@@ -393,6 +424,97 @@ const SystemParametersPage: React.FC = () => {
               </button>
             </div>
           </form>
+
+          {/* Historical Data Management Section - ADMIN ONLY */}
+          <hr style={{ margin: '2rem 0', border: 'none', borderTop: '2px solid #e5e7eb' }} />
+          
+          <div style={{
+            background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
+            padding: '1.5rem',
+            borderRadius: '12px',
+            border: '2px solid #38bdf8',
+            marginTop: '2rem'
+          }}>
+            <h3 style={{ 
+              margin: '0 0 1rem 0', 
+              color: '#0c4a6e', 
+              fontSize: '1.3rem',
+              fontWeight: '700'
+            }}>
+              📊 Historical Data Management
+            </h3>
+            
+            <p style={{ 
+              margin: '0 0 1rem 0', 
+              color: '#475569',
+              fontSize: '1rem'
+            }}>
+              <strong>Current readings in database:</strong> {readingsCount.toLocaleString()}
+            </p>
+            
+            <div style={{ 
+              background: 'white', 
+              padding: '1rem', 
+              borderRadius: '8px',
+              marginBottom: '1rem',
+              border: '1px solid #bae6fd'
+            }}>
+              <p style={{ 
+                margin: '0 0 1rem 0', 
+                color: '#64748b', 
+                fontSize: '0.9rem',
+                lineHeight: '1.6'
+              }}>
+                ⚠️ <strong>Generate Test Data:</strong> This will create 30 days of historical readings 
+                for all buildings (720 readings per building). Useful for testing charts and demos. Background 
+                service will continue recording new data every hour automatically.
+              </p>
+              
+              <button
+                onClick={handleGenerateTestData}
+                disabled={isSeeding}
+                style={{
+                  backgroundColor: isSeeding ? '#94a3b8' : '#3b82f6',
+                  color: 'white',
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: '8px',
+                  border: 'none',
+                  fontSize: '1rem',
+                  fontWeight: '600',
+                  cursor: isSeeding ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.2s',
+                  width: '100%'
+                }}
+              >
+                {isSeeding ? '⏳ Generating... Please wait (~20 seconds)' : '🔄 Generate 30 Days of Test Data'}
+              </button>
+              
+              {seedMessage && (
+                <div style={{
+                  marginTop: '1rem',
+                  padding: '0.75rem',
+                  borderRadius: '6px',
+                  background: seedMessage.startsWith('✅') ? '#dcfce7' : '#fee2e2',
+                  color: seedMessage.startsWith('✅') ? '#166534' : '#991b1b',
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  border: seedMessage.startsWith('✅') ? '1px solid #86efac' : '1px solid #fca5a5'
+                }}>
+                  {seedMessage}
+                </div>
+              )}
+            </div>
+            
+            <p style={{ 
+              margin: 0, 
+              color: '#64748b', 
+              fontSize: '0.85rem',
+              fontStyle: 'italic'
+            }}>
+              💡 <strong>Note:</strong> Background service automatically records new data every hour. This test 
+              data is for demonstration purposes only. Users will see historical charts based on this data.
+            </p>
+          </div>
 
         </div>
       </div>
