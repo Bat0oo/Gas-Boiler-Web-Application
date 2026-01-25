@@ -149,5 +149,20 @@ namespace Gas_Boiler_Backend.Controllers
                 return StatusCode(500, new { message = $"Error recording data: {ex.Message}" });
             }
         }
+
+        [HttpDelete("clear")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> ClearAllData()
+        {
+            try
+            {
+                await _readingRepository.DeleteAllAsync();
+                return Ok(new { message = "All historical data cleared successfully" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = $"Error clearing data: {ex.Message}" });
+            }
+        }
     }
 }

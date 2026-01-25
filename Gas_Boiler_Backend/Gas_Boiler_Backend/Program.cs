@@ -29,7 +29,7 @@ namespace Gas_Boiler_Backend
             builder.Services.AddScoped<ISystemParametersRepository, SystemParametersRepository>();
             builder.Services.AddScoped<IGasBoilerRepository, GasBoilerRepository>();
             builder.Services.AddScoped<IBuildingReadingRepository, BuildingReadingRepository>();
-
+            builder.Services.AddScoped<IDataManagementSettingsRepository, DataManagementSettingsRepository>();
 
             //reg services
             builder.Services.AddScoped<IAuthService, AuthService>();
@@ -41,6 +41,7 @@ namespace Gas_Boiler_Backend
             builder.Services.AddScoped<IBuildingCalculatorService, BuildingCalculatorService>();
             builder.Services.AddScoped<IDashboardService, DashboardService>();
             builder.Services.AddScoped<IHistoricalDataService, HistoricalDataService>();
+            builder.Services.AddScoped<IDataManagementService, DataManagementService>();
 
             builder.Services.AddHostedService<DataRecordingBackgroundService>();
 

@@ -7,9 +7,6 @@ namespace Gas_Boiler_Backend.Services
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<DataRecordingBackgroundService> _logger;
 
-        // Record data every hour
-        private readonly TimeSpan _recordingInterval = TimeSpan.FromHours(1);
-
         public DataRecordingBackgroundService(
             IServiceProvider serviceProvider,
             ILogger<DataRecordingBackgroundService> logger)
@@ -20,42 +17,58 @@ namespace Gas_Boiler_Backend.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("🚀 Data Recording Background Service STARTED");
-            _logger.LogInformation($"📊 Recording interval: {_recordingInterval.TotalMinutes} minutes");
+            _logger.LogInformation("Data Recording Background Service STARTED");
 
-            _logger.LogInformation("⏳ Waiting 2 minutes before first recording...");
+            _logger.LogInformation("Waiting 2 minutes before first recording...");
             await Task.Delay(TimeSpan.FromMinutes(2), stoppingToken);
 
             while (!stoppingToken.IsCancellationRequested)
             {
                 try
                 {
-                    _logger.LogInformation("⏰ Time to record data!");
-                    await RecordDataAsync();
-                    _logger.LogInformation($"✅ Recording complete. Next recording in {_recordingInterval.TotalMinutes} minutes");
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "❌ Error recording historical data");
-                }
+                    // Get current interval setting
+                    int intervalMinutes = await GetRecordingIntervalAsync();
 
-                try
-                {
-                    await Task.Delay(_recordingInterval, stoppingToken);
+                    _logger.LogInformation($"Time to record data! (Interval: {intervalMinutes} minutes)");
+                    await RecordDataAsync();
+                    _logger.LogInformation($"Recording complete. Next recording in {intervalMinutes} minutes");
+
+                    // Wait for the configured interval
+                    await Task.Delay(TimeSpan.FromMinutes(intervalMinutes), stoppingToken);
                 }
                 catch (TaskCanceledException)
                 {
-                    _logger.LogInformation("⏹️ Background service stopping...");
+                    _logger.LogInformation("Background service stopping...");
                     break;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error recording historical data");
+
+                    // Wait 5 minutes before retrying on error
+                    await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
                 }
             }
 
-            _logger.LogInformation("🛑 Data Recording Background Service STOPPED");
+            _logger.LogInformation("Data Recording Background Service STOPPED");
+        }
+
+        private async Task<int> GetRecordingIntervalAsync()
+        {
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var settingsRepo = scope.ServiceProvider
+                    .GetRequiredService<IDataManagementSettingsRepository>();
+
+                var settings = await settingsRepo.GetAsync();
+
+                // Return configured interval or default to 60 minutes
+                return settings?.RecordingIntervalMinutes ?? 60;
+            }
         }
 
         private async Task RecordDataAsync()
         {
-            // Create a scope to get scoped services
             using (var scope = _serviceProvider.CreateScope())
             {
                 var historicalDataService = scope.ServiceProvider
