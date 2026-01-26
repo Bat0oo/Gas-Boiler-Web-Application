@@ -17,7 +17,7 @@ export interface CreateGasBoilerPayload {
   maxPower: number;
   efficiency: number;
   currentPower: number;
-  buildingObjectId: number; // Just link to existing building
+  buildingObjectId: number;
 }
 
 export interface UpdateGasBoilerPayload {

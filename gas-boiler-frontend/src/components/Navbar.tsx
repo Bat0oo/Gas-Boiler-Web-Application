@@ -29,7 +29,9 @@ const Navbar: React.FC = () => {
             <li><Link to="/buildings">Buildings</Link></li>
             <li><Link to="/my-boilers">Boilers</Link></li>
             <li><Link to="/admin/system-parameters">Parameters</Link></li>
+            <li><Link to="/data-management">Data Management</Link></li>
             <li><Link to="/profile">Profile</Link></li>
+            
           </>
         ) : (
           <>

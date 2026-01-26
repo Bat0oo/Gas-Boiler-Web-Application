@@ -15,6 +15,8 @@ namespace Gas_Boiler_Backend.Data
         public DbSet<HistoricalData> HistoricalData { get; set; }
         public DbSet<Alarm> Alarms { get; set; }
         public DbSet<SystemParameters> SystemParameters { get; set; }
+        public DbSet<BuildingReading> BuildingReadings { get; set; }
+        public DbSet<DataManagementSettings> DataManagementSettings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,7 +38,7 @@ namespace Gas_Boiler_Backend.Data
 
             modelBuilder.Entity<GasBoiler>()
                 .HasOne(g => g.BuildingObject)
-                .WithMany(b => b.GasBoilers)  // CHANGED: WithMany instead of WithOne
+                .WithMany(b => b.GasBoilers) 
                 .HasForeignKey(g => g.BuildingObjectId)
                 .OnDelete(DeleteBehavior.Cascade);
 

@@ -6,6 +6,7 @@ import { Building } from '../../types/buildingtypes';
 import Navbar from '../../components/Navbar';
 import EditBuildingModal from '../../components/EditBuildingModal';
 import './AllBuildingsPage.css';
+import { dataManagementService } from '../../services/dataManagementService';
 
 const AllBuildingsPage: React.FC = () => {
   const { user } = useAuth();
@@ -23,6 +24,9 @@ const AllBuildingsPage: React.FC = () => {
 
   const [showBanner, setShowBanner] = useState(true);
 
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportMessage, setExportMessage] = useState('');
+
   useEffect(() => {
     loadBuildings();
   }, []);
@@ -36,6 +40,32 @@ const AllBuildingsPage: React.FC = () => {
       return () => clearTimeout(timer);
     }
   }, [isAdmin, filterUserId, showBanner]);
+
+const handleExportCsv = async () => {
+  setIsExporting(true);
+  setExportMessage('');
+
+  try {
+    const blob = await dataManagementService.exportMyBuildingsCsv(user!.token);
+    
+    // Create download link
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `my_buildings_data_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+
+    setExportMessage('Data exported successfully!');
+    setTimeout(() => setExportMessage(''), 5000);
+  } catch (err: any) {
+    setExportMessage(`Error: ${err.response?.data?.message || err.message}`);
+  } finally {
+    setIsExporting(false);
+  }
+};
 
   const loadBuildings = async () => {
     if (!user?.token) return;
@@ -128,19 +158,35 @@ const AllBuildingsPage: React.FC = () => {
       )}
 
       <div className="all-buildings-page">
-        <div className="page-header">
-          {filterUsername ? (
-            <>
-              <h1>🏢 Buildings of user: {filterUsername}</h1>
-              <p>View all buildings of user {filterUsername}</p>
-            </>
-          ) : (
-            <>
-              <h1>🏢 {isAdmin ? 'All Buildings' : 'All Buildings'}</h1>
-              <p>{isAdmin ? 'View all buildings of all users' : 'View and manage your buildings'}</p>
-            </>
-          )}
-        </div>
+<div className="page-header">
+  <div className="header-left">
+    {filterUsername ? (
+      <>
+        <h1>🏢 Buildings of user: {filterUsername}</h1>
+        <p>View all buildings of user {filterUsername}</p>
+      </>
+    ) : (
+      <>
+        <h1>🏢 {isAdmin ? 'All Buildings' : 'My Buildings'}</h1>
+        <p>{isAdmin ? 'View all buildings of all users' : 'View and manage your buildings'}</p>
+      </>
+    )}
+  </div>
+  
+  {/* ADD THIS BUTTON SECTION: */}
+  {!isAdmin && !filterUsername && (
+    <div className="header-actions">
+      <button 
+        onClick={handleExportCsv} 
+        disabled={isExporting || buildings.length === 0}
+        className="btn-export"
+        title="Export your buildings data to CSV"
+      >
+        {isExporting ? '⏳ Exporting...' : '📄 Export CSV'}
+      </button>
+    </div>
+  )}
+</div>
 
         {filterUsername && (
           <div className="filter-info-box">
@@ -152,6 +198,14 @@ const AllBuildingsPage: React.FC = () => {
             </button>
           </div>
         )}
+        {exportMessage && (
+  <div 
+    className={`alert ${exportMessage.includes('successfully') ? 'alert-success' : 'alert-error'}`}
+    style={{ marginBottom: '1rem' }}
+  >
+    {exportMessage}
+  </div>
+)}
 
         {error && <div className="error-message">{error}</div>}
 
