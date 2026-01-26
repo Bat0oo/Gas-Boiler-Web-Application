@@ -8,5 +8,6 @@ namespace Gas_Boiler_Backend.Interfaces
         Task<DataManagementSettingsDto> UpdateSettingsAsync(UpdateDataManagementSettingsDto dto, string updatedBy);
         Task<DataStatisticsDto> GetStatisticsAsync();
         Task<byte[]> ExportDataAsCsvAsync();
+        Task<byte[]> ExportUserDataAsCsvAsync(int userId); 
     }
 }

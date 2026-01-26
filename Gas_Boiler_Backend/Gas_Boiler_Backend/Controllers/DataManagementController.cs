@@ -1,7 +1,6 @@
 ﻿using Gas_Boiler_Backend.DTO.DataManagement;
 using Gas_Boiler_Backend.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -9,7 +8,7 @@ namespace Gas_Boiler_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public class DataManagementController : ControllerBase
     {
         private readonly IDataManagementService _dataManagementService;
@@ -20,6 +19,7 @@ namespace Gas_Boiler_Backend.Controllers
         }
 
         [HttpGet("settings")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<DataManagementSettingsDto>> GetSettings()
         {
             try
@@ -34,6 +34,7 @@ namespace Gas_Boiler_Backend.Controllers
         }
 
         [HttpPut("settings")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<DataManagementSettingsDto>> UpdateSettings(
             [FromBody] UpdateDataManagementSettingsDto dto)
         {
@@ -49,8 +50,9 @@ namespace Gas_Boiler_Backend.Controllers
             }
         }
 
-   
+
         [HttpGet("statistics")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<DataStatisticsDto>> GetStatistics()
         {
             try
@@ -63,14 +65,38 @@ namespace Gas_Boiler_Backend.Controllers
                 return StatusCode(500, new { message = $"Error getting statistics: {ex.Message}" });
             }
         }
-
+  
         [HttpGet("export/csv")]
-        public async Task<IActionResult> ExportCsv()
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ExportAllCsv()
         {
             try
             {
                 var csvBytes = await _dataManagementService.ExportDataAsCsvAsync();
-                var fileName = $"historical_data_{DateTime.UtcNow:yyyyMMdd_HHmmss}.csv";
+                var fileName = $"all_buildings_data_{DateTime.UtcNow:yyyyMMdd_HHmmss}.csv";
+
+                return File(csvBytes, "text/csv", fileName);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = $"Error exporting CSV: {ex.Message}" });
+            }
+        }
+
+        [HttpGet("export/csv/my-buildings")]
+        public async Task<IActionResult> ExportMyBuildingsCsv()
+        {
+            try
+            {
+                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+
+                if (userId == 0)
+                {
+                    return Unauthorized(new { message = "User ID not found" });
+                }
+
+                var csvBytes = await _dataManagementService.ExportUserDataAsCsvAsync(userId);
+                var fileName = $"my_buildings_data_{DateTime.UtcNow:yyyyMMdd_HHmmss}.csv";
 
                 return File(csvBytes, "text/csv", fileName);
             }

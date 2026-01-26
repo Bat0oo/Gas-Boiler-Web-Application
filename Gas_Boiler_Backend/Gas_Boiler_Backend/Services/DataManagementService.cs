@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Gas_Boiler_Backend.Services
 {
-    public class DataManagementService: IDataManagementService
+    public class DataManagementService : IDataManagementService
     {
         private readonly IDataManagementSettingsRepository _settingsRepository;
         private readonly IBuildingReadingRepository _readingRepository;
@@ -97,10 +97,25 @@ namespace Gas_Boiler_Backend.Services
 
         public async Task<byte[]> ExportDataAsCsvAsync()
         {
-            _logger.LogInformation("Exporting historical data as CSV...");
+            _logger.LogInformation("Exporting all historical data as CSV...");
 
             var allReadings = await _readingRepository.GetAllAsync();
-            var readingsList = allReadings.OrderBy(r => r.BuildingId).ThenBy(r => r.Timestamp).ToList();
+            return GenerateCsvFromReadings(allReadings, "all");
+        }
+
+        public async Task<byte[]> ExportUserDataAsCsvAsync(int userId)
+        {
+            _logger.LogInformation($"Exporting historical data for user {userId} as CSV...");
+
+            var allReadings = await _readingRepository.GetAllAsync();
+            var userReadings = allReadings.Where(r => r.Building.UserId == userId);
+
+            return GenerateCsvFromReadings(userReadings, $"user_{userId}");
+        }
+
+        private byte[] GenerateCsvFromReadings(IEnumerable<dynamic> readings, string scope)
+        {
+            var readingsList = readings.OrderBy(r => r.BuildingId).ThenBy(r => r.Timestamp).ToList();
 
             var csv = new StringBuilder();
 
@@ -130,7 +145,7 @@ namespace Gas_Boiler_Backend.Services
                 csv.AppendLine($"{buildingName},{timestamp},{indoorTemp},{outdoorTemp},{tempDiff},{heatLossKw},{requiredPower},{availablePower},{hasCapacity},{dailyCost}");
             }
 
-            _logger.LogInformation($"Exported {readingsList.Count} readings to CSV");
+            _logger.LogInformation($"Exported {readingsList.Count} readings to CSV (scope: {scope})");
 
             return Encoding.UTF8.GetBytes(csv.ToString());
         }
