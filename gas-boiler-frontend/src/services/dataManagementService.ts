@@ -7,7 +7,7 @@ import {
 import { SeedHistoricalDataResponse } from '../types/historicaldatatypes';
 
 export const dataManagementService = {
-  // Get current settings
+  // Get current settings (Admin only)
   async getSettings(token: string): Promise<DataManagementSettings> {
     const response = await apiClient.get<DataManagementSettings>(
       '/DataManagement/settings',
@@ -18,7 +18,7 @@ export const dataManagementService = {
     return response.data;
   },
 
-  // Update settings
+  // Update settings (Admin only)
   async updateSettings(
     token: string,
     settings: UpdateDataManagementSettings
@@ -33,7 +33,7 @@ export const dataManagementService = {
     return response.data;
   },
 
-  // Get statistics
+  // Get statistics (Admin only)
   async getStatistics(token: string): Promise<DataStatistics> {
     const response = await apiClient.get<DataStatistics>(
       '/DataManagement/statistics',
@@ -44,7 +44,7 @@ export const dataManagementService = {
     return response.data;
   },
 
-  // Export data as CSV
+  // Export ALL data as CSV (Admin only)
   async exportCsv(token: string): Promise<Blob> {
     const response = await apiClient.get('/DataManagement/export/csv', {
       headers: { Authorization: `Bearer ${token}` },
@@ -53,7 +53,16 @@ export const dataManagementService = {
     return response.data;
   },
 
-  // Generate test data
+  // Export user's own buildings data as CSV (Any authenticated user)
+  async exportMyBuildingsCsv(token: string): Promise<Blob> {
+    const response = await apiClient.get('/DataManagement/export/csv/my-buildings', {
+      headers: { Authorization: `Bearer ${token}` },
+      responseType: 'blob',
+    });
+    return response.data;
+  },
+
+  // Generate test data (Admin only)
   async seedData(token: string, days: number = 30): Promise<SeedHistoricalDataResponse> {
     const response = await apiClient.post<SeedHistoricalDataResponse>(
       `/HistoricalData/seed?days=${days}`,
@@ -65,7 +74,7 @@ export const dataManagementService = {
     return response.data;
   },
 
-  // Clear all data
+  // Clear all data (Admin only)
   async clearAllData(token: string): Promise<{ message: string }> {
     const response = await apiClient.delete<{ message: string }>(
       '/HistoricalData/clear',
