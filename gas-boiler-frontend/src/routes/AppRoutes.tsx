@@ -11,6 +11,7 @@ import MyBoilersPage from '../pages/MyBoilers/MyBoilers';
 import AllBuildingsPage from '../pages/Buildings/AllBuildingsPage';
 import ViewSystemParametersPage from '../pages/ViewSystemParametersPage';
 import DataManagementPage from '../pages/DataManagement/DataManagementPage';
+import ChartsPage from '../pages/ChartsPage';
 const AppRoutes: React.FC = () => {
   const { user,loading } = useAuth();
 
@@ -40,6 +41,7 @@ const AppRoutes: React.FC = () => {
     <Route path="/admin/system-parameters" element={<ProtectedRoute adminOnly><SystemParametersPage /></ProtectedRoute>} />
     <Route path="/buildings" element={<ProtectedRoute adminOnly><AllBuildingsPage /></ProtectedRoute>} />
     <Route path="/my-boilers" element={<ProtectedRoute adminOnly><MyBoilersPage /></ProtectedRoute>} />
+    <Route path="/charts" element={<ProtectedRoute adminOnly><ChartsPage /></ProtectedRoute>} />
     <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
     <Route path="/profile/:id" element={ <ProtectedRoute adminOnly> <Profile /> </ProtectedRoute>}/>
     <Route path="/data-management" element={<ProtectedRoute adminOnly><DataManagementPage /></ProtectedRoute>} />
@@ -50,6 +52,7 @@ const AppRoutes: React.FC = () => {
           <Route path="/map" element={ <ProtectedRoute> <Map /> </ProtectedRoute>}/>
           <Route path="/profile" element={ <ProtectedRoute> <Profile /> </ProtectedRoute> }/>
           <Route path="/my-boilers" element={<ProtectedRoute><MyBoilersPage /></ProtectedRoute>} />
+          <Route path="/charts" element={<ProtectedRoute><ChartsPage /></ProtectedRoute>} />
           <Route path="/buildings" element={<ProtectedRoute><AllBuildingsPage /></ProtectedRoute>} />
           <Route path="/parameters" element={<ProtectedRoute><ViewSystemParametersPage /></ProtectedRoute>} />
           <Route path="*" element={<Navigate to="/map" replace />} />
