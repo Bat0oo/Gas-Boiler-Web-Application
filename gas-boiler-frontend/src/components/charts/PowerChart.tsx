@@ -58,14 +58,58 @@ const PowerChart: React.FC<PowerChartProps> = ({ data, height = 300, showLegend 
       },
       tooltip: {
         callbacks: {
-          label: function (context: any) {
-            let label = context.dataset.label || '';
-            if (label) {
-              label += ': ';
-            }
-            label += context.parsed.y.toFixed(2) + ' kW';
-            return label;
+          // Enhanced tooltip with BUILDING NAME!
+          title: function (context: any) {
+            const index = context[0].dataIndex;
+            const dataPoint = data[index];
+            const timestamp = new Date(dataPoint.timestamp);
+            const formattedDate = timestamp.toLocaleString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+            });
+            
+            const buildingName = dataPoint.buildingName || 'Unknown Building';
+            return `🏢 ${buildingName}\n${formattedDate}`;
           },
+          afterTitle: function (context: any) {
+            const index = context[0].dataIndex;
+            const dataPoint = data[index];
+            
+            if (!dataPoint.hasCapacity) {
+              const deficit = (dataPoint.requiredPower - dataPoint.availablePower).toFixed(2);
+              return `⚠️ INSUFFICIENT CAPACITY!\nDeficit: ${deficit} kW`;
+            }
+            
+            const surplus = (dataPoint.availablePower - dataPoint.requiredPower).toFixed(2);
+            return `✅ Sufficient capacity\nSurplus: ${surplus} kW`;
+          },
+          label: function (context: any) {
+            const label = context.dataset.label || '';
+            const value = context.parsed.y.toFixed(2);
+            return `${label}: ${value} kW`;
+          },
+          footer: function (context: any) {
+            const index = context[0].dataIndex;
+            const dataPoint = data[index];
+            const utilizationPercent = (
+              (dataPoint.requiredPower / dataPoint.availablePower) *
+              100
+            ).toFixed(1);
+            return `\nCapacity Usage: ${utilizationPercent}%`;
+          },
+        },
+        backgroundColor: 'rgba(0, 0, 0, 0.9)',
+        titleColor: '#fff',
+        bodyColor: '#fff',
+        footerColor: '#10b981',
+        padding: 12,
+        displayColors: true,
+        titleFont: {
+          size: 13,
+          weight: 'bold' as const,
         },
       },
     },

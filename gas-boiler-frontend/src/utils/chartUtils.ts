@@ -13,7 +13,11 @@ import { format as formatDate, parseISO, isWithinInterval } from 'date-fns';
 export const processTemperatureData = (
   readings: BuildingReading[]
 ): TemperatureDataPoint[] => {
-  return readings.map((reading) => ({
+  const sorted = [...readings].sort(
+    (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+  );
+
+  return sorted.map((reading) => ({
     timestamp: reading.timestamp,
     indoorTemp: reading.indoorTemperature,
     outdoorTemp: reading.outdoorTemperature,
@@ -26,11 +30,17 @@ export const processTemperatureData = (
 export const processPowerData = (
   readings: BuildingReading[]
 ): PowerDataPoint[] => {
-  return readings.map((reading) => ({
+  const sorted = [...readings].sort(
+    (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+  );
+
+  return sorted.map((reading) => ({
     timestamp: reading.timestamp,
     requiredPower: reading.requiredPowerKw,
     availablePower: reading.availablePowerKw,
     hasCapacity: reading.hasSufficientCapacity,
+    buildingId: reading.buildingId, // NEW!
+    buildingName: reading.buildingName, // NEW!
   }));
 };
 
@@ -38,7 +48,6 @@ export const processPowerData = (
  * Process historical readings into daily cost data
  */
 export const processCostData = (readings: BuildingReading[]): CostDataPoint[] => {
-  // Group by date and sum costs
   const costByDate = new Map<string, number>();
 
   readings.forEach((reading) => {
@@ -47,7 +56,6 @@ export const processCostData = (readings: BuildingReading[]): CostDataPoint[] =>
     costByDate.set(date, currentCost + reading.dailyCostEur);
   });
 
-  // Convert to array and sort
   return Array.from(costByDate.entries())
     .map(([date, cost]) => ({ date, cost }))
     .sort((a, b) => a.date.localeCompare(b.date));
@@ -59,9 +67,13 @@ export const processCostData = (readings: BuildingReading[]): CostDataPoint[] =>
 export const processHeatLossData = (
   readings: BuildingReading[]
 ): HeatLossDataPoint[] => {
-  return readings.map((reading) => ({
+  const sorted = [...readings].sort(
+    (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+  );
+
+  return sorted.map((reading) => ({
     timestamp: reading.timestamp,
-    heatLossKw: reading.heatLossWatts / 1000, // Convert W to kW
+    heatLossKw: reading.heatLossWatts / 1000,
   }));
 };
 
@@ -107,7 +119,7 @@ export const formatChartLabel = (
   const date = parseISO(timestamp);
 
   if (formatType === 'short') {
-    return formatDate(date, 'MM/dd HH:mm');
+    return formatDate(date, 'MMM d, HH:mm');
   }
   return formatDate(date, 'MMM dd, yyyy HH:mm');
 };
@@ -138,4 +150,16 @@ export const findMinMax = (values: number[]): { min: number; max: number } => {
     min: Math.min(...values),
     max: Math.max(...values),
   };
+};
+
+/**
+ * Limit number of data points for better chart readability
+ */
+export const limitDataPoints = <T,>(data: T[], maxPoints: number = 50): T[] => {
+  if (data.length <= maxPoints) {
+    return data;
+  }
+
+  const step = Math.ceil(data.length / maxPoints);
+  return data.filter((_, index) => index % step === 0);
 };

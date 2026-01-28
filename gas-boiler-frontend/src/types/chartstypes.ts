@@ -15,6 +15,8 @@ export interface PowerDataPoint {
   requiredPower: number;
   availablePower: number;
   hasCapacity: boolean;
+  buildingId?: number; 
+  buildingName?: string; 
 }
 
 export interface CostDataPoint {
@@ -34,4 +36,17 @@ export interface ChartFilters {
   dateRange: DateRangeOption;
   startDate: Date | null;
   endDate: Date | null;
+}
+
+export interface BuildingCapacityIssue {
+  buildingId: number;
+  buildingName: string;
+  issueCount: number;
+  worstDeficit: number;
+  issues: {
+    timestamp: string;
+    requiredPower: number;
+    availablePower: number;
+    deficit: number;
+  }[];
 }
