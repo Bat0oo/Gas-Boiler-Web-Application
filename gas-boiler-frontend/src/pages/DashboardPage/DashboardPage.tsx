@@ -7,6 +7,7 @@ import { buildingService } from '../../services/buildingService';
 import { DashboardStats } from '../../types/dashboardtypes';
 import { Building } from '../../types/buildingtypes';
 import BuildingDetailsModal from '../../components/BuildingDetailsModal';
+import PowerRequirementsWidget from '../../components/PowerRequirementsWidget';
 import './DashboardPage.css';
 
 const DashboardPage: React.FC = () => {
@@ -184,7 +185,7 @@ const handleDeleteBoiler = async (boilerId: number) => {
             </button>
           </div>
         )}
-
+        <PowerRequirementsWidget />
         {/* Buildings Overview Table */}
         <div className="dashboard-section">
           <div className="section-header">

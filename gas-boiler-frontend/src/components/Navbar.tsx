@@ -28,6 +28,7 @@ const Navbar: React.FC = () => {
             <li><Link to="/admin/users">Users</Link></li>
             <li><Link to="/buildings">Buildings</Link></li>
             <li><Link to="/my-boilers">Boilers</Link></li>
+            <li><Link to="/charts">Charts</Link></li>
             <li><Link to="/admin/system-parameters">Parameters</Link></li>
             <li><Link to="/data-management">Data Management</Link></li>
             <li><Link to="/profile">Profile</Link></li>
@@ -39,6 +40,7 @@ const Navbar: React.FC = () => {
             <li><Link to="/map">Map</Link></li>
             <li><Link to="/my-boilers">My Boilers</Link></li>
             <li><Link to="/buildings">My Buildings</Link></li>
+            <li><Link to="/charts">Charts</Link></li>
             <li><Link to="/parameters">Parameters</Link></li>
             <li><Link to="/profile">Profile</Link></li>
           </>
