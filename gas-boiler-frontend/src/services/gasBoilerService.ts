@@ -1,4 +1,3 @@
-// services/gasBoilerService.ts - UPDATED FOR C# BACKEND
 import apiClient from './apiService';
 import {
   GasBoiler,
