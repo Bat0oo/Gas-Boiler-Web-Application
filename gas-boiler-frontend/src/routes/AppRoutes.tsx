@@ -12,6 +12,8 @@ import AllBuildingsPage from '../pages/Buildings/AllBuildingsPage';
 import ViewSystemParametersPage from '../pages/ViewSystemParametersPage';
 import DataManagementPage from '../pages/DataManagement/DataManagementPage';
 import ChartsPage from '../pages/ChartsPage';
+import AlarmsPage from '../pages/Alarms/AlarmsPage';
+import AlarmSettingsPage from '../pages/Alarms/AlarmSettingsPage';
 const AppRoutes: React.FC = () => {
   const { user,loading } = useAuth();
 
@@ -45,6 +47,8 @@ const AppRoutes: React.FC = () => {
     <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
     <Route path="/profile/:id" element={ <ProtectedRoute adminOnly> <Profile /> </ProtectedRoute>}/>
     <Route path="/data-management" element={<ProtectedRoute adminOnly><DataManagementPage /></ProtectedRoute>} />
+    <Route path="/alarms" element={<ProtectedRoute adminOnly><AlarmsPage /></ProtectedRoute>} />
+    <Route path="/alarm-settings" element={<ProtectedRoute adminOnly><AlarmSettingsPage /></ProtectedRoute>} />
     <Route path="*" element={<Navigate to="/admin/map" replace />} />
   </>
       ) : (
@@ -55,6 +59,7 @@ const AppRoutes: React.FC = () => {
           <Route path="/charts" element={<ProtectedRoute><ChartsPage /></ProtectedRoute>} />
           <Route path="/buildings" element={<ProtectedRoute><AllBuildingsPage /></ProtectedRoute>} />
           <Route path="/parameters" element={<ProtectedRoute><ViewSystemParametersPage /></ProtectedRoute>} />
+          <Route path="/alarms" element={<ProtectedRoute><AlarmsPage /></ProtectedRoute>} />
           <Route path="*" element={<Navigate to="/map" replace />} />
         </>
       )}
