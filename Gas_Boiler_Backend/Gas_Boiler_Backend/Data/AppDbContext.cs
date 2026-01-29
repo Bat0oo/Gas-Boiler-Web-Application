@@ -14,6 +14,7 @@ namespace Gas_Boiler_Backend.Data
         public DbSet<BuildingObject> BuildingObjects { get; set; }
         public DbSet<HistoricalData> HistoricalData { get; set; }
         public DbSet<Alarm> Alarms { get; set; }
+        public DbSet<AlarmSettings> AlarmSettings { get; set; }  
         public DbSet<SystemParameters> SystemParameters { get; set; }
         public DbSet<BuildingReading> BuildingReadings { get; set; }
         public DbSet<DataManagementSettings> DataManagementSettings { get; set; }
@@ -38,7 +39,7 @@ namespace Gas_Boiler_Backend.Data
 
             modelBuilder.Entity<GasBoiler>()
                 .HasOne(g => g.BuildingObject)
-                .WithMany(b => b.GasBoilers) 
+                .WithMany(b => b.GasBoilers)
                 .HasForeignKey(g => g.BuildingObjectId)
                 .OnDelete(DeleteBehavior.Cascade);
 
@@ -49,14 +50,13 @@ namespace Gas_Boiler_Backend.Data
                 .HasForeignKey(hd => hd.GasBoilerId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // GasBoiler - Alarm relationship
-            modelBuilder.Entity<GasBoiler>()
-                .HasMany(gb => gb.Alarms)
-                .WithOne(a => a.GasBoiler)
-                .HasForeignKey(a => a.GasBoilerId)
+            modelBuilder.Entity<BuildingObject>()
+                .HasMany<Alarm>()
+                .WithOne(a => a.Building)
+                .HasForeignKey(a => a.BuildingId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            //INDEXEX FOR PERFORMANCE
+            //INDEXES FOR PERFORMANCE
 
             // User indexes
             modelBuilder.Entity<User>()
@@ -85,45 +85,77 @@ namespace Gas_Boiler_Backend.Data
             modelBuilder.Entity<HistoricalData>()
                 .HasIndex(h => h.Timestamp);
 
-            // Alarm indexes
             modelBuilder.Entity<Alarm>()
-                .HasIndex(a => a.GasBoilerId);
+                .HasIndex(a => a.BuildingId);
 
             modelBuilder.Entity<Alarm>()
-                .HasIndex(a => a.IsResolved);
+                .HasIndex(a => a.IsActive);
 
+            modelBuilder.Entity<Alarm>()
+                .HasIndex(a => a.CreatedAt);
+
+            modelBuilder.Entity<Alarm>()
+                .HasIndex(a => new { a.Type, a.BuildingId, a.CreatedAt });
+
+            // SystemParameters configuration
             modelBuilder.Entity<SystemParameters>()
                 .HasKey(sp => sp.Id);
 
-            modelBuilder.Entity<SystemParameters>().HasData(
-    new SystemParameters
-    {
-        Id = 1,
-        WallUValue = 0.50m,
-        WindowUValue = 1.40m,
-        CeilingUValue = 0.25m,
-        FloorUValue = 0.40m,
-        OutdoorDesignTemp = -15.0m,
-        GroundTemp = 10.0m,              
-        GasPricePerKwh = 0.05m,        
-        LastUpdated = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-        UpdatedBy = "System"
-    }
-);
+            modelBuilder.Entity<AlarmSettings>()
+                .HasKey(s => s.Id);
 
+            // SystemParameters seed data
+            modelBuilder.Entity<SystemParameters>().HasData(
+                new SystemParameters
+                {
+                    Id = 1,
+                    WallUValue = 0.50m,
+                    WindowUValue = 1.40m,
+                    CeilingUValue = 0.25m,
+                    FloorUValue = 0.40m,
+                    OutdoorDesignTemp = -15.0m,
+                    GroundTemp = 10.0m,
+                    GasPricePerKwh = 0.05m,
+                    LastUpdated = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                    UpdatedBy = "System"
+                }
+            );
+
+            // Admin user seed data
             string adminPasswordHash = "$2a$12$xYluxINGkkohipBPd/xZLe2cJl2Y7dSomJAu5WT8MJRkd8u6J6nJW";
             modelBuilder.Entity<User>().HasData(
-        new User
-        {
-            Id = 1, 
-            Username = "admin",
-            Email = "admin@example.com",
-            PasswordHash = adminPasswordHash,
-            Role = "Admin", 
-            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc)  // ⭐ STATIC DATE
-        }
-    );
+                new User
+                {
+                    Id = 1,
+                    Username = "admin",
+                    Email = "admin@example.com",
+                    PasswordHash = adminPasswordHash,
+                    Role = "Admin",
+                    CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+                }
+            );
 
+            modelBuilder.Entity<AlarmSettings>().HasData(
+                new AlarmSettings
+                {
+                    Id = 1,
+                    HighIndoorTempThreshold = 28.0,
+                    LowIndoorTempThreshold = 18.0,
+                    HighOutdoorTempThreshold = 35.0,
+                    LowOutdoorTempThreshold = -15.0,
+                    HighDailyCostThreshold = 50.0,
+                    CapacityDeficitThreshold = 0.0,
+                    AlertCooldownMinutes = 60,
+                    CapacityAlertsEnabled = true,
+                    HighIndoorTempAlertsEnabled = true,
+                    LowIndoorTempAlertsEnabled = true,
+                    HighOutdoorTempAlertsEnabled = true,
+                    LowOutdoorTempAlertsEnabled = true,
+                    HighCostAlertsEnabled = false,
+                    LastUpdated = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                    UpdatedBy = "System"
+                }
+            );
         }
     }
 }
