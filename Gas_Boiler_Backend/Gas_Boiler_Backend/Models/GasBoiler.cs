@@ -43,6 +43,5 @@ namespace Gas_Boiler_Backend.Models
         public BuildingObject BuildingObject { get; set; } = null!; 
 
         public ICollection<HistoricalData> HistoricalData { get; set; } = new List<HistoricalData>();
-        public ICollection<Alarm> Alarms { get; set; } = new List<Alarm>();
     }
 }
