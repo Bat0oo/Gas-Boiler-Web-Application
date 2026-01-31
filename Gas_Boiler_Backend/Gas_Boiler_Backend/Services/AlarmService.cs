@@ -2,6 +2,8 @@
 using Gas_Boiler_Backend.Interfaces;
 using Gas_Boiler_Backend.Models;
 using System.Text.Json;
+using Gas_Boiler_Backend.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Gas_Boiler_Backend.Services
 {
@@ -12,19 +14,22 @@ namespace Gas_Boiler_Backend.Services
         private readonly IBuildingReadingRepository _readingRepo;
         private readonly IBuildingObjectRepository _buildingRepo;
         private readonly ILogger<AlarmService> _logger;
+        private readonly IHubContext<BoilerHub> _hubContext;
 
         public AlarmService(
             IAlarmRepository alarmRepo,
             IAlarmSettingsRepository settingsRepo,
             IBuildingReadingRepository readingRepo,
             IBuildingObjectRepository buildingRepo,
-            ILogger<AlarmService> logger)
+            ILogger<AlarmService> logger,
+            IHubContext<BoilerHub> hubContext)
         {
             _alarmRepo = alarmRepo;
             _settingsRepo = settingsRepo;
             _readingRepo = readingRepo;
             _buildingRepo = buildingRepo;
             _logger = logger;
+            _hubContext = hubContext;
         }
 
         #region Alarm CRUD
@@ -210,7 +215,7 @@ namespace Gas_Boiler_Backend.Services
 
         public async Task CheckAndCreateAlarmsAsync()
         {
-            _logger.LogInformation("🚨 Starting alarm check...");
+            _logger.LogInformation("Starting alarm check...");
 
             try
             {
@@ -231,11 +236,11 @@ namespace Gas_Boiler_Backend.Services
                     await CheckBuildingAlarmsAsync(building, settings);
                 }
 
-                _logger.LogInformation("✅ Alarm check complete");
+                _logger.LogInformation("Alarm check complete");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "❌ Error during alarm check");
+                _logger.LogError(ex, "Error during alarm check");
             }
         }
 
@@ -322,6 +327,17 @@ namespace Gas_Boiler_Backend.Services
 
             await _alarmRepo.CreateAsync(alarm);
             _logger.LogWarning($"🚨 Created INSUFFICIENT_CAPACITY alarm for building {building.Id} ({building.Name})");
+
+            await _hubContext.Clients.All.SendAsync("NewAlarm", new
+            {
+                alarmId = alarm.Id,
+                type = alarm.Type,
+                severity = alarm.Severity,
+                message = alarm.Message,
+                buildingId = building.Id,
+                buildingName = building.Name,
+                timestamp = alarm.CreatedAt
+            });
         }
 
         private async Task CheckHighIndoorTempAlarm(BuildingObject building, BuildingReading reading, AlarmSettings settings)
@@ -356,6 +372,17 @@ namespace Gas_Boiler_Backend.Services
 
             await _alarmRepo.CreateAsync(alarm);
             _logger.LogWarning($"🚨 Created HIGH_INDOOR_TEMP alarm for building {building.Id} ({building.Name})");
+
+            await _hubContext.Clients.All.SendAsync("NewAlarm", new
+            {
+                alarmId = alarm.Id,
+                type = alarm.Type,
+                severity = alarm.Severity,
+                message = alarm.Message,
+                buildingId = building.Id,
+                buildingName = building.Name,
+                timestamp = alarm.CreatedAt
+            });
         }
 
         private async Task CheckLowIndoorTempAlarm(BuildingObject building, BuildingReading reading, AlarmSettings settings)
@@ -390,6 +417,17 @@ namespace Gas_Boiler_Backend.Services
 
             await _alarmRepo.CreateAsync(alarm);
             _logger.LogWarning($"🚨 Created LOW_INDOOR_TEMP alarm for building {building.Id} ({building.Name})");
+
+            await _hubContext.Clients.All.SendAsync("NewAlarm", new
+            {
+                alarmId = alarm.Id,
+                type = alarm.Type,
+                severity = alarm.Severity,
+                message = alarm.Message,
+                buildingId = building.Id,
+                buildingName = building.Name,
+                timestamp = alarm.CreatedAt
+            });
         }
 
         private async Task CheckHighOutdoorTempAlarm(BuildingObject building, BuildingReading reading, AlarmSettings settings)
@@ -420,6 +458,17 @@ namespace Gas_Boiler_Backend.Services
 
             await _alarmRepo.CreateAsync(alarm);
             _logger.LogInformation($"🚨 Created HIGH_OUTDOOR_TEMP alarm for building {building.Id} ({building.Name})");
+
+            await _hubContext.Clients.All.SendAsync("NewAlarm", new
+            {
+                alarmId = alarm.Id,
+                type = alarm.Type,
+                severity = alarm.Severity,
+                message = alarm.Message,
+                buildingId = building.Id,
+                buildingName = building.Name,
+                timestamp = alarm.CreatedAt
+            });
         }
 
         private async Task CheckLowOutdoorTempAlarm(BuildingObject building, BuildingReading reading, AlarmSettings settings)
@@ -450,6 +499,17 @@ namespace Gas_Boiler_Backend.Services
 
             await _alarmRepo.CreateAsync(alarm);
             _logger.LogWarning($"🚨 Created LOW_OUTDOOR_TEMP alarm for building {building.Id} ({building.Name})");
+
+            await _hubContext.Clients.All.SendAsync("NewAlarm", new
+            {
+                alarmId = alarm.Id,
+                type = alarm.Type,
+                severity = alarm.Severity,
+                message = alarm.Message,
+                buildingId = building.Id,
+                buildingName = building.Name,
+                timestamp = alarm.CreatedAt
+            });
         }
 
         private async Task CheckHighCostAlarm(BuildingObject building, BuildingReading reading, AlarmSettings settings)
@@ -480,6 +540,17 @@ namespace Gas_Boiler_Backend.Services
 
             await _alarmRepo.CreateAsync(alarm);
             _logger.LogInformation($"🚨 Created HIGH_DAILY_COST alarm for building {building.Id} ({building.Name})");
+
+            await _hubContext.Clients.All.SendAsync("NewAlarm", new
+            {
+                alarmId = alarm.Id,
+                type = alarm.Type,
+                severity = alarm.Severity,
+                message = alarm.Message,
+                buildingId = building.Id,
+                buildingName = building.Name,
+                timestamp = alarm.CreatedAt
+            });
         }
 
         #endregion

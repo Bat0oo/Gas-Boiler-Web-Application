@@ -171,6 +171,9 @@ namespace Gas_Boiler_Backend.Controllers
             {
                 var username = User.FindFirst(ClaimTypes.Name)?.Value ?? "Admin";
                 var settings = await _alarmService.UpdateSettingsAsync(dto, username);
+
+                await _alarmService.CheckAndCreateAlarmsAsync();
+
                 return Ok(settings);
             }
             catch (Exception ex)

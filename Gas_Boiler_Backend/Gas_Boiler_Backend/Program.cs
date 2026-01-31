@@ -1,4 +1,3 @@
-
 using Gas_Boiler_Backend.Data;
 using Gas_Boiler_Backend.Helpers;
 using Gas_Boiler_Backend.Interfaces;
@@ -9,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Gas_Boiler_Backend.Hubs;
 
 namespace Gas_Boiler_Backend
 {
@@ -62,19 +62,36 @@ namespace Gas_Boiler_Backend
             })
             .AddJwtBearer(options =>
             {
-                 options.TokenValidationParameters = new TokenValidationParameters
-                 {
-                     ValidateIssuer = true,
-                     ValidateAudience = true,
-                     ValidateLifetime = true,
-                     ValidateIssuerSigningKey = true,
-                     ValidIssuer = jwtSettings["Issuer"],
-                     ValidAudience = jwtSettings["Audience"],
-                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!))
-                    };
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtSettings["Issuer"],
+                    ValidAudience = jwtSettings["Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!))
+                };
+
+                // Allow SignalR to use JWT from query string
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/boilerHub"))
+                        {
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
             builder.Services.AddControllers();
+            builder.Services.AddSignalR();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(options =>
@@ -126,7 +143,7 @@ namespace Gas_Boiler_Backend
                 app.UseSwaggerUI();
             }
 
-            app.UseRouting(); 
+            app.UseRouting();
 
             app.UseHttpsRedirection();
 
@@ -137,6 +154,7 @@ namespace Gas_Boiler_Backend
 
 
             app.MapControllers();
+            app.MapHub<BoilerHub>("/boilerHub");
 
             app.Run();
         }
