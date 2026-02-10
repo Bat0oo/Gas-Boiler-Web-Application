@@ -17,24 +17,44 @@ namespace Gas_Boiler_Backend.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("Data Recording Background Service STARTED");
-            _logger.LogInformation("Waiting 2 minutes before first recording...");
-            await Task.Delay(TimeSpan.FromMinutes(2), stoppingToken);
+            _logger.LogInformation("📊 Data Recording Background Service STARTED");
+            _logger.LogInformation("Waiting 30 seconds before first recording...");
+
+            await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
 
             while (!stoppingToken.IsCancellationRequested)
             {
                 try
                 {
-                    // Get current interval setting
+                    // Get current interval setting BEFORE recording
                     int intervalMinutes = await GetRecordingIntervalAsync();
-                    _logger.LogInformation($"Time to record data! (Interval: {intervalMinutes} minutes)");
+
+                    _logger.LogInformation($"📊 Time to record data! (Current interval: {intervalMinutes} minutes)");
 
                     await RecordDataAsync();
 
-                    _logger.LogInformation($"Recording complete. Next recording in {intervalMinutes} minutes");
+                    _logger.LogInformation($"✅ Recording complete. Next recording in {intervalMinutes} minutes");
 
-                    // Wait for the configured interval
-                    await Task.Delay(TimeSpan.FromMinutes(intervalMinutes), stoppingToken);
+                    // ⭐ IMPROVED: Check interval periodically during wait
+                    // This allows detecting interval changes faster
+                    var elapsed = 0;
+                    var checkIntervalSeconds = 30; // Check every 30 seconds
+
+                    while (elapsed < intervalMinutes * 60 && !stoppingToken.IsCancellationRequested)
+                    {
+                        await Task.Delay(TimeSpan.FromSeconds(checkIntervalSeconds), stoppingToken);
+                        elapsed += checkIntervalSeconds;
+
+                        // Check if interval changed
+                        var newInterval = await GetRecordingIntervalAsync();
+                        if (newInterval != intervalMinutes)
+                        {
+                            _logger.LogInformation($"⚠️ Interval changed from {intervalMinutes} to {newInterval} minutes. Adjusting...");
+                            intervalMinutes = newInterval;
+                            // Recalculate remaining time
+                            break; // Exit wait loop and start new cycle
+                        }
+                    }
                 }
                 catch (TaskCanceledException)
                 {
@@ -43,13 +63,12 @@ namespace Gas_Boiler_Backend.Services
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error recording historical data");
-                    // Wait 5 minutes before retrying on error
+                    _logger.LogError(ex, "❌ Error recording historical data");
                     await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
                 }
             }
 
-            _logger.LogInformation("Data Recording Background Service STOPPED");
+            _logger.LogInformation("📊 Data Recording Background Service STOPPED");
         }
 
         private async Task<int> GetRecordingIntervalAsync()
@@ -60,8 +79,9 @@ namespace Gas_Boiler_Backend.Services
                     .GetRequiredService<IDataManagementSettingsRepository>();
                 var settings = await settingsRepo.GetAsync();
 
-                // Return configured interval or default to 60 minutes
-                return settings?.RecordingIntervalMinutes ?? 60;
+                var interval = settings?.RecordingIntervalMinutes ?? 60;
+
+                return interval;
             }
         }
 
@@ -72,7 +92,6 @@ namespace Gas_Boiler_Backend.Services
                 // 1. Record historical data for all buildings
                 var historicalDataService = scope.ServiceProvider
                     .GetRequiredService<IHistoricalDataService>();
-
                 await historicalDataService.RecordAllBuildingsAsync();
 
                 _logger.LogInformation("Historical data recorded. Now checking for alarms...");
@@ -80,7 +99,6 @@ namespace Gas_Boiler_Backend.Services
                 // 2. Check for alarms based on latest readings
                 var alarmService = scope.ServiceProvider
                     .GetRequiredService<IAlarmService>();
-
                 await alarmService.CheckAndCreateAlarmsAsync();
 
                 _logger.LogInformation("Alarm check complete");
