@@ -35,8 +35,6 @@ namespace Gas_Boiler_Backend.Services
 
                     _logger.LogInformation($"✅ Recording complete. Next recording in {intervalMinutes} minutes");
 
-                    // ⭐ IMPROVED: Check interval periodically during wait
-                    // This allows detecting interval changes faster
                     var elapsed = 0;
                     var checkIntervalSeconds = 30; // Check every 30 seconds
 
