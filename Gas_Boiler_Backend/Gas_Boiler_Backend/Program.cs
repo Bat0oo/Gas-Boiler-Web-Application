@@ -47,6 +47,7 @@ namespace Gas_Boiler_Backend
             builder.Services.AddScoped<IAlarmService, AlarmService>();
 
             builder.Services.AddHostedService<DataRecordingBackgroundService>();
+            builder.Services.AddHostedService<BoilerControlBackgroundService>();
 
             builder.Services.AddHttpClient<IWeatherService, OpenWeatherService>();
 

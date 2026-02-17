@@ -577,5 +577,26 @@ namespace Gas_Boiler_Backend.Services
         }
 
         #endregion
+
+        public async Task CheckCapacityAlarmAsync(int buildingId)
+        {
+            var building = await _buildingRepo.GetByIdAsync(buildingId);
+            if (building == null) return;
+
+            var latestReading = await _readingRepo.GetLatestByBuildingIdAsync(buildingId);
+            if (latestReading == null) return;
+
+            var settings = await _settingsRepo.GetAsync();
+            if (settings == null) return;
+
+            // Only check if capacity alerts are enabled
+            if (!settings.CapacityAlertsEnabled) return;
+
+            // Check if building has sufficient capacity
+            if (!latestReading.HasSufficientCapacity)
+            {
+                await CheckCapacityAlarm(building, latestReading, settings);
+            }
+        }
     }
 }
