@@ -19,5 +19,7 @@ namespace Gas_Boiler_Backend.Interfaces
 
         // Alarm Detection (called by background service)
         Task CheckAndCreateAlarmsAsync();
+
+        Task CheckCapacityAlarmAsync(int buildingId);
     }
 }

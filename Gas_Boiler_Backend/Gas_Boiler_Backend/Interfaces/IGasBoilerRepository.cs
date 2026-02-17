@@ -7,6 +7,7 @@ namespace Gas_Boiler_Backend.Interfaces
         Task<GasBoiler?> GetByIdAsync(int id);
         Task<IEnumerable<GasBoiler>> GetAllForUserAsync(int userId);
         Task<IEnumerable<GasBoiler>> GetAllAsync(); // only for admin
+        Task<IEnumerable<GasBoiler>> GetByBuildingIdAsync(int buildingId);
         Task AddAsync(GasBoiler gasBoiler);
         Task UpdateAsync(GasBoiler gasBoiler);
         Task DeleteAsync(GasBoiler gasBoiler);
