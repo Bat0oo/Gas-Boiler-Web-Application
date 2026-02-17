@@ -139,6 +139,7 @@ namespace Gas_Boiler_Backend.Services
                 {
                     boiler.CurrentPower = newPower;
                     await boilerRepo.UpdateAsync(boiler);
+                    await boilerRepo.SaveChangesAsync();
 
                     _logger.LogInformation(
                         "  Boiler {BoilerName}: {OldPower:F1}kW → {NewPower:F1}kW",
