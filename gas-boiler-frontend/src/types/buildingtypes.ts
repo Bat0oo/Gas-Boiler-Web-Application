@@ -7,7 +7,6 @@ export interface Building {
   heatingArea: number;
   height: number;
   volume: number;
-  desiredTemperature: number;
   wallUValue: number;
   windowUValue: number;
   ceilingUValue: number;
@@ -17,6 +16,10 @@ export interface Building {
   ceilingArea: number;
   floorArea: number;
   boilerCount: number;
+  
+  desiredTemperature: number;
+  indoorTemperature?: number;
+  currentTemperature?: number;
 }
 
 export interface BuildingDetail extends Building {
@@ -43,7 +46,11 @@ export interface BuildingMapPoint {
   boilerCount: number;
   totalMaxPower: number;
   totalCurrentPower: number;
+  
+  desiredTemperature: number;
+  indoorTemperature?: number;
   currentTemperature?: number;
+  
   weatherDescription?: string;
 }
 
