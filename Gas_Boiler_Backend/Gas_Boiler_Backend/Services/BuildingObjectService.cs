@@ -45,7 +45,6 @@ namespace Gas_Boiler_Backend.Services
                     HeatingArea = b.HeatingArea,
                     Height = b.Height,
                     Volume = b.Volume,
-                    DesiredTemperature = b.DesiredTemperature,
                     WallUValue = b.WallUValue,
                     WindowUValue = b.WindowUValue,
                     CeilingUValue = b.CeilingUValue,
@@ -56,7 +55,8 @@ namespace Gas_Boiler_Backend.Services
                     FloorArea = b.FloorArea,
                     BoilerCount = b.GasBoilers.Count,
 
-                    // INCLUDE INDOOR TEMPERATURE
+                    DesiredTemperature = b.DesiredTemperature,
+                    CurrentTemperature = latestReading?.OutdoorTemperature,
                     IndoorTemperature = latestReading?.IndoorTemperature
                 });
             }
