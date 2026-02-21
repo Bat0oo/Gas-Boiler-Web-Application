@@ -9,8 +9,9 @@
         public int BoilerCount { get; set; }
         public double TotalMaxPower { get; set; }
         public double TotalCurrentPower { get; set; }
-        public double? CurrentTemperature { get; set; }
         public string WeatherDescription { get; set; } = string.Empty;
+        public double? CurrentTemperature { get; set; }
         public double? IndoorTemperature { get; set; }
+        public double? DesiredTemperature { get; set; }
     }
 }
