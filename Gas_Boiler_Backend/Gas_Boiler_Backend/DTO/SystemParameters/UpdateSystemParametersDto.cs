@@ -44,5 +44,18 @@ namespace Gas_Boiler_Backend.DTO.SystemParameters
         [Required(ErrorMessage = "Default boiler efficiency is required")]
         [Range(0.70, 0.98, ErrorMessage = "Default boiler efficiency must be between 0.70 and 0.98")]
         public decimal DefaultBoilerEfficiency { get; set; }
+
+        // Temperature calculation parameters
+        [Required(ErrorMessage = "Outdoor influence factor is required")]
+        [Range(0.0, 1.0, ErrorMessage = "Outdoor influence factor must be between 0.0 and 1.0")]
+        public decimal OutdoorInfluenceFactor { get; set; }
+
+        [Required(ErrorMessage = "Thermal mass coefficient is required")]
+        [Range(500.0, 2000.0, ErrorMessage = "Thermal mass coefficient must be between 500 and 2000 J/m³·K")]
+        public decimal ThermalMassCoefficient { get; set; }
+
+        [Required(ErrorMessage = "Temperature time step is required")]
+        [Range(30, 300, ErrorMessage = "Temperature time step must be between 30 and 300 seconds")]
+        public int TemperatureTimeStepSeconds { get; set; }
     }
 }

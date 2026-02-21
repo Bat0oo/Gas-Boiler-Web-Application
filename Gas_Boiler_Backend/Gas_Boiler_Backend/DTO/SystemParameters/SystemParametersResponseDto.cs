@@ -20,6 +20,11 @@
         public decimal SafetyFactor { get; set; }
         public decimal DefaultBoilerEfficiency { get; set; }
 
+        // Temperature calculation parameters
+        public decimal OutdoorInfluenceFactor { get; set; }
+        public decimal ThermalMassCoefficient { get; set; }
+        public int TemperatureTimeStepSeconds { get; set; }
+
         // Metadata
         public DateTime LastUpdated { get; set; }
         public string UpdatedBy { get; set; } = string.Empty;
