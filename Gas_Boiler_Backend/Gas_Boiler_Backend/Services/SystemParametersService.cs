@@ -45,6 +45,11 @@ namespace Gas_Boiler_Backend.Services
             parameters.SafetyFactor = updateDto.SafetyFactor;                     
             parameters.DefaultBoilerEfficiency = updateDto.DefaultBoilerEfficiency;
 
+            // Update temperature parameters
+            parameters.OutdoorInfluenceFactor = updateDto.OutdoorInfluenceFactor;
+            parameters.ThermalMassCoefficient = updateDto.ThermalMassCoefficient;
+            parameters.TemperatureTimeStepSeconds = updateDto.TemperatureTimeStepSeconds;
+
             // Update metadata
             parameters.LastUpdated = DateTime.Now;
             parameters.UpdatedBy = username;
@@ -69,7 +74,10 @@ namespace Gas_Boiler_Backend.Services
                 WindowToWallRatio = parameters.WindowToWallRatio,     
                 SafetyFactor = parameters.SafetyFactor,               
                 DefaultBoilerEfficiency = parameters.DefaultBoilerEfficiency,  
-                UpdatedBy = parameters.UpdatedBy
+                UpdatedBy = parameters.UpdatedBy,
+                OutdoorInfluenceFactor = parameters.OutdoorInfluenceFactor,
+                ThermalMassCoefficient = parameters.ThermalMassCoefficient,
+                TemperatureTimeStepSeconds = parameters.TemperatureTimeStepSeconds
             };
         }
     }
