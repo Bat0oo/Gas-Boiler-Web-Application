@@ -148,7 +148,9 @@ namespace Gas_Boiler_Backend.Services
                     TotalMaxPower = b.GasBoilers.Sum(gb => gb.MaxPower),
                     TotalCurrentPower = b.GasBoilers.Sum(gb => gb.CurrentPower),
 
-                    IndoorTemperature = latestReading?.IndoorTemperature
+                    IndoorTemperature = latestReading?.IndoorTemperature,
+                    CurrentTemperature = latestReading?.OutdoorTemperature,
+                    DesiredTemperature = b.DesiredTemperature
                 });
             }
 
