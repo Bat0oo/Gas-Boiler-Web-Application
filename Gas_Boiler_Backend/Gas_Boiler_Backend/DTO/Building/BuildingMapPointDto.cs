@@ -11,6 +11,6 @@
         public double TotalCurrentPower { get; set; }
         public double? CurrentTemperature { get; set; }
         public string WeatherDescription { get; set; } = string.Empty;
-
+        public double? IndoorTemperature { get; set; }
     }
 }

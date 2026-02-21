@@ -25,5 +25,6 @@
         public double? CurrentTemperature { get; set; }
         public string WeatherDescription { get; set; } = string.Empty;
         public string WeatherIcon { get; set; } = string.Empty;
+        public double? IndoorTemperature { get; set; }
     }
 }

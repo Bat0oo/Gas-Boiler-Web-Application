@@ -24,5 +24,6 @@
         public double CeilingArea { get; set; }
         public double FloorArea { get; set; }
         public int BoilerCount { get; set; }
+        public double? IndoorTemperature { get; set; }
     }
 }
