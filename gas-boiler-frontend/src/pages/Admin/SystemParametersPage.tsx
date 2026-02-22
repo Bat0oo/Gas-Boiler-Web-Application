@@ -21,10 +21,13 @@ const SystemParametersPage: React.FC = () => {
   const [outdoorDesignTemp, setOutdoorDesignTemp] = useState('');
   const [groundTemp, setGroundTemp] = useState('');
   const [gasPricePerKwh, setGasPricePerKwh] = useState('');
-
   const [windowToWallRatio, setWindowToWallRatio] = useState('');
   const [safetyFactor, setSafetyFactor] = useState('');
   const [defaultBoilerEfficiency, setDefaultBoilerEfficiency] = useState('');
+
+  const [thermalMassCoefficient, setThermalMassCoefficient] = useState('');
+  const [outdoorInfluenceFactor, setOutdoorInfluenceFactor] = useState('');
+  const [temperatureTimeStepSeconds, setTemperatureTimeStepSeconds] = useState('');
 
   // Historical data states
   const [readingsCount, setReadingsCount] = useState<number>(0);
@@ -33,7 +36,7 @@ const SystemParametersPage: React.FC = () => {
 
   useEffect(() => {
     loadParameters();
-    loadReadingsCount(); // Load count on mount
+    loadReadingsCount();
   }, []);
 
   const loadParameters = async () => {
@@ -49,10 +52,13 @@ const SystemParametersPage: React.FC = () => {
       setOutdoorDesignTemp(data.outdoorDesignTemp.toString());
       setGroundTemp(data.groundTemp.toString());
       setGasPricePerKwh(data.gasPricePerKwh.toString());
-
       setWindowToWallRatio(data.windowToWallRatio.toString());
       setSafetyFactor(data.safetyFactor.toString());
       setDefaultBoilerEfficiency(data.defaultBoilerEfficiency.toString());
+
+      setThermalMassCoefficient(data.thermalMassCoefficient?.toString() || '1200');
+      setOutdoorInfluenceFactor(data.outdoorInfluenceFactor?.toString() || '0.15');
+      setTemperatureTimeStepSeconds(data.temperatureTimeStepSeconds?.toString() || '60');
 
       setError('');
     } catch (err: any) {
@@ -72,7 +78,7 @@ const SystemParametersPage: React.FC = () => {
   };
 
   const handleGenerateTestData = async () => {
-    if (!window.confirm('Generate 30 days of test data for all buildings? This will add approximately 720 readings per building.')) {
+    if (!window.confirm('Generate 30 days of test data for all buildings?')) {
       return;
     }
 
@@ -82,7 +88,7 @@ const SystemParametersPage: React.FC = () => {
     try {
       const response = await historicalDataService.seedData(user!.token, 30);
       setSeedMessage(`✅ ${response.message}`);
-      await loadReadingsCount(); // Reload count
+      await loadReadingsCount();
     } catch (err: any) {
       setSeedMessage(`❌ Error: ${err.response?.data?.message || err.message}`);
     } finally {
@@ -108,6 +114,11 @@ const SystemParametersPage: React.FC = () => {
         windowToWallRatio: parseFloat(windowToWallRatio),
         safetyFactor: parseFloat(safetyFactor),
         defaultBoilerEfficiency: parseFloat(defaultBoilerEfficiency),
+        
+        // ⭐ NEW THERMODYNAMICS PARAMETERS
+        thermalMassCoefficient: parseFloat(thermalMassCoefficient),
+        outdoorInfluenceFactor: parseFloat(outdoorInfluenceFactor),
+        temperatureTimeStepSeconds: parseFloat(temperatureTimeStepSeconds),
       });
 
       setParams(updated);
@@ -133,6 +144,12 @@ const SystemParametersPage: React.FC = () => {
       setWindowToWallRatio(params.windowToWallRatio.toString());
       setSafetyFactor(params.safetyFactor.toString());
       setDefaultBoilerEfficiency(params.defaultBoilerEfficiency.toString());
+      
+      // ⭐ NEW THERMODYNAMICS PARAMETERS
+      setThermalMassCoefficient(params.thermalMassCoefficient?.toString() || '1200');
+      setOutdoorInfluenceFactor(params.outdoorInfluenceFactor?.toString() || '0.15');
+      setTemperatureTimeStepSeconds(params.temperatureTimeStepSeconds?.toString() || '60');
+      
       setError('');
       setSuccess('');
     }
@@ -179,8 +196,8 @@ const SystemParametersPage: React.FC = () => {
 
           <form onSubmit={handleSubmit} className="params-form">
 
+            {/* U-VALUES SECTION */}
             <div className="params-grid">
-              {/* ... all your existing parameter inputs ... */}
               <div className="param-item" data-tooltip="Heat transfer coefficient through wall. Lower value = better insulation.">
                 <label>
                   <span className="param-icon">🏗️</span>
@@ -225,7 +242,7 @@ const SystemParametersPage: React.FC = () => {
                 <span className="param-hint">1.1 - 5.8</span>
               </div>
 
-              <div className="param-item" data-tooltip="Heat transfer coefficient through ceiling/roof. Used for calculating upward heat losses.">
+              <div className="param-item" data-tooltip="Heat transfer coefficient through ceiling/roof.">
                 <label>
                   <span className="param-icon">🏠</span>
                   <span className="param-name">Ceiling</span>
@@ -247,7 +264,7 @@ const SystemParametersPage: React.FC = () => {
                 <span className="param-hint">0.15 - 2.0</span>
               </div>
 
-              <div className="param-item" data-tooltip="Heat transfer coefficient through floor. Used for calculating heat losses to ground.">
+              <div className="param-item" data-tooltip="Heat transfer coefficient through floor.">
                 <label>
                   <span className="param-icon">📐</span>
                   <span className="param-name">Floor</span>
@@ -270,6 +287,7 @@ const SystemParametersPage: React.FC = () => {
               </div>
             </div>
 
+            {/* TEMPERATURES & PRICES */}
             <div className="params-grid params-grid-3">
               <div className="param-item" data-tooltip="Coldest expected outdoor temperature in winter. Used for heating system sizing.">
                 <label>
@@ -293,7 +311,7 @@ const SystemParametersPage: React.FC = () => {
                 <span className="param-hint">-30 to 5</span>
               </div>
 
-              <div className="param-item" data-tooltip="Average ground temperature. Used for calculating heat losses through floor.">
+              <div className="param-item" data-tooltip="Average ground temperature.">
                 <label>
                   <span className="param-icon">🌍</span>
                   <span className="param-name">Ground temp.</span>
@@ -315,7 +333,7 @@ const SystemParametersPage: React.FC = () => {
                 <span className="param-hint">0 - 20</span>
               </div>
 
-              <div className="param-item" data-tooltip="Natural gas price per kilowatt-hour. Used for heating cost estimation.">
+              <div className="param-item" data-tooltip="Natural gas price per kilowatt-hour.">
                 <label>
                   <span className="param-icon">💰</span>
                   <span className="param-name">Gas price</span>
@@ -338,8 +356,9 @@ const SystemParametersPage: React.FC = () => {
               </div>
             </div>
 
+            {/* BUILDING PARAMETERS */}
             <div className="params-grid params-grid-3">
-              <div className="param-item" data-tooltip="Window area ratio relative to wall. Typically 15%. Old buildings: 10-12%, Modern: 15-20%, Offices: 30-40%.">
+              <div className="param-item" data-tooltip="Window area ratio relative to wall.">
                 <label>
                   <span className="param-icon">🪟</span>
                   <span className="param-name">Window ratio</span>
@@ -361,7 +380,7 @@ const SystemParametersPage: React.FC = () => {
                 <span className="param-hint">0.10 - 0.40</span>
               </div>
 
-              <div className="param-item" data-tooltip="Safety factor for heating system design. Adds reserve for extreme conditions. Typically 1.15 (15% reserve).">
+              <div className="param-item" data-tooltip="Safety factor for heating system design.">
                 <label>
                   <span className="param-icon">🛡️</span>
                   <span className="param-name">Safety factor</span>
@@ -374,16 +393,16 @@ const SystemParametersPage: React.FC = () => {
                     onChange={(e) => setSafetyFactor(e.target.value)}
                     step="0.01"
                     min="1.00"
-                    max="1.30"
+                    max="1.50"
                     required
                     className="param-input"
                   />
                   <span className="param-unit">×</span>
                 </div>
-                <span className="param-hint">1.00 - 1.30</span>
+                <span className="param-hint">1.00 - 1.50</span>
               </div>
 
-              <div className="param-item" data-tooltip="Default boiler efficiency for cost calculations. Old: 70-85%, Modern: 90-95%, High efficiency: 95-98%.">
+              <div className="param-item" data-tooltip="Default boiler efficiency for cost calculations.">
                 <label>
                   <span className="param-icon">⚙️</span>
                   <span className="param-name">Boiler efficiency</span>
@@ -406,6 +425,75 @@ const SystemParametersPage: React.FC = () => {
               </div>
             </div>
 
+            {/* ⭐ NEW THERMODYNAMICS PARAMETERS SECTION */}
+            <div className="params-grid params-grid-3 thermodynamics-section">
+              <div className="param-item" data-tooltip="Thermal mass coefficient (J/m³·K). Higher = building heats/cools slower. Typical: 1200 (light), 2000 (medium), 3500 (heavy concrete).">
+                <label>
+                  <span className="param-icon">🧱</span>
+                  <span className="param-name">Thermal mass</span>
+                  <span className="info-icon">ℹ️</span>
+                </label>
+                <div className="input-wrapper">
+                  <input
+                    type="number"
+                    value={thermalMassCoefficient}
+                    onChange={(e) => setThermalMassCoefficient(e.target.value)}
+                    step="100"
+                    min="500"
+                    max="5000"
+                    required
+                    className="param-input"
+                  />
+                  <span className="param-unit-small">J/m³·K</span>
+                </div>
+                <span className="param-hint">500 - 5000</span>
+              </div>
+
+              <div className="param-item" data-tooltip="Outdoor influence factor (0-1). How much outdoor temperature affects indoor. Typical: 0.15 (well insulated), 0.30 (poorly insulated).">
+                <label>
+                  <span className="param-icon">🌡️</span>
+                  <span className="param-name">Outdoor influence</span>
+                  <span className="info-icon">ℹ️</span>
+                </label>
+                <div className="input-wrapper">
+                  <input
+                    type="number"
+                    value={outdoorInfluenceFactor}
+                    onChange={(e) => setOutdoorInfluenceFactor(e.target.value)}
+                    step="0.01"
+                    min="0.05"
+                    max="0.50"
+                    required
+                    className="param-input"
+                  />
+                  <span className="param-unit">factor</span>
+                </div>
+                <span className="param-hint">0.05 - 0.50</span>
+              </div>
+
+              <div className="param-item" data-tooltip="Time step for temperature calculations (seconds). P-Controller runs at this interval. Typical: 60 seconds.">
+                <label>
+                  <span className="param-icon">⏱️</span>
+                  <span className="param-name">Time step</span>
+                  <span className="info-icon">ℹ️</span>
+                </label>
+                <div className="input-wrapper">
+                  <input
+                    type="number"
+                    value={temperatureTimeStepSeconds}
+                    onChange={(e) => setTemperatureTimeStepSeconds(e.target.value)}
+                    step="10"
+                    min="30"
+                    max="300"
+                    required
+                    className="param-input"
+                  />
+                  <span className="param-unit">sec</span>
+                </div>
+                <span className="param-hint">30 - 300</span>
+              </div>
+            </div>
+
             <div className="form-actions">
               <button
                 type="button"
@@ -425,7 +513,7 @@ const SystemParametersPage: React.FC = () => {
             </div>
           </form>
 
-          {/* Historical Data Management Section - ADMIN ONLY */}
+          {/* Historical Data Management Section */}
           <hr style={{ margin: '2rem 0', border: 'none', borderTop: '2px solid #e5e7eb' }} />
           
           <div style={{
@@ -465,9 +553,7 @@ const SystemParametersPage: React.FC = () => {
                 fontSize: '0.9rem',
                 lineHeight: '1.6'
               }}>
-                ⚠️ <strong>Generate Test Data:</strong> This will create 30 days of historical readings 
-                for all buildings (720 readings per building). Useful for testing charts and demos. Background 
-                service will continue recording new data every hour automatically.
+                ⚠️ <strong>Generate Test Data:</strong> Creates 30 days of historical readings.
               </p>
               
               <button
@@ -486,7 +572,7 @@ const SystemParametersPage: React.FC = () => {
                   width: '100%'
                 }}
               >
-                {isSeeding ? '⏳ Generating... Please wait (~20 seconds)' : '🔄 Generate 30 Days of Test Data'}
+                {isSeeding ? '⏳ Generating...' : '🔄 Generate 30 Days of Test Data'}
               </button>
               
               {seedMessage && (
@@ -504,16 +590,6 @@ const SystemParametersPage: React.FC = () => {
                 </div>
               )}
             </div>
-            
-            <p style={{ 
-              margin: 0, 
-              color: '#64748b', 
-              fontSize: '0.85rem',
-              fontStyle: 'italic'
-            }}>
-              💡 <strong>Note:</strong> Background service automatically records new data every hour. This test 
-              data is for demonstration purposes only. Users will see historical charts based on this data.
-            </p>
           </div>
 
         </div>

@@ -374,3 +374,47 @@
 * {
   box-sizing: border-box;
 }
+
+.thermodynamics-section {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important;
+  border: 2px solid #f59e0b !important;
+  padding: 1rem !important;
+  position: relative;
+}
+
+.thermodynamics-section::before {
+  content: '🔬 Thermodynamics Parameters (P-Controller)';
+  position: absolute;
+  top: -12px;
+  left: 16px;
+  background: #f59e0b;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
+}
+
+.thermodynamics-section .param-item {
+  background-color: white;
+  border: 2px solid #fbbf24;
+  margin-top: 0.5rem; /* Space for label */
+}
+
+.thermodynamics-section .param-item:hover {
+  border-color: #f59e0b;
+  background-color: #fffbeb;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+}
+
+.thermodynamics-section .param-item .param-value-compact {
+  color: #d97706;
+}
+
+/* Make thermodynamics params stand out more */
+.thermodynamics-section .param-icon {
+  font-size: 1.2rem;
+  filter: drop-shadow(0 2px 4px rgba(245, 158, 11, 0.3));
+}
