@@ -51,7 +51,7 @@ namespace Gas_Boiler_Backend.DTO.SystemParameters
         public decimal OutdoorInfluenceFactor { get; set; }
 
         [Required(ErrorMessage = "Thermal mass coefficient is required")]
-        [Range(500.0, 2000.0, ErrorMessage = "Thermal mass coefficient must be between 500 and 2000 J/m³·K")]
+        [Range(500.0, 5000.0, ErrorMessage = "Thermal mass coefficient must be between 500 and 5000 J/m³·K")]
         public decimal ThermalMassCoefficient { get; set; }
 
         [Required(ErrorMessage = "Temperature time step is required")]

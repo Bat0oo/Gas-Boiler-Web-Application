@@ -127,7 +127,7 @@ namespace Gas_Boiler_Backend.Data
 
                     // Temperature calculation parameters
                     OutdoorInfluenceFactor = 0.15m,
-                    ThermalMassCoefficient = 1200.0m,
+                    ThermalMassCoefficient = 3200.0m,
                     TemperatureTimeStepSeconds = 60,
 
                     // Metadata

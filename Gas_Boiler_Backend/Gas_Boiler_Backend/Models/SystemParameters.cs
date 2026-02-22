@@ -51,7 +51,7 @@ namespace Gas_Boiler_Backend.Models
         [Range(0.0, 1.0)]
         public decimal OutdoorInfluenceFactor { get; set; } = 0.15m;
         [Required]
-        [Range(500.0, 2000.0)]
+        [Range(500.0, 5000.0)]
         public decimal ThermalMassCoefficient { get; set; } = 1200.0m;
         [Required]
         [Range(30, 300)]

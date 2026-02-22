@@ -233,7 +233,7 @@ namespace Gas_Boiler_Backend.Services
             // Get previous indoor temperature (or initialize if first run)
             var previousIndoorTemp = reading.IndoorTemperature > 0
                 ? reading.IndoorTemperature
-                : building.DesiredTemperature; // Start at desired temp on first run
+                : building.DesiredTemperature - 6.0; 
 
             // === HEAT BALANCE CALCULATION ===
 
@@ -267,7 +267,7 @@ namespace Gas_Boiler_Backend.Services
             var energyChange = netHeatFlow * timeStep; // W × s = J
 
             // Temperature change from heat balance
-            var tempChangeFromHeat = energyChange / (thermalMass * volume); // °C
+            var tempChangeFromHeat = (energyChange / (thermalMass * volume)) * 0.15; // °C
 
             // === OUTDOOR INFLUENCE ===
 
