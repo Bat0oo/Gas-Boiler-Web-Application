@@ -106,6 +106,7 @@ const ViewSystemParametersPage: React.FC = () => {
               </div>
             </div>
           </div>
+
           <div className="params-section-compact new-section">
             <h3 className="section-title-compact">🔧 Building and calculation parameters</h3>
             <div className="params-grid-3">
@@ -130,8 +131,32 @@ const ViewSystemParametersPage: React.FC = () => {
             </div>
           </div>
 
+          <div className="params-section-compact thermodynamics-section-view">
+            <h3 className="section-title-compact">🔬 Thermodynamics Parameters (P-Controller)</h3>
+            <div className="params-grid-3">
+              <div className="param-compact thermo-param">
+                <div className="param-label-compact">🧱 Thermal mass</div>
+                <div className="param-value-compact">
+                  {params.thermalMassCoefficient?.toFixed(0) || '1200'} <span className="unit-small">J/m³·K</span>
+                </div>
+              </div>
+              <div className="param-compact thermo-param">
+                <div className="param-label-compact">🌡️ Outdoor influence</div>
+                <div className="param-value-compact">
+                  {params.outdoorInfluenceFactor?.toFixed(2) || '0.15'} <span className="unit-small">factor</span>
+                </div>
+              </div>
+              <div className="param-compact thermo-param">
+                <div className="param-label-compact">⏱️ Time step</div>
+                <div className="param-value-compact">
+                  {params.temperatureTimeStepSeconds?.toFixed(0) || '60'} <span className="unit-small">sec</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="explanation-compact">
-            <strong>💡 Explanations:</strong> U-values measure insulation (lower = better). Outdoor temp for system sizing. Ground temp for floor calculations. Gas price for cost estimation. Window ratio defines window-to-wall area ratio. Safety factor adds reserve for extreme conditions. Boiler efficiency affects heating costs.
+            <strong>💡 Explanations:</strong> U-values measure insulation (lower = better). Outdoor temp for system sizing. Ground temp for floor calculations. Gas price for cost estimation. Window ratio defines window-to-wall area ratio. Safety factor adds reserve for extreme conditions. Boiler efficiency affects heating costs. <strong>Thermal mass:</strong> how slowly building heats/cools. <strong>Outdoor influence:</strong> how much outdoor temp affects indoor. <strong>Time step:</strong> P-Controller update interval.
           </div>
         </div>
       </div>

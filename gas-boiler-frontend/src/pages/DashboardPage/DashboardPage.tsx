@@ -211,7 +211,9 @@ const handleDeleteBoiler = async (boilerId: number) => {
                   <tr>
                     <th>Building Name</th>
                     <th>Heating Area</th>
+                    <th>Indoor Temp</th>
                     <th>Desired Temp</th>
+                    <th>Outdoor Temp</th>
                     <th>Boilers</th>
                     <th>Capacity</th>
                     <th>Action</th>
