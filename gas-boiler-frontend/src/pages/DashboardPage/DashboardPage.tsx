@@ -226,7 +226,25 @@ const handleDeleteBoiler = async (boilerId: number) => {
                         <strong>{building.name}</strong>
                       </td>
                       <td>{building.heatingArea} m²</td>
-                      <td>{building.desiredTemperature}°C</td>
+                                <td>
+            {building.indoorTemperature !== undefined && building.indoorTemperature !== null ? (
+              <span style={{ color: '#10b981', fontWeight: 600 }}>
+                {building.indoorTemperature.toFixed(1)}°C
+              </span>
+            ) : (
+              <span style={{ color: '#9ca3af' }}>N/A</span>
+            )}
+          </td>
+          
+          <td>{building.desiredTemperature}°C</td>
+          
+          <td>
+            {building.currentTemperature !== undefined && building.currentTemperature !== null ? (
+              <span>{building.currentTemperature.toFixed(1)}°C</span>
+            ) : (
+              <span style={{ color: '#9ca3af' }}>N/A</span>
+            )}
+          </td>
                       <td>{building.boilerCount}</td>
                       <td>
                         {building.boilerCount > 0 ? (
