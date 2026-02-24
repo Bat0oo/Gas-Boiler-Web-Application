@@ -121,6 +121,28 @@ namespace Gas_Boiler_Backend.Controllers
             }
         }
 
+        [HttpPatch("{id}/desired-temperature")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<BuildingObjectResponseDto>> UpdateDesiredTemperature(
+            int id,
+            [FromBody] UpdateDesiredTemperatureDto dto)
+        {
+            try
+            {
+                var userId = GetUserIdFromClaims();
+                var updated = await _service.UpdateDesiredTemperatureAsync(id, dto.DesiredTemperature, userId);
+
+                if (updated == null)
+                    return NotFound(new { message = "Building not found or access denied" });
+
+                return Ok(updated);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         [HttpDelete("{id}")]
         [Authorize(Roles = "User")]
         public async Task<ActionResult> DeleteBuilding(int id)

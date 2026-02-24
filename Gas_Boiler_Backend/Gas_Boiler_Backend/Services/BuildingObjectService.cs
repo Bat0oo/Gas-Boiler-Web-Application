@@ -308,6 +308,44 @@ namespace Gas_Boiler_Backend.Services
             return true;
         }
 
+        public async Task<BuildingObjectResponseDto?> UpdateDesiredTemperatureAsync(int id, double desiredTemperature, int userId)
+        {
+            var building = await _repository.GetByIdAsync(id);
+
+            if (building == null || building.UserId != userId)
+                return null;
+
+            building.DesiredTemperature = desiredTemperature;
+
+            await _repository.UpdateAsync(building);
+            await _repository.SaveChangesAsync();
+
+            var latestReading = await _readingRepository.GetLatestByBuildingIdAsync(id);
+
+            return new BuildingObjectResponseDto
+            {
+                Id = building.Id,
+                Name = building.Name,
+                UserId = building.UserId,
+                Latitude = building.Latitude,
+                Longitude = building.Longitude,
+                HeatingArea = building.HeatingArea,
+                Height = building.Height,
+                Volume = building.Volume,
+                DesiredTemperature = building.DesiredTemperature,
+                WallUValue = building.WallUValue,
+                WindowUValue = building.WindowUValue,
+                CeilingUValue = building.CeilingUValue,
+                FloorUValue = building.FloorUValue,
+                WallArea = building.WallArea,
+                WindowArea = building.WindowArea,
+                CeilingArea = building.CeilingArea,
+                FloorArea = building.FloorArea,
+                BoilerCount = building.GasBoilers.Count,
+                IndoorTemperature = latestReading?.IndoorTemperature
+            };
+        }
+
         public async Task<BuildingObject?> GetBuildingEntityAsync(int buildingId, int userId, bool isAdmin)
         {
             var building = await _repository.GetByIdAsync(buildingId);

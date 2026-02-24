@@ -12,5 +12,6 @@ namespace Gas_Boiler_Backend.Interfaces
         Task<BuildingObjectResponseDto> UpdateBuildingAsync(int id, BuildingObjectUpdateDto dto, int userId, bool isAdmin);
         Task<bool> DeleteBuildingAsync(int id, int userId, bool isAdmin);
         Task<BuildingObject?> GetBuildingEntityAsync(int buildingId, int userId, bool isAdmin);
+        Task<BuildingObjectResponseDto?> UpdateDesiredTemperatureAsync(int id, double desiredTemperature, int userId);
     }
 }
