@@ -56,6 +56,16 @@ export const buildingService = {
       headers: { Authorization: `Bearer ${token}` },
     });
   },
+  // Update desired temperature only (user-only, quick increment/decrement)
+  updateDesiredTemperature: async (id: number, desiredTemperature: number, token: string): Promise<Building> => {
+    const response = await apiClient.patch<Building>(
+      `/BuildingObject/${id}/desired-temperature`,
+      { desiredTemperature },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    return response.data;
+  },
+
   getCalculations: async (buildingId: number, token: string): Promise<HeatLossCalculation> => {
     const response = await apiClient.get<HeatLossCalculation>(
       `/BuildingObject/${buildingId}/calculations`,

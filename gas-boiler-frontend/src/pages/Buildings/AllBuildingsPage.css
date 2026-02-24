@@ -402,3 +402,53 @@
   color: #991b1b;
   border: 1px solid #fca5a5;
 }
+
+/* ===== TEMPERATURE CONTROL ===== */
+.temp-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  white-space: nowrap;
+}
+
+.temp-btn {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid #c7d2fe;
+  border-radius: 4px;
+  background: #eef2ff;
+  color: #4f46e5;
+  font-size: 0.7rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.temp-btn:hover:not(:disabled) {
+  background: #667eea;
+  border-color: #667eea;
+  color: white;
+}
+
+.temp-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.temp-value {
+  font-weight: 600;
+  font-size: 0.88rem;
+  min-width: 48px;
+  text-align: center;
+  color: #1e293b;
+  transition: color 0.2s;
+}
+
+.temp-saving {
+  color: #667eea;
+  opacity: 0.7;
+}

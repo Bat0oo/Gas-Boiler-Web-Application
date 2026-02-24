@@ -258,3 +258,43 @@
   color: #1e40af;
   font-weight: 600;
 }
+
+/* ===== POPUP TEMPERATURE CONTROL ===== */
+.popup-temp-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  vertical-align: middle;
+}
+
+.popup-temp-btn {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid #c7d2fe;
+  border-radius: 3px;
+  background: #eef2ff;
+  color: #4f46e5;
+  font-size: 0.65rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.popup-temp-btn:hover:not(:disabled) {
+  background: #667eea;
+  border-color: #667eea;
+  color: white;
+}
+
+.popup-temp-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.temp-saving {
+  color: #667eea;
+  opacity: 0.7;
+}

@@ -27,6 +27,10 @@ const AllBuildingsPage: React.FC = () => {
   const [isExporting, setIsExporting] = useState(false);
   const [exportMessage, setExportMessage] = useState('');
 
+  // Local desired temperature overrides (building id → temp) for instant UI feedback
+  const [tempOverrides, setTempOverrides] = useState<Record<number, number>>({});
+  const [savingTempId, setSavingTempId] = useState<number | null>(null);
+
   useEffect(() => {
     loadBuildings();
   }, []);
@@ -69,16 +73,46 @@ const handleExportCsv = async () => {
 
   const loadBuildings = async () => {
     if (!user?.token) return;
-    
+
     setLoading(true);
     try {
       const data = await buildingService.getAllBuildings(user.token);
       setBuildings(data);
+      // Seed local temp state from fetched data
+      const overrides: Record<number, number> = {};
+      data.forEach(b => { overrides[b.id] = b.desiredTemperature; });
+      setTempOverrides(overrides);
       setError('');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to load buildings');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleTemperatureChange = async (building: Building, delta: number) => {
+    if (savingTempId !== null) return;
+
+    const currentTemp = tempOverrides[building.id] ?? building.desiredTemperature;
+    const newTemp = Math.round((currentTemp + delta) * 2) / 2; // keep 0.5 precision
+
+    // Clamp to a sensible range
+    if (newTemp < 5 || newTemp > 35) return;
+
+    // Optimistic update
+    setTempOverrides(prev => ({ ...prev, [building.id]: newTemp }));
+    setSavingTempId(building.id);
+
+    try {
+      await buildingService.updateDesiredTemperature(building.id, newTemp, user!.token);
+      setBuildings(prev =>
+        prev.map(b => b.id === building.id ? { ...b, desiredTemperature: newTemp } : b)
+      );
+    } catch {
+      // Revert optimistic update on failure
+      setTempOverrides(prev => ({ ...prev, [building.id]: building.desiredTemperature }));
+    } finally {
+      setSavingTempId(null);
     }
   };
 
@@ -106,6 +140,8 @@ const handleExportCsv = async () => {
     setBuildings(buildings.map(b =>
       b.id === updatedBuilding.id ? updatedBuilding : b
     ));
+    // Keep tempOverrides in sync so the arrow controls show the correct base value
+    setTempOverrides(prev => ({ ...prev, [updatedBuilding.id]: updatedBuilding.desiredTemperature }));
     setEditingBuilding(null);
   };
 
@@ -247,7 +283,29 @@ const handleExportCsv = async () => {
                     <td>{building.heatingArea.toFixed(0)}</td>
                     <td>{building.height.toFixed(1)}</td>
                     <td className="volume">{building.volume.toFixed(1)}</td>
-                    <td>{building.desiredTemperature.toFixed(1)}</td>
+                    <td>
+                      {!isAdmin ? (
+                        <div className="temp-control">
+                          <button
+                            className="temp-btn"
+                            onClick={() => handleTemperatureChange(building, -0.5)}
+                            disabled={savingTempId !== null || (tempOverrides[building.id] ?? building.desiredTemperature) <= 5}
+                            title="Decrease by 0.5°C"
+                          >▼</button>
+                          <span className={`temp-value${savingTempId === building.id ? ' temp-saving' : ''}`}>
+                            {(tempOverrides[building.id] ?? building.desiredTemperature).toFixed(1)}°C
+                          </span>
+                          <button
+                            className="temp-btn"
+                            onClick={() => handleTemperatureChange(building, 0.5)}
+                            disabled={savingTempId !== null || (tempOverrides[building.id] ?? building.desiredTemperature) >= 35}
+                            title="Increase by 0.5°C"
+                          >▲</button>
+                        </div>
+                      ) : (
+                        `${building.desiredTemperature.toFixed(1)}°C`
+                      )}
+                    </td>
                     <td className="boiler-count">
                       {building.boilerCount > 0 ? (
                         <span className="has-boilers">{building.boilerCount}</span>

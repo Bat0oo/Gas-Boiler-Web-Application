@@ -57,6 +57,10 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
   const [editBoilerOpen, setEditBoilerOpen] = useState(false);
   const [editingBoiler, setEditingBoiler] = useState<any>(null);
 
+  // Desired temperature controls (user-only)
+  const [tempOverrides, setTempOverrides] = useState<Record<number, number>>({});
+  const [savingTempId, setSavingTempId] = useState<number | null>(null);
+
   useEffect(() => {
     loadBuildings();
   }, [token]);
@@ -78,10 +82,40 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
     try {
       const data = await buildingService.getMapPoints(token);
       setBuildings(data);
+      const overrides: Record<number, number> = {};
+      data.forEach(b => { overrides[b.id] = b.desiredTemperature; });
+      setTempOverrides(overrides);
     } catch (err) {
       console.error('Error loading buildings:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleTempChange = async (buildingId: number, delta: number) => {
+    if (savingTempId !== null) return;
+
+    const currentTemp = tempOverrides[buildingId] ?? 20;
+    const newTemp = Math.round((currentTemp + delta) * 2) / 2;
+
+    if (newTemp < 5 || newTemp > 35) return;
+
+    setTempOverrides(prev => ({ ...prev, [buildingId]: newTemp }));
+    setSavingTempId(buildingId);
+
+    try {
+      await buildingService.updateDesiredTemperature(buildingId, newTemp, token);
+      setBuildings(prev =>
+        prev.map(b => b.id === buildingId ? { ...b, desiredTemperature: newTemp } : b)
+      );
+    } catch {
+      // Revert on failure
+      setTempOverrides(prev => {
+        const b = buildings.find(x => x.id === buildingId);
+        return { ...prev, [buildingId]: b?.desiredTemperature ?? currentTemp };
+      });
+    } finally {
+      setSavingTempId(null);
     }
   };
 
@@ -284,9 +318,30 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
               </p>
             )}
             
-            <p className="building-popup-info">
-              <strong>🎯 Desired:</strong> {building.desiredTemperature?.toFixed(1)}°C
-            </p>
+            <div className="building-popup-info">
+              <strong>🎯 Desired:</strong>{' '}
+              {!isAdmin ? (
+                <span className="popup-temp-control">
+                  <button
+                    className="popup-temp-btn"
+                    onClick={(e) => { e.stopPropagation(); handleTempChange(building.id, -0.5); }}
+                    disabled={savingTempId !== null || (tempOverrides[building.id] ?? building.desiredTemperature) <= 5}
+                    title="Decrease by 0.5°C"
+                  >▼</button>
+                  <span className={savingTempId === building.id ? 'temp-saving' : ''}>
+                    {(tempOverrides[building.id] ?? building.desiredTemperature).toFixed(1)}°C
+                  </span>
+                  <button
+                    className="popup-temp-btn"
+                    onClick={(e) => { e.stopPropagation(); handleTempChange(building.id, 0.5); }}
+                    disabled={savingTempId !== null || (tempOverrides[building.id] ?? building.desiredTemperature) >= 35}
+                    title="Increase by 0.5°C"
+                  >▲</button>
+                </span>
+              ) : (
+                `${building.desiredTemperature?.toFixed(1)}°C`
+              )}
+            </div>
             
             {building.currentTemperature !== undefined && building.currentTemperature !== null && (
               <p className="building-popup-info">
