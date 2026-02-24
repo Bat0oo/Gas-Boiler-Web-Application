@@ -1,5 +1,6 @@
 using Gas_Boiler_Backend.Data;
 using Gas_Boiler_Backend.Helpers;
+using Gas_Boiler_Backend.Hubs;
 using Gas_Boiler_Backend.Interfaces;
 using Gas_Boiler_Backend.Repositories;
 using Gas_Boiler_Backend.Services;
@@ -8,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using Gas_Boiler_Backend.Hubs;
 
 namespace Gas_Boiler_Backend
 {
@@ -47,6 +47,7 @@ namespace Gas_Boiler_Backend
             builder.Services.AddScoped<IAlarmService, AlarmService>();
 
             builder.Services.AddHostedService<DataRecordingBackgroundService>();
+            builder.Services.AddHostedService<BoilerControlBackgroundService>();
 
             builder.Services.AddHttpClient<IWeatherService, OpenWeatherService>();
 
@@ -139,8 +140,13 @@ namespace Gas_Boiler_Backend
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
+                app.UseStaticFiles();
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(options =>
+                {
+                    options.InjectStylesheet("/swagger-ui/dark-theme.css");
+                }
+                    );
             }
 
             app.UseRouting();

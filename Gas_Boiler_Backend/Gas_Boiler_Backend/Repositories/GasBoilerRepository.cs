@@ -62,6 +62,12 @@ namespace Gas_Boiler_Backend.Repositories
                 .ContinueWith(t => t.Result.Select(x => (x.BoilerId, x.Latitude, x.Longitude, x.Name, x.CurrentPower)));
         }
 
+        public async Task<IEnumerable<GasBoiler>> GetByBuildingIdAsync(int buildingObjectId)
+        {
+            return await _context.GasBoilers
+                .Where(b => b.BuildingObjectId == buildingObjectId)
+                .ToListAsync();
+        }
         public async Task<IEnumerable<(int BoilerId, double Lat, double Lon, string Name, double CurrentPower)>> GetMapPointsForUserAsync(int userId)
         {
             return await _context.GasBoilers

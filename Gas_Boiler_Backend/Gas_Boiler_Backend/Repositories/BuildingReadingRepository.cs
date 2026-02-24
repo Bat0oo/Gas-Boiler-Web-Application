@@ -91,5 +91,14 @@ namespace Gas_Boiler_Backend.Repositories
             _context.BuildingReadings.RemoveRange(readings);
             await _context.SaveChangesAsync();
         }
+        public async Task UpdateAsync(BuildingReading reading)
+        {
+            _context.BuildingReadings.Update(reading);
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
 }

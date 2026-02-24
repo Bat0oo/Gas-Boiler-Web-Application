@@ -266,3 +266,29 @@
 .param-compact.new-param .param-value-compact {
   color: #2563eb;
 }
+
+.params-section-compact.thermodynamics-section-view {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border: 2px solid #f59e0b;
+}
+
+.params-section-compact.thermodynamics-section-view .section-title-compact {
+  color: #92400e;
+}
+
+.param-compact.thermo-param {
+  background-color: white;
+  border: 2px solid #fbbf24;
+  box-shadow: 0 2px 8px rgba(251, 191, 36, 0.15);
+}
+
+.param-compact.thermo-param:hover {
+  border-color: #f59e0b;
+  background-color: #fffbeb;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+}
+
+.param-compact.thermo-param .param-value-compact {
+  color: #d97706;
+}

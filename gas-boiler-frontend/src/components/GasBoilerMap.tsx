@@ -264,6 +264,10 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
           <div className="marker-tooltip">
             <div className="tooltip-title">🏢 {building.name}</div>
             <div className="tooltip-info">
+                          {building.indoorTemperature !== undefined && building.indoorTemperature !== null && (
+                <div>🌡️ Indoor: {building.indoorTemperature.toFixed(1)}°C</div>
+              )}
+              <div>🎯 Desired: {building.desiredTemperature?.toFixed(1)}°C</div>
               🔥 {building.boilerCount} boilers • ⚡ {building.totalMaxPower.toFixed(0)} kW
             </div>
           </div>
@@ -273,6 +277,22 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
         <Popup>
           <div className="building-popup">
             <h3 className="building-popup-title">🏢 {building.name}</h3>
+
+            {building.indoorTemperature !== undefined && building.indoorTemperature !== null && (
+              <p className="building-popup-info">
+                <strong>🌡️ Indoor:</strong> {building.indoorTemperature.toFixed(1)}°C
+              </p>
+            )}
+            
+            <p className="building-popup-info">
+              <strong>🎯 Desired:</strong> {building.desiredTemperature?.toFixed(1)}°C
+            </p>
+            
+            {building.currentTemperature !== undefined && building.currentTemperature !== null && (
+              <p className="building-popup-info">
+                <strong>🌤️ Outdoor:</strong> {building.currentTemperature.toFixed(1)}°C
+              </p>
+            )}
 
             <p className="building-popup-info">
               <strong>Number of boilers:</strong> {building.boilerCount}

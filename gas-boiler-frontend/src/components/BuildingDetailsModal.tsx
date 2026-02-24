@@ -126,6 +126,14 @@ const BuildingDetailsModal: React.FC<Props> = ({
               <p>
                 <strong>Heating area:</strong> {building.heatingArea} m²
               </p>
+                {building.indoorTemperature !== undefined && building.indoorTemperature !== null && (
+                <p>
+                  <strong>🌡️ Indoor temperature:</strong>
+                  <span style={{ color: '#10b981', fontWeight: 600, marginLeft: '0.5rem' }}>
+                    {building.indoorTemperature.toFixed(1)}°C
+                  </span>
+                </p>
+              )}
               <p>
                 <strong>Desired temperature:</strong> {building.desiredTemperature}°C
               </p>
@@ -152,9 +160,15 @@ const BuildingDetailsModal: React.FC<Props> = ({
           )}
         </p>
       )}
-      <p className="temp-diff">
-        <strong>Temperature difference:</strong> {(building.desiredTemperature - (building.currentTemperature || 0)).toFixed(1)}°C
-      </p>
+       {building.indoorTemperature !== undefined && (
+          <p className="temp-diff">
+            <strong>Indoor vs Outdoor:</strong> {(building.indoorTemperature - building.currentTemperature).toFixed(1)}°C
+          </p>
+        )}
+        
+        <p className="temp-diff">
+          <strong>Desired vs Outdoor:</strong> {(building.desiredTemperature - building.currentTemperature).toFixed(1)}°C
+        </p>
     </div>
   </>
 )}

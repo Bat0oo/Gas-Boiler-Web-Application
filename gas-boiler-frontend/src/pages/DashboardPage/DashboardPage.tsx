@@ -8,6 +8,7 @@ import { DashboardStats } from '../../types/dashboardtypes';
 import { Building } from '../../types/buildingtypes';
 import BuildingDetailsModal from '../../components/BuildingDetailsModal';
 import PowerRequirementsWidget from '../../components/PowerRequirementsWidget';
+import RealtimeBoilerStatus from '../../components/RealtimeBoilerStatus';
 import './DashboardPage.css';
 
 const DashboardPage: React.FC = () => {
@@ -185,6 +186,7 @@ const handleDeleteBoiler = async (boilerId: number) => {
             </button>
           </div>
         )}
+                <RealtimeBoilerStatus token={user!.token} />
         <PowerRequirementsWidget />
         {/* Buildings Overview Table */}
         <div className="dashboard-section">
@@ -209,7 +211,9 @@ const handleDeleteBoiler = async (boilerId: number) => {
                   <tr>
                     <th>Building Name</th>
                     <th>Heating Area</th>
+                    <th>Indoor Temp</th>
                     <th>Desired Temp</th>
+                    <th>Outdoor Temp</th>
                     <th>Boilers</th>
                     <th>Capacity</th>
                     <th>Action</th>
@@ -222,7 +226,25 @@ const handleDeleteBoiler = async (boilerId: number) => {
                         <strong>{building.name}</strong>
                       </td>
                       <td>{building.heatingArea} m²</td>
-                      <td>{building.desiredTemperature}°C</td>
+                                <td>
+            {building.indoorTemperature !== undefined && building.indoorTemperature !== null ? (
+              <span style={{ color: '#10b981', fontWeight: 600 }}>
+                {building.indoorTemperature.toFixed(1)}°C
+              </span>
+            ) : (
+              <span style={{ color: '#9ca3af' }}>N/A</span>
+            )}
+          </td>
+          
+          <td>{building.desiredTemperature}°C</td>
+          
+          <td>
+            {building.currentTemperature !== undefined && building.currentTemperature !== null ? (
+              <span>{building.currentTemperature.toFixed(1)}°C</span>
+            ) : (
+              <span style={{ color: '#9ca3af' }}>N/A</span>
+            )}
+          </td>
                       <td>{building.boilerCount}</td>
                       <td>
                         {building.boilerCount > 0 ? (

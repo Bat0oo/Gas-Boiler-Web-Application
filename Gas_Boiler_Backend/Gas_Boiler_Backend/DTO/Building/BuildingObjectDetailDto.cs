@@ -10,7 +10,6 @@
         public double HeatingArea { get; set; }
         public double Height { get; set; } 
         public double Volume { get; set; } 
-        public double DesiredTemperature { get; set; }
         public double WallUValue { get; set; }
         public double WindowUValue { get; set; }
         public double CeilingUValue { get; set; }
@@ -22,8 +21,12 @@
         public int BoilerCount { get; set; }
         public List<BuildingBoilerDto> GasBoilers { get; set; } = new();
 
-        public double? CurrentTemperature { get; set; }
         public string WeatherDescription { get; set; } = string.Empty;
         public string WeatherIcon { get; set; } = string.Empty;
+        public double? IndoorTemperature { get; set; }
+        public double DesiredTemperature { get; set; }
+        public double? CurrentTemperature { get; set; }
+
+
     }
 }

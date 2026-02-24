@@ -12,6 +12,11 @@ export interface SystemParameters {
   windowToWallRatio: number;  
   safetyFactor: number;
   defaultBoilerEfficiency: number;
+
+  thermalMassCoefficient: number;
+  outdoorInfluenceFactor: number;
+  temperatureTimeStepSeconds: number;
+
   lastUpdated: string;
   updatedBy: string;
 }
@@ -27,6 +32,10 @@ export interface UpdateSystemParametersDto {
   windowToWallRatio: number;  
   safetyFactor: number;
   defaultBoilerEfficiency: number;
+
+  thermalMassCoefficient: number;
+  outdoorInfluenceFactor: number;
+  temperatureTimeStepSeconds: number;
 }
 
 export const systemParametersService = {

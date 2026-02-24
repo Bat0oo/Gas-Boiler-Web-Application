@@ -16,5 +16,8 @@ namespace Gas_Boiler_Backend.Interfaces
 
         Task DeleteAllAsync();
         Task DeleteByBuildingIdAsync(int buildingId);
+
+        Task UpdateAsync(BuildingReading reading);
+        Task SaveChangesAsync();
     }
 }

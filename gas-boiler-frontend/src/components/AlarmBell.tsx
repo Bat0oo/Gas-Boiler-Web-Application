@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { alarmService } from '../services/alarmService';
 import { Alarm } from '../types/alarmtypes';
-import { useSignalR, useSignalREvent } from '../../hooks/useSignalR';
+import { useSignalR, useSignalREvent } from '../hooks/useSignalR';
 import './AlarmBell.css';
 
 interface Props {
@@ -27,7 +27,7 @@ const AlarmBell: React.FC<Props> = ({ token }) => {
   const navigate = useNavigate();
 
   const { connection, isConnected, error } = useSignalR(
-    'http://localhost:5071/boilerHub',
+    'http://localhost:44314/boilerHub',
     token
   );
 

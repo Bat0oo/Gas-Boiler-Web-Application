@@ -54,12 +54,15 @@ namespace Gas_Boiler_Backend.Services
             // Get current calculations
             var calculations = await _calculatorService.CalculateBuildingMetricsAsync(building);
 
+            // Saving previous reading
+            var previousReading = await _readingRepository.GetLatestByBuildingIdAsync(building.Id); 
+
             var reading = new BuildingReading
             {
                 BuildingId = building.Id,
                 Timestamp = timestamp,
-
-                IndoorTemperature = calculations.IndoorTemperature,
+                // IndoorTemperature = calculations.IndoorTemperature,
+                IndoorTemperature = previousReading?.IndoorTemperature ?? (building.DesiredTemperature - 6.0),
                 OutdoorTemperature = calculations.OutdoorTemperature,
                 TemperatureDifference = calculations.TemperatureDifference,
 

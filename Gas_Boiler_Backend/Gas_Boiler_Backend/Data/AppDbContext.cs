@@ -109,13 +109,28 @@ namespace Gas_Boiler_Backend.Data
                 new SystemParameters
                 {
                     Id = 1,
+                    // U-values
                     WallUValue = 0.50m,
                     WindowUValue = 1.40m,
                     CeilingUValue = 0.25m,
                     FloorUValue = 0.40m,
+
+                    // Temperatures
                     OutdoorDesignTemp = -15.0m,
                     GroundTemp = 10.0m,
+
+                    // Economic
                     GasPricePerKwh = 0.05m,
+                    WindowToWallRatio = 0.15m,
+                    SafetyFactor = 1.15m,
+                    DefaultBoilerEfficiency = 0.90m,
+
+                    // Temperature calculation parameters
+                    OutdoorInfluenceFactor = 0.15m,
+                    ThermalMassCoefficient = 3200.0m,
+                    TemperatureTimeStepSeconds = 60,
+
+                    // Metadata
                     LastUpdated = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                     UpdatedBy = "System"
                 }
