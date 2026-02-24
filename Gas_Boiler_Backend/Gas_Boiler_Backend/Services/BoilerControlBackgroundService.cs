@@ -11,8 +11,8 @@ namespace Gas_Boiler_Backend.Services
         private readonly ILogger<BoilerControlBackgroundService> _logger;
         private readonly IHubContext<BoilerHub> _hubContext;
 
-        // P-Controller constant
-        private const double Kp = 3.0; // Proportional gain
+        private const double Kp = 1.5; // Or 3.0
+        private const double Deadband = 0.3; // ±0.3°C tolerance
 
         public BoilerControlBackgroundService(
             IServiceProvider serviceProvider,
@@ -26,10 +26,7 @@ namespace Gas_Boiler_Backend.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("🔥 P-Controller Background Service STARTED");
-            _logger.LogInformation("Running every 1 minute (Kp = {Kp})", Kp);
-            _logger.LogInformation("Using realistic thermodynamics for indoor temperature calculation");
-            _logger.LogInformation("Waiting 30 seconds before first regulation...");
+            _logger.LogInformation("🔥 Boiler P-Controller Service STARTED");
 
             await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
 
@@ -37,50 +34,51 @@ namespace Gas_Boiler_Backend.Services
             {
                 try
                 {
-                    _logger.LogInformation("🔥 P-Controller executing...");
                     await RegulateAllBoilersAsync();
-                    _logger.LogInformation("✅ P-Controller complete. Next run in 1 minute");
-
                     await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
                 }
                 catch (TaskCanceledException)
                 {
-                    _logger.LogInformation("P-Controller service stopping...");
                     break;
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "❌ Error in P-Controller");
-                    await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
+                    _logger.LogError(ex, "Controller error");
+                    await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
                 }
             }
 
-            _logger.LogInformation("🔥 P-Controller Background Service STOPPED");
+            _logger.LogInformation("🔥 Boiler P-Controller Service STOPPED");
         }
 
         private async Task RegulateAllBoilersAsync()
         {
-            using (var scope = _serviceProvider.CreateScope())
+            using var scope = _serviceProvider.CreateScope();
+
+            var buildingRepo = scope.ServiceProvider.GetRequiredService<IBuildingObjectRepository>();
+            var boilerRepo = scope.ServiceProvider.GetRequiredService<IGasBoilerRepository>();
+            var readingRepo = scope.ServiceProvider.GetRequiredService<IBuildingReadingRepository>();
+            var alarmService = scope.ServiceProvider.GetRequiredService<IAlarmService>();
+            var sysParamsRepo = scope.ServiceProvider.GetRequiredService<ISystemParametersRepository>();
+
+            var buildings = await buildingRepo.GetAllAsync();
+
+            foreach (var building in buildings)
             {
-                var buildingRepo = scope.ServiceProvider.GetRequiredService<IBuildingObjectRepository>();
-                var boilerRepo = scope.ServiceProvider.GetRequiredService<IGasBoilerRepository>();
-                var readingRepo = scope.ServiceProvider.GetRequiredService<IBuildingReadingRepository>();
-                var alarmService = scope.ServiceProvider.GetRequiredService<IAlarmService>();
-                var sysParamsRepo = scope.ServiceProvider.GetRequiredService<ISystemParametersRepository>();
-
-                var buildings = await buildingRepo.GetAllAsync();
-
-                foreach (var building in buildings)
+                try
                 {
-                    try
-                    {
-                        await RegulateBuildingAsync(building, boilerRepo, readingRepo, alarmService, sysParamsRepo);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex, "Error regulating building {BuildingId} ({BuildingName})",
-                            building.Id, building.Name);
-                    }
+                    await RegulateBuildingAsync(
+                        building,
+                        boilerRepo,
+                        readingRepo,
+                        alarmService,
+                        sysParamsRepo);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex,
+                        "Error regulating building {BuildingId} ({BuildingName})",
+                        building.Id, building.Name);
                 }
             }
         }
@@ -92,213 +90,122 @@ namespace Gas_Boiler_Backend.Services
             IAlarmService alarmService,
             ISystemParametersRepository sysParamsRepo)
         {
-            // 1. Get latest reading for outdoor temp and heat loss
-            var latestReading = await readingRepo.GetLatestByBuildingIdAsync(building.Id);
-            if (latestReading == null)
-            {
-                _logger.LogWarning("No readings for building {BuildingName}, skipping", building.Name);
-                return;
-            }
+            var reading = await readingRepo.GetLatestByBuildingIdAsync(building.Id);
+            if (reading == null) return;
 
-            // 2. Get system parameters for temperature calculation
             var sysParams = await sysParamsRepo.GetAsync();
-            if (sysParams == null)
-            {
-                _logger.LogWarning("System parameters not found, skipping");
-                return;
-            }
+            if (sysParams == null) return;
 
-            // 3. Get all boilers for this building
-            var boilers = await boilerRepo.GetByBuildingIdAsync(building.Id);
-            var boilerList = boilers.ToList();
+            var boilers = (await boilerRepo.GetByBuildingIdAsync(building.Id)).ToList();
+            var hasBoilers = boilers.Any();
 
-            if (!boilerList.Any())
-            {
-                _logger.LogWarning("No boilers found for building {BuildingName}", building.Name);
-                return;
-            }
-
-            // 4. Calculate current indoor temperature using realistic thermodynamics
-            var indoorTemp = CalculateRealisticIndoorTemperature(
-                building,
-                latestReading,
-                boilerList,
-                sysParams);
-
-            // 5. P-Controller: Calculate error
+            var indoorTemp = CalculateIndoorTemperature(building, reading, boilers, sysParams);
             var error = building.DesiredTemperature - indoorTemp;
 
-            // 6. P-Controller: Calculate power adjustment
-            var powerAdjustment = error * Kp;
-
             _logger.LogInformation(
-                "Building {BuildingName}: Indoor={IndoorTemp:F1}°C, Desired={DesiredTemp:F1}°C, Error={Error:F1}°C, Adjustment={Adjustment:F1}kW",
-                building.Name, indoorTemp, building.DesiredTemperature, error, powerAdjustment);
-
-            // 7. Calculate boiler power distribution
-            var totalAvailablePower = boilerList.Sum(b => b.MaxPower);
-            var totalCurrentPower = boilerList.Sum(b => b.CurrentPower);
-
-            var newTotalPower = Math.Clamp(
-                totalCurrentPower + powerAdjustment,
-                0,
-                totalAvailablePower
-            );
-
-            var powerPerBoiler = newTotalPower / boilerList.Count;
-
-            // 8. Update each boiler's power
-            foreach (var boiler in boilerList)
+                "🏢 {Building}: Indoor={Indoor:F1}°C Target={Target:F1}°C Error={Error:F2}°C",
+                building.Name, indoorTemp, building.DesiredTemperature, error);
+            if (hasBoilers)
             {
-                var oldPower = boiler.CurrentPower;
-                var newPower = Math.Clamp(powerPerBoiler, 0, boiler.MaxPower);
+                var totalAvailablePower = boilers.Sum(b => b.MaxPower);
 
-                if (Math.Abs(newPower - oldPower) > 0.1)
+                double newTotalPower;
+
+                var feedForward = reading.HeatLossWatts / 1000.0; // kW
+
+                // 🔴 1) Ako je pretoplo → potpuno ugasi
+                if (indoorTemp > building.DesiredTemperature)
                 {
-                    boiler.CurrentPower = newPower;
+                    newTotalPower = 0;
+                    _logger.LogInformation("  🔴 Above target → boilers OFF");
+                }
+                // 🟡 2) Ako smo u deadband zoni → samo pokrij heat loss
+                else if (Math.Abs(error) <= Deadband)
+                {
+                    newTotalPower = feedForward;
+                    _logger.LogInformation("  🟡 Within deadband → maintain heat loss power");
+                }
+                // 🟢 3) Normalna P regulacija
+                else
+                {
+                    var pComponent = error * Kp;
+
+                    newTotalPower = Math.Clamp(
+                        feedForward + pComponent,
+                        0,
+                        totalAvailablePower);
+                }
+
+                var powerPerBoiler = newTotalPower / boilers.Count;
+
+                foreach (var boiler in boilers)
+                {
+                    boiler.CurrentPower = Math.Clamp(powerPerBoiler, 0, boiler.MaxPower);
                     await boilerRepo.UpdateAsync(boiler);
-                    await boilerRepo.SaveChangesAsync();
+                }
 
-                    _logger.LogInformation(
-                        "  Boiler {BoilerName}: {OldPower:F1}kW → {NewPower:F1}kW",
-                        boiler.Name, oldPower, newPower);
+                await boilerRepo.SaveChangesAsync(); // ✅ single commit
 
-                    // Broadcast boiler power update
-                    await _hubContext.Clients.All.SendAsync("BoilerPowerUpdated", new
-                    {
-                        boilerId = boiler.Id,
-                        boilerName = boiler.Name,
-                        buildingId = building.Id,
-                        buildingName = building.Name,
-                        oldPower = oldPower,
-                        newPower = newPower,
-                        maxPower = boiler.MaxPower,
-                        timestamp = DateTime.UtcNow
-                    });
+                var requiredPower = reading.RequiredPowerKw;
+                if (requiredPower > totalAvailablePower)
+                {
+                    await alarmService.CheckCapacityAlarmAsync(building.Id);
                 }
             }
 
-            // 9. Broadcast indoor temperature update
             await _hubContext.Clients.All.SendAsync("IndoorTemperatureUpdated", new
             {
                 buildingId = building.Id,
                 buildingName = building.Name,
                 temperature = indoorTemp,
                 desiredTemperature = building.DesiredTemperature,
-                error = error,
-                outdoorTemperature = latestReading.OutdoorTemperature,
+                error,
+                outdoorTemperature = reading.OutdoorTemperature,
+                hasBoilers,
                 timestamp = DateTime.UtcNow
             });
 
-            // 10. SAVE INDOOR TEMPERATURE TO DATABASE
-            latestReading.IndoorTemperature = indoorTemp;
-            await readingRepo.UpdateAsync(latestReading);
+            reading.IndoorTemperature = indoorTemp;
+            await readingRepo.UpdateAsync(reading);
             await readingRepo.SaveChangesAsync();
-
-            // 11. Check for capacity alarm
-            var requiredPower = latestReading.RequiredPowerKw;
-
-            if (requiredPower > totalAvailablePower)
-            {
-                var deficit = requiredPower - totalAvailablePower;
-
-                _logger.LogWarning(
-                    "⚠️ INSUFFICIENT CAPACITY for {BuildingName}! Required: {Required:F1}kW, Available: {Available:F1}kW, Deficit: {Deficit:F1}kW",
-                    building.Name, requiredPower, totalAvailablePower, deficit);
-
-                await alarmService.CheckCapacityAlarmAsync(building.Id);
-
-                await _hubContext.Clients.All.SendAsync("CapacityWarning", new
-                {
-                    buildingId = building.Id,
-                    buildingName = building.Name,
-                    requiredPower = requiredPower,
-                    availablePower = totalAvailablePower,
-                    deficit = deficit,
-                    timestamp = DateTime.UtcNow
-                });
-            }
         }
 
-        /// <summary>
-        /// Calculate indoor temperature using realistic thermodynamics
-        /// Based on heat balance equation and building thermal mass
-        /// </summary>
-        private double CalculateRealisticIndoorTemperature(
+        private double CalculateIndoorTemperature(
             BuildingObject building,
             BuildingReading reading,
             List<GasBoiler> boilers,
             SystemParameters sysParams)
         {
-            // Get previous indoor temperature (or initialize if first run)
-            var previousIndoorTemp = reading.IndoorTemperature > 0
+            var previousIndoor = reading.IndoorTemperature > 0
                 ? reading.IndoorTemperature
-                : building.DesiredTemperature - 6.0; 
+                : building.DesiredTemperature - 5;
 
-            // === HEAT BALANCE CALCULATION ===
-
-            // 1. Heat generated by boilers (Watts)
-            // Q_in = Σ(CurrentPower × Efficiency) × 1000 (convert kW to W)
             var heatGenerated = boilers.Sum(b => b.CurrentPower * b.Efficiency * 1000.0);
-
-            // 2. Heat lost through building envelope (Watts)
-            // This is already calculated and stored in BuildingReading
             var heatLost = reading.HeatLossWatts;
 
-            // 3. Net heat flow (Watts)
-            // Positive = heating up, Negative = cooling down
-            var netHeatFlow = heatGenerated - heatLost;
+            var netHeat = heatGenerated - heatLost;
 
-            // === TEMPERATURE CHANGE CALCULATION ===
+            var timeStep = (double)sysParams.TemperatureTimeStepSeconds;
+            var thermalMass = (double)sysParams.ThermalMassCoefficient;
+            var volume = building.Volume;
 
-            // 4. Calculate temperature change using thermal mass
-            // Formula: ΔT = Q_net × Δt / (ρ × V × c_p)
-            // Where:
-            //   Q_net = net heat flow (W)
-            //   Δt = time step (seconds)
-            //   ρ × c_p = thermal mass coefficient (J/m³·K)
-            //   V = building volume (m³)
+            var energyChange = netHeat * timeStep;
 
-            var timeStep = (double)sysParams.TemperatureTimeStepSeconds; // seconds
-            var thermalMass = (double)sysParams.ThermalMassCoefficient; // J/m³·K
-            var volume = building.Volume; // m³
+            var deltaT = energyChange / (thermalMass * volume);
 
-            // Energy added/removed in time step (Joules)
-            var energyChange = netHeatFlow * timeStep; // W × s = J
+            var newIndoor = previousIndoor + deltaT;
 
-            // Temperature change from heat balance
-            var tempChangeFromHeat = (energyChange / (thermalMass * volume)) * 0.15; // °C
+            // realistic clamp
+            newIndoor = Math.Clamp(newIndoor,
+                reading.OutdoorTemperature - 10,
+                building.DesiredTemperature + 15);
 
-            // === OUTDOOR INFLUENCE ===
-
-            // 5. Add outdoor temperature influence (configurable factor)
-            // This simulates imperfect insulation and air infiltration
-            var outdoorInfluence = (double)sysParams.OutdoorInfluenceFactor; // 0.0 - 1.0
-            var outdoorTemp = reading.OutdoorTemperature;
-
-            // Pull indoor temp slightly toward outdoor temp
-            var tempChangeFromOutdoor = (outdoorTemp - previousIndoorTemp) * outdoorInfluence * 0.01; // Small factor
-
-            // === CALCULATE NEW INDOOR TEMPERATURE ===
-
-            var newIndoorTemp = previousIndoorTemp + tempChangeFromHeat + tempChangeFromOutdoor;
-
-            // Clamp to reasonable range (can't be colder than outdoor or much hotter than desired)
-            var minTemp = Math.Min(outdoorTemp, building.DesiredTemperature - 10);
-            var maxTemp = building.DesiredTemperature + 10;
-            newIndoorTemp = Math.Clamp(newIndoorTemp, minTemp, maxTemp);
-
-            // Log detailed thermodynamics (for debugging/demonstration)
-            _logger.LogDebug(
-                "Thermodynamics for {BuildingName}: Heat_in={HeatIn:F0}W, Heat_out={HeatOut:F0}W, Net={Net:F0}W, ΔT={DeltaT:F3}°C",
-                building.Name, heatGenerated, heatLost, netHeatFlow, tempChangeFromHeat);
-
-            return newIndoorTemp;
+            return newIndoor;
         }
 
         public override async Task StopAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("🛑 P-Controller stop signal received");
+            _logger.LogInformation("🛑 Controller stopping...");
             await base.StopAsync(cancellationToken);
         }
     }
