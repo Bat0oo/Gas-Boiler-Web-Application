@@ -267,7 +267,8 @@ const handleExportCsv = async () => {
                   <th>Area (m²)</th>
                   <th>Height (m)</th>
                   <th>Volume (m³)</th>
-                  <th>Desired Temp. (°C)</th>
+                  <th>Indoor Temp.</th>
+                  <th>Desired Temp.</th>
                   <th>Number of Boilers</th>
                   <th>Actions</th>
                 </tr>
@@ -283,6 +284,11 @@ const handleExportCsv = async () => {
                     <td>{building.heatingArea.toFixed(0)}</td>
                     <td>{building.height.toFixed(1)}</td>
                     <td className="volume">{building.volume.toFixed(1)}</td>
+                    <td className="indoor-temp">
+                      {building.indoorTemperature != null
+                        ? `${building.indoorTemperature.toFixed(1)}°C`
+                        : <span className="temp-na">N/A</span>}
+                    </td>
                     <td>
                       {!isAdmin ? (
                         <div className="temp-control">
