@@ -269,7 +269,8 @@ const handleExportCsv = async () => {
                   <th>Volume (m³)</th>
                   <th>Indoor Temp.</th>
                   <th>Desired Temp.</th>
-                  <th>Number of Boilers</th>
+                  <th>Boilers</th>
+                  <th></th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -319,6 +320,7 @@ const handleExportCsv = async () => {
                         <span className="no-boilers">0</span>
                       )}
                     </td>
+                    <td></td>
                     <td className="actions">
                       <div className="actions-wrapper">
                         <button
