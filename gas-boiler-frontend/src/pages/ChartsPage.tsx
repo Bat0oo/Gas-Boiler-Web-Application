@@ -49,7 +49,6 @@ const ChartsPage: React.FC = () => {
       const buildingsData = await buildingService.getAllBuildings(user.token);
       setBuildings(buildingsData);
 
-      // Auto-select first building
       if (buildingsData.length > 0 && !selectedBuildingId) {
         setSelectedBuildingId(buildingsData[0].id);
       }
@@ -66,7 +65,6 @@ const ChartsPage: React.FC = () => {
       setLoading(true);
       setError('');
 
-      // Determine date range
       let startDate: Date;
       let endDate: Date;
 
@@ -84,7 +82,6 @@ const ChartsPage: React.FC = () => {
         endDate = range.endDate;
       }
 
-      // Fetch readings
       const data = await historicalDataService.getBuildingHistory(
         selectedBuildingId,
         user.token,
@@ -102,7 +99,6 @@ const ChartsPage: React.FC = () => {
 
   const selectedBuilding = buildings.find((b) => b.id === selectedBuildingId);
 
-  // Process data for charts
   const temperatureData = processTemperatureData(readings);
   const heatLossData = processHeatLossData(readings);
   const costData = processCostData(readings);
@@ -119,7 +115,6 @@ const ChartsPage: React.FC = () => {
           </p>
         </div>
 
-        {/* Filters */}
         <div className="charts-filters">
           <div className="filter-group">
             <label htmlFor="building-select">Building:</label>
@@ -193,7 +188,6 @@ const ChartsPage: React.FC = () => {
           </div>
         ) : (
           <>
-            {/* Building Info */}
             {selectedBuilding && (
               <div className="building-info-card">
                 <div className="info-item">
@@ -215,9 +209,7 @@ const ChartsPage: React.FC = () => {
               </div>
             )}
 
-            {/* Charts Grid */}
             <div className="charts-grid">
-              {/* Power Requirements Chart */}
               <div className="chart-card highlight">
                 <div className="chart-header">
                   <h3>⚡ Power Requirements</h3>
@@ -230,7 +222,6 @@ const ChartsPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Temperature Chart */}
               <div className="chart-card">
                 <div className="chart-header">
                   <h3>🌡️ Temperature History</h3>
@@ -241,7 +232,6 @@ const ChartsPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Cost Chart */}
               <div className="chart-card">
                 <div className="chart-header">
                   <h3>💰 Daily Heating Costs</h3>
@@ -254,7 +244,6 @@ const ChartsPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Heat Loss Chart */}
               <div className="chart-card">
                 <div className="chart-header">
                   <h3>🔥 Heat Loss Over Time</h3>

@@ -31,61 +31,43 @@ interface CapacityWarning {
   timestamp: string;
 }
 
-/**
- * Hook to receive real-time P-Controller updates via SignalR
- * Updates every 1 minute when P-Controller runs
- */
 export const useRealtimeBoilers = (token: string) => {
   const [boilerPowers, setBoilerPowers] = useState<Map<number, BoilerPowerUpdate>>(new Map());
   const [temperatures, setTemperatures] = useState<Map<number, IndoorTempUpdate>>(new Map());
   const [capacityWarnings, setCapacityWarnings] = useState<Map<number, CapacityWarning>>(new Map());
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
-  // Connect to SignalR
   const { connection, isConnected } = useSignalR(
     'https://localhost:44314/boilerHub',
     token
   );
 
-  // Listen for boiler power updates (every 1 min)
   useSignalREvent<BoilerPowerUpdate>(connection, 'BoilerPowerUpdated', (data) => {
-    console.log('🔧 Boiler power updated:', data);
-    
     setBoilerPowers((prev) => {
       const updated = new Map(prev);
       updated.set(data.boilerId, data);
       return updated;
     });
-    
     setLastUpdate(new Date());
   });
 
-  // Listen for indoor temperature updates (every 1 min)
   useSignalREvent<IndoorTempUpdate>(connection, 'IndoorTemperatureUpdated', (data) => {
-    console.log('🌡️ Indoor temperature updated:', data);
-    
     setTemperatures((prev) => {
       const updated = new Map(prev);
       updated.set(data.buildingId, data);
       return updated;
     });
-    
     setLastUpdate(new Date());
   });
 
-  // Listen for capacity warnings (when capacity insufficient)
   useSignalREvent<CapacityWarning>(connection, 'CapacityWarning', (data) => {
-    console.warn('⚠️ Capacity warning:', data);
-    
     setCapacityWarnings((prev) => {
       const updated = new Map(prev);
       updated.set(data.buildingId, data);
       return updated;
     });
-    
     setLastUpdate(new Date());
-    
-    // Optional: Show browser notification
+
     if ('Notification' in window && Notification.permission === 'granted') {
       new Notification(`⚠️ Capacity Warning: ${data.buildingName}`, {
         body: `Deficit: ${data.deficit.toFixed(1)} kW`,
@@ -103,11 +85,8 @@ export const useRealtimeBoilers = (token: string) => {
   };
 };
 
-/**
- * Helper: Get real-time data for a specific building
- */
 export const useBuildingRealtime = (buildingId: number, token: string) => {
-  const { boilerPowers, temperatures, capacityWarnings, isConnected, lastUpdate } = 
+  const { boilerPowers, temperatures, capacityWarnings, isConnected, lastUpdate } =
     useRealtimeBoilers(token);
 
   const temperature = temperatures.get(buildingId);

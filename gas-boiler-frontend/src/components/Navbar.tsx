@@ -34,7 +34,6 @@ const Navbar: React.FC = () => {
             <li><Link to="/admin/system-parameters">Parameters</Link></li>
             <li><Link to="/data-management">Data Management</Link></li>
             <li><Link to="/profile">Profile</Link></li>
-            
           </>
         ) : (
           <>

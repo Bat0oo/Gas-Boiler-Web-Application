@@ -1,18 +1,15 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import { AuthProvider } from './context/AuthContext';
-import Login from './pages/Auth/Login';
-import Register from './pages/Auth/Register';
-import Map from './pages/Map/Map';
-import ProtectedRoute from './components/ProtectedRoute';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import AppRoutes from './routes/AppRoutes';
-import DashboardPage from './pages/DashboardPage/DashboardPage';
-import LandingPage from './pages/Landing/LandingPage';
+import React from "react";
+import "./App.css";
+import { AuthProvider } from "./context/AuthContext";
+import Login from "./pages/Auth/Login";
+import Register from "./pages/Auth/Register";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import AppRoutes from "./routes/AppRoutes";
+import DashboardPage from "./pages/DashboardPage/DashboardPage";
+import LandingPage from "./pages/Landing/LandingPage";
 
 function App() {
-   return (
+  return (
     <AuthProvider>
       <Router>
         <Routes>

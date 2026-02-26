@@ -16,7 +16,6 @@ const CreateBuildingModal: React.FC<Props> = ({ isOpen, position, onClose, onCre
   const [desiredTemperature, setDesiredTemperature] = useState(22);
   const [loading, setLoading] = useState(false);
 
-  // Calculated volume for display
   const calculatedVolume = heatingArea * height;
 
   const handleSubmit = async () => {
