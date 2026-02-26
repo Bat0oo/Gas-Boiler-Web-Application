@@ -208,9 +208,7 @@ const GasBoilerMap: React.FC<Props> = ({
     }
   };
 
-  // ========== CHANGED: Added admin check ==========
   const handleEditBuilding = async (buildingId: number) => {
-    // Admin check
     if (isAdmin) {
       alert("Administrators cannot edit buildings. This is view-only mode.");
       return;

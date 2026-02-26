@@ -37,8 +37,8 @@ export const processPowerData = (
     requiredPower: reading.requiredPowerKw,
     availablePower: reading.availablePowerKw,
     hasCapacity: reading.hasSufficientCapacity,
-    buildingId: reading.buildingId, // NEW!
-    buildingName: reading.buildingName, // NEW!
+    buildingId: reading.buildingId,
+    buildingName: reading.buildingName,
   }));
 };
 

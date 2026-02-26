@@ -33,16 +33,16 @@ const RealtimeBoilerStatus: React.FC<Props> = ({ token, buildingIds }) => {
 
   const getPowerColor = (power: number, maxPower: number) => {
     const percentage = (power / maxPower) * 100;
-    if (percentage > 80) return "#ef4444"; // Red
-    if (percentage > 50) return "#f59e0b"; // Orange
-    return "#10b981"; // Green
+    if (percentage > 80) return "#ef4444";
+    if (percentage > 50) return "#f59e0b";
+    return "#10b981";
   };
 
   const getTempColor = (error: number) => {
     const absError = Math.abs(error);
-    if (absError < 0.5) return "#10b981"; // Green
-    if (absError < 2.0) return "#f59e0b"; // Orange
-    return "#ef4444"; // Red
+    if (absError < 0.5) return "#10b981";
+    if (absError < 2.0) return "#f59e0b";
+    return "#ef4444";
   };
 
   return (

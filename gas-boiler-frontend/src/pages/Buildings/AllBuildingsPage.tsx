@@ -27,7 +27,6 @@ const AllBuildingsPage: React.FC = () => {
   const [isExporting, setIsExporting] = useState(false);
   const [exportMessage, setExportMessage] = useState("");
 
-  // Local desired temperature overrides (building id → temp) for instant UI feedback
   const [tempOverrides, setTempOverrides] = useState<Record<number, number>>(
     {},
   );

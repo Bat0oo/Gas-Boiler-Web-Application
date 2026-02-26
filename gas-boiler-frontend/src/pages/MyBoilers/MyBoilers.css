@@ -4,7 +4,6 @@
   margin: 0 auto;
 }
 
-/* ========== CHANGED: Sticky banner below navbar with animation ========== */
 .admin-mode-banner-sticky {
   position: sticky;
   top: 0;
@@ -53,7 +52,6 @@
   background: rgba(255, 255, 255, 0.3);
   transform: scale(1.1);
 }
-/* ======================================================================== */
 
 .page-header {
   margin-bottom: 2rem;

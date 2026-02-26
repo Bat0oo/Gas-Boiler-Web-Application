@@ -276,7 +276,6 @@ const DashboardPage: React.FC = () => {
                       <td>
                         {building.boilerCount > 0 ? (
                           <span className="capacity-badge">
-                            {/* Capacity is sum of boilers - would need to fetch */}
                             {building.boilerCount} boiler(s)
                           </span>
                         ) : (

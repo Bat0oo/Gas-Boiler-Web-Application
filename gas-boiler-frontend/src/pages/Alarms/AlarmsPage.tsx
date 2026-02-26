@@ -16,7 +16,7 @@ const AlarmsPage: React.FC = () => {
 
   // Filters
   const [filters, setFilters] = useState<AlarmFilters>({
-    isActive: true, // Show active by default
+    isActive: true,
   });
 
   useEffect(() => {

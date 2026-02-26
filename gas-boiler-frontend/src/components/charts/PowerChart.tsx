@@ -69,7 +69,6 @@ const PowerChart: React.FC<PowerChartProps> = ({
       },
       tooltip: {
         callbacks: {
-          // Enhanced tooltip with BUILDING NAME!
           title: function (context: any) {
             const index = context[0].dataIndex;
             const dataPoint = data[index];

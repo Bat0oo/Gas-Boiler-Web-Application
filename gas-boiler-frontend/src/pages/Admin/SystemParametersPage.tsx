@@ -125,7 +125,6 @@ const SystemParametersPage: React.FC = () => {
         safetyFactor: parseFloat(safetyFactor),
         defaultBoilerEfficiency: parseFloat(defaultBoilerEfficiency),
 
-        // ⭐ NEW THERMODYNAMICS PARAMETERS
         thermalMassCoefficient: parseFloat(thermalMassCoefficient),
         outdoorInfluenceFactor: parseFloat(outdoorInfluenceFactor),
         temperatureTimeStepSeconds: parseFloat(temperatureTimeStepSeconds),
@@ -155,7 +154,6 @@ const SystemParametersPage: React.FC = () => {
       setSafetyFactor(params.safetyFactor.toString());
       setDefaultBoilerEfficiency(params.defaultBoilerEfficiency.toString());
 
-      // ⭐ NEW THERMODYNAMICS PARAMETERS
       setThermalMassCoefficient(
         params.thermalMassCoefficient?.toString() || "1200",
       );
@@ -473,7 +471,7 @@ const SystemParametersPage: React.FC = () => {
               </div>
             </div>
 
-            {/* ⭐ NEW THERMODYNAMICS PARAMETERS SECTION */}
+            {/* THERMODYNAMICS PARAMETERS SECTION */}
             <div className="params-grid params-grid-3 thermodynamics-section">
               <div
                 className="param-item"

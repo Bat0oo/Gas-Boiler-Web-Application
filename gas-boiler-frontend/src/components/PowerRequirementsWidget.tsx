@@ -42,7 +42,6 @@ const PowerRequirementsWidget: React.FC = () => {
       const processed = processPowerData(readings);
       setPowerData(processed);
 
-      // NEW: Group issues by building!
       const issuesByBuilding = new Map<number, BuildingIssue>();
 
       processed
@@ -135,7 +134,7 @@ const PowerRequirementsWidget: React.FC = () => {
         </button>
       </div>
 
-      {/* NEW: Building-Specific Capacity Issues */}
+      {/* Building-Specific Capacity Issues */}
       {hasIssues && (
         <div className="capacity-issues-summary">
           <div className="issue-header">
