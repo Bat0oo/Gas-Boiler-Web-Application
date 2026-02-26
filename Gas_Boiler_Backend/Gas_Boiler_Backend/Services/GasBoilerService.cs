@@ -9,7 +9,6 @@ namespace Gas_Boiler_Backend.Services
         private readonly IGasBoilerRepository _repository;
         private readonly IBuildingObjectRepository _buildingRepo;
 
-        // Added building repo injection
         public GasBoilerService(
             IGasBoilerRepository repository,
             IBuildingObjectRepository buildingRepo)
@@ -27,7 +26,6 @@ namespace Gas_Boiler_Backend.Services
             if (building.UserId != ownerUserId)
                 throw new UnauthorizedAccessException("You don't own this building");
 
-            // Create boiler (NO building creation anymore!)
             var gb = new GasBoiler
             {
                 Name = dto.Name,
@@ -35,7 +33,7 @@ namespace Gas_Boiler_Backend.Services
                 Efficiency = dto.Efficiency,
                 CurrentPower = dto.CurrentPower,
                 UserId = ownerUserId,
-                BuildingObjectId = dto.BuildingObjectId,  // Just link to existing building
+                BuildingObjectId = dto.BuildingObjectId,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -52,13 +50,10 @@ namespace Gas_Boiler_Backend.Services
             var gb = await _repository.GetByIdAsync(id);
             if (gb == null) return null;
 
-            // Block admin from updating - admins can only view
             if (isAdmin) return null;
 
-            // Check ownership for regular users
             if (gb.UserId != requestingUserId) return null;
 
-            // Update boiler only (can't change building)
             gb.Name = dto.Name;
             gb.MaxPower = dto.MaxPower;
             gb.Efficiency = dto.Efficiency;
@@ -75,10 +70,8 @@ namespace Gas_Boiler_Backend.Services
             var gb = await _repository.GetByIdAsync(id);
             if (gb == null) return false;
 
-            // Block admin from deleting - admins can only view
             if (isAdmin) return false;
 
-            // Check ownership for regular users
             if (gb.UserId != requestingUserId) return false;
 
             await _repository.DeleteAsync(gb);
@@ -121,7 +114,6 @@ namespace Gas_Boiler_Backend.Services
 
         public async Task<IEnumerable<object>> GetMapPointsForUserAsync(int userId)
         {
-            // NOTE: Use BuildingObject/map instead for better map display
             var points = await _repository.GetMapPointsForUserAsync(userId);
             return points.Select(p => new
             {
@@ -147,7 +139,7 @@ namespace Gas_Boiler_Backend.Services
                 UserId = gb.UserId,
                 UserName = gb.User?.Username ?? string.Empty,
                 BuildingObjectId = gb.BuildingObjectId,
-                BuildingName = gb.BuildingObject?.Name ?? "Unknown",  
+                BuildingName = gb.BuildingObject?.Name ?? "Unknown",
                 BuildingObject = gb.BuildingObject == null ? null : new BuildingObjectDto
                 {
                     Id = gb.BuildingObject.Id,

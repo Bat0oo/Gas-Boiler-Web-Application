@@ -84,9 +84,8 @@ namespace Gas_Boiler_Backend.Services
             {
                 weather = await _weatherService.GetWeatherInfoAsync(building.Latitude, building.Longitude);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine($"Failed to fetch weather: {ex.Message}");
             }
 
             return new BuildingObjectDetailDto
@@ -216,7 +215,7 @@ namespace Gas_Boiler_Backend.Services
                 CeilingArea = building.CeilingArea,
                 FloorArea = building.FloorArea,
                 BoilerCount = 0,
-                IndoorTemperature = null // New building, no readings yet
+                IndoorTemperature = null
             };
         }
 

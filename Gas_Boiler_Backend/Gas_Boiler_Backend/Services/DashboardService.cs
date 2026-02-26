@@ -20,7 +20,6 @@ namespace Gas_Boiler_Backend.Services
 
         public async Task<DashboardStatsDto> GetDashboardStatsAsync(int userId, bool isAdmin)
         {
-            // Get all buildings for user (or all if admin)
             var buildings = await _buildingRepository.GetAllAsync();
 
             if (!isAdmin)
@@ -36,7 +35,6 @@ namespace Gas_Boiler_Backend.Services
                 TotalBoilerCapacity = buildings.Sum(b => b.GasBoilers.Sum(boiler => boiler.MaxPower))
             };
 
-            // Calculate costs and power requirements for all buildings
             double totalDailyCost = 0;
             double totalRequiredPower = 0;
             int insufficientCapacityCount = 0;
@@ -55,10 +53,8 @@ namespace Gas_Boiler_Backend.Services
                         insufficientCapacityCount++;
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    // If calculation fails for a building, skip it
-                    Console.WriteLine($"Error calculating for building {building.Id}: {ex.Message}");
                 }
             }
 
@@ -68,7 +64,6 @@ namespace Gas_Boiler_Backend.Services
             stats.TotalRequiredPower = totalRequiredPower;
             stats.BuildingsWithInsufficientCapacity = insufficientCapacityCount;
 
-            // Get recent activities (last 10 buildings/boilers added)
             stats.RecentActivities = GetRecentActivities(buildings);
 
             return stats;
@@ -78,9 +73,8 @@ namespace Gas_Boiler_Backend.Services
         {
             var activities = new List<RecentActivityDto>();
 
-            // Add recent buildings (last 5)
             var recentBuildings = buildings
-                .OrderByDescending(b => b.Id) // Assuming higher ID = more recent
+                .OrderByDescending(b => b.Id)
                 .Take(5);
 
             foreach (var building in recentBuildings)
@@ -89,11 +83,10 @@ namespace Gas_Boiler_Backend.Services
                 {
                     Type = "building_added",
                     Description = $"Building '{building.Name}' added",
-                    Timestamp = DateTime.UtcNow.AddDays(-new Random().Next(1, 30)) // Mock timestamp
+                    Timestamp = DateTime.UtcNow.AddDays(-new Random().Next(1, 30))
                 });
             }
 
-            // Add recent boilers (last 5)
             var recentBoilers = buildings
                 .SelectMany(b => b.GasBoilers.Select(boiler => new { Building = b, Boiler = boiler }))
                 .OrderByDescending(x => x.Boiler.Id)
@@ -105,7 +98,7 @@ namespace Gas_Boiler_Backend.Services
                 {
                     Type = "boiler_added",
                     Description = $"Boiler '{item.Boiler.Name}' added to '{item.Building.Name}'",
-                    Timestamp = DateTime.UtcNow.AddDays(-new Random().Next(1, 30)) // Mock timestamp
+                    Timestamp = DateTime.UtcNow.AddDays(-new Random().Next(1, 30))
                 });
             }
 
