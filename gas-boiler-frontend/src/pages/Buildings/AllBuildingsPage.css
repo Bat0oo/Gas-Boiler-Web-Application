@@ -1,6 +1,6 @@
 .all-buildings-page {
   padding: 2rem;
-  max-width: 1400px;
+  max-width: 1600px;
   margin: 0 auto;
 }
 
@@ -183,6 +183,7 @@
 .buildings-table td {
   padding: 1rem 0.75rem;
   color: #374151;
+  vertical-align: middle;
 }
 
 .buildings-table td.building-name {
@@ -203,25 +204,35 @@
 
 .buildings-table td.boiler-count {
   text-align: center;
+  vertical-align: middle;
+  padding: 1rem 0.75rem;
 }
 
 .has-boilers {
   display: inline-block;
   background-color: #d1fae5;
   color: #065f46;
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
+  min-width: 32px;
+  text-align: center;
 }
 
 .no-boilers {
+  display: inline-block;
+  vertical-align: middle;
   color: #9ca3af;
   font-size: 0.85rem;
 }
 
 .buildings-table td.actions {
   text-align: center;
+  vertical-align: middle;
+  min-width: 160px;
+  white-space: nowrap;
+  padding: 1rem 0.75rem;
 }
 
 .actions-wrapper {
@@ -229,6 +240,8 @@
   gap: 0.5rem;
   align-items: center;
   justify-content: center;
+  flex-wrap: nowrap;
+  vertical-align: middle;
 }
 
 .btn-view,
@@ -240,6 +253,7 @@
   font-size: 1.2rem;
   padding: 0.25rem 0.5rem;
   transition: transform 0.2s;
+  flex-shrink: 0;
 }
 
 .btn-view:hover,
@@ -251,6 +265,7 @@
 .delete-confirm {
   display: inline-flex;
   gap: 0.25rem;
+  align-items: center;
 }
 
 .btn-confirm-delete,
@@ -261,6 +276,7 @@
   font-size: 1.2rem;
   padding: 0.25rem 0.5rem;
   transition: all 0.2s;
+  flex-shrink: 0;
 }
 
 .btn-confirm-delete {
@@ -326,7 +342,7 @@
   }
   
   .buildings-table {
-    min-width: 900px;
+    min-width: 1100px;
   }
   
   .admin-mode-banner-sticky {
@@ -451,4 +467,15 @@
 .temp-saving {
   color: #667eea;
   opacity: 0.7;
+}
+
+.buildings-table td.indoor-temp {
+  font-weight: 500;
+  text-align: center;
+}
+
+.temp-na {
+  color: #9ca3af;
+  font-style: italic;
+  font-size: 0.85rem;
 }

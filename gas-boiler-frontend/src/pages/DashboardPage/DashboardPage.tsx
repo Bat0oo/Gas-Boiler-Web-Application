@@ -186,7 +186,7 @@ const handleDeleteBoiler = async (boilerId: number) => {
             </button>
           </div>
         )}
-                <RealtimeBoilerStatus token={user!.token} />
+                <RealtimeBoilerStatus token={user!.token} buildingIds={buildings.map(b => b.id)} />
         <PowerRequirementsWidget />
         {/* Buildings Overview Table */}
         <div className="dashboard-section">

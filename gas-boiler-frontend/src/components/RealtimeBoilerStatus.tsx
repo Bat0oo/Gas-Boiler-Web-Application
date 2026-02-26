@@ -4,11 +4,25 @@ import './RealtimeBoilerStatus.css';
 
 interface Props {
   token: string;
+  buildingIds?: number[];
 }
 
-const RealtimeBoilerStatus: React.FC<Props> = ({ token }) => {
-  const { boilerPowers, temperatures, capacityWarnings, lastUpdate, isConnected } = 
+const RealtimeBoilerStatus: React.FC<Props> = ({ token, buildingIds }) => {
+  const { boilerPowers, temperatures, capacityWarnings, lastUpdate, isConnected } =
     useRealtimeBoilers(token);
+
+  const filterByBuilding = <T extends { buildingId: number }>(map: Map<number, T>): Map<number, T> => {
+    if (!buildingIds || buildingIds.length === 0) return map;
+    const filtered = new Map<number, T>();
+    map.forEach((value, key) => {
+      if (buildingIds.includes(value.buildingId)) filtered.set(key, value);
+    });
+    return filtered;
+  };
+
+  const visibleTemperatures = filterByBuilding(temperatures);
+  const visibleBoilerPowers = filterByBuilding(boilerPowers);
+  const visibleCapacityWarnings = filterByBuilding(capacityWarnings);
 
   const getPowerColor = (power: number, maxPower: number) => {
     const percentage = (power / maxPower) * 100;
@@ -42,11 +56,11 @@ const RealtimeBoilerStatus: React.FC<Props> = ({ token }) => {
       </div>
 
       {/* Temperature Updates */}
-      {temperatures.size > 0 && (
+      {visibleTemperatures.size > 0 && (
         <div className="temperature-section">
           <h4>🌡️ Indoor Temperatures</h4>
           <div className="temperature-grid">
-            {Array.from(temperatures.values()).map((temp) => (
+            {Array.from(visibleTemperatures.values()).map((temp) => (
               <div key={temp.buildingId} className="temp-card">
                 <div className="temp-building">{temp.buildingName}</div>
                 <div className="temp-display">
@@ -67,11 +81,11 @@ const RealtimeBoilerStatus: React.FC<Props> = ({ token }) => {
       )}
 
       {/* Boiler Power Updates */}
-      {boilerPowers.size > 0 && (
+      {visibleBoilerPowers.size > 0 && (
         <div className="boilers-section">
           <h4>🔥 Boiler Power Levels</h4>
           <div className="boilers-grid">
-            {Array.from(boilerPowers.values()).map((boiler) => (
+            {Array.from(visibleBoilerPowers.values()).map((boiler) => (
               <div key={boiler.boilerId} className="boiler-card">
                 <div className="boiler-header">
                   <span className="boiler-name">{boiler.boilerName}</span>
@@ -105,11 +119,11 @@ const RealtimeBoilerStatus: React.FC<Props> = ({ token }) => {
       )}
 
       {/* Capacity Warnings */}
-      {capacityWarnings.size > 0 && (
+      {visibleCapacityWarnings.size > 0 && (
         <div className="warnings-section">
           <h4>⚠️ Capacity Warnings</h4>
           <div className="warnings-grid">
-            {Array.from(capacityWarnings.values()).map((warning) => (
+            {Array.from(visibleCapacityWarnings.values()).map((warning) => (
               <div key={warning.buildingId} className="warning-card">
                 <div className="warning-icon">⚠️</div>
                 <div className="warning-content">
@@ -129,7 +143,7 @@ const RealtimeBoilerStatus: React.FC<Props> = ({ token }) => {
       )}
 
       {/* No Data Message */}
-      {boilerPowers.size === 0 && temperatures.size === 0 && (
+      {visibleBoilerPowers.size === 0 && visibleTemperatures.size === 0 && (
         <div className="no-data">
           ⏳ Waiting for P-Controller updates (runs every 1 minute)...
         </div>
