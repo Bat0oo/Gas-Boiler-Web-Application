@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import Navbar from '../components/Navbar';
-import { useAuth } from '../context/AuthContext';
-import { historicalDataService } from '../services/historicalDataService';
-import { buildingService } from '../services/buildingService';
-import { BuildingReading } from '../types/historicaldatatypes';
-import { Building } from '../types/buildingtypes';
-import { DateRangeOption } from '../types/chartstypes';
-import TemperatureChart from '../components/charts/TemperatureChart';
-import HeatLossChart from '../components/charts/HeatLossChart';
-import CostChart from '../components/charts/CostChart';
-import PowerChart from '../components/charts/PowerChart';
+import React, { useEffect, useState } from "react";
+import Navbar from "../components/Navbar";
+import { useAuth } from "../context/AuthContext";
+import { historicalDataService } from "../services/historicalDataService";
+import { buildingService } from "../services/buildingService";
+import { BuildingReading } from "../types/historicaldatatypes";
+import { Building } from "../types/buildingtypes";
+import { DateRangeOption } from "../types/chartstypes";
+import TemperatureChart from "../components/charts/TemperatureChart";
+import HeatLossChart from "../components/charts/HeatLossChart";
+import CostChart from "../components/charts/CostChart";
+import PowerChart from "../components/charts/PowerChart";
 import {
   processTemperatureData,
   processHeatLossData,
@@ -17,20 +17,22 @@ import {
   processPowerData,
   getDateRangeFromPreset,
   filterReadingsByDateRange,
-} from '../utils/chartUtils';
-import './ChartsPage.css';
+} from "../utils/chartUtils";
+import "./ChartsPage.css";
 
 const ChartsPage: React.FC = () => {
   const { user } = useAuth();
   const [buildings, setBuildings] = useState<Building[]>([]);
-  const [selectedBuildingId, setSelectedBuildingId] = useState<number | null>(null);
-  const [dateRange, setDateRange] = useState<DateRangeOption>('last7days');
-  const [customStartDate, setCustomStartDate] = useState('');
-  const [customEndDate, setCustomEndDate] = useState('');
+  const [selectedBuildingId, setSelectedBuildingId] = useState<number | null>(
+    null,
+  );
+  const [dateRange, setDateRange] = useState<DateRangeOption>("last7days");
+  const [customStartDate, setCustomStartDate] = useState("");
+  const [customEndDate, setCustomEndDate] = useState("");
 
   const [readings, setReadings] = useState<BuildingReading[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     loadBuildings();
@@ -54,8 +56,8 @@ const ChartsPage: React.FC = () => {
         setSelectedBuildingId(buildingsData[0].id);
       }
     } catch (err) {
-      console.error('Error loading buildings:', err);
-      setError('Failed to load buildings');
+      console.error("Error loading buildings:", err);
+      setError("Failed to load buildings");
     }
   };
 
@@ -64,15 +66,15 @@ const ChartsPage: React.FC = () => {
 
     try {
       setLoading(true);
-      setError('');
+      setError("");
 
       // Determine date range
       let startDate: Date;
       let endDate: Date;
 
-      if (dateRange === 'custom') {
+      if (dateRange === "custom") {
         if (!customStartDate || !customEndDate) {
-          setError('Please select both start and end dates');
+          setError("Please select both start and end dates");
           setLoading(false);
           return;
         }
@@ -89,12 +91,12 @@ const ChartsPage: React.FC = () => {
         selectedBuildingId,
         user.token,
         startDate.toISOString(),
-        endDate.toISOString()
+        endDate.toISOString(),
       );
 
       setReadings(data);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to load chart data');
+      setError(err.response?.data?.message || "Failed to load chart data");
     } finally {
       setLoading(false);
     }
@@ -125,7 +127,7 @@ const ChartsPage: React.FC = () => {
             <label htmlFor="building-select">Building:</label>
             <select
               id="building-select"
-              value={selectedBuildingId || ''}
+              value={selectedBuildingId || ""}
               onChange={(e) => setSelectedBuildingId(Number(e.target.value))}
               className="filter-select"
             >
@@ -151,7 +153,7 @@ const ChartsPage: React.FC = () => {
             </select>
           </div>
 
-          {dateRange === 'custom' && (
+          {dateRange === "custom" && (
             <>
               <div className="filter-group">
                 <label htmlFor="start-date">From:</label>
@@ -188,8 +190,14 @@ const ChartsPage: React.FC = () => {
         ) : readings.length === 0 ? (
           <div className="charts-empty">
             <h3>No Data Available</h3>
-            <p>There are no historical readings for this building in the selected date range.</p>
-            <p className="hint">Try selecting a different date range or wait for the background service to record data.</p>
+            <p>
+              There are no historical readings for this building in the selected
+              date range.
+            </p>
+            <p className="hint">
+              Try selecting a different date range or wait for the background
+              service to record data.
+            </p>
           </div>
         ) : (
           <>
@@ -206,11 +214,15 @@ const ChartsPage: React.FC = () => {
                 </div>
                 <div className="info-item">
                   <span className="info-label">Heating Area:</span>
-                  <span className="info-value">{selectedBuilding.heatingArea} m²</span>
+                  <span className="info-value">
+                    {selectedBuilding.heatingArea} m²
+                  </span>
                 </div>
                 <div className="info-item">
                   <span className="info-label">Desired Temp:</span>
-                  <span className="info-value">{selectedBuilding.desiredTemperature}°C</span>
+                  <span className="info-value">
+                    {selectedBuilding.desiredTemperature}°C
+                  </span>
                 </div>
               </div>
             )}
@@ -234,7 +246,9 @@ const ChartsPage: React.FC = () => {
               <div className="chart-card">
                 <div className="chart-header">
                   <h3>🌡️ Temperature History</h3>
-                  <span className="chart-description">Indoor vs Outdoor temperatures</span>
+                  <span className="chart-description">
+                    Indoor vs Outdoor temperatures
+                  </span>
                 </div>
                 <div className="chart-content">
                   <TemperatureChart data={temperatureData} height={350} />
@@ -246,7 +260,8 @@ const ChartsPage: React.FC = () => {
                 <div className="chart-header">
                   <h3>💰 Daily Heating Costs</h3>
                   <span className="chart-description">
-                    Total: €{costData.reduce((sum, d) => sum + d.cost, 0).toFixed(2)}
+                    Total: €
+                    {costData.reduce((sum, d) => sum + d.cost, 0).toFixed(2)}
                   </span>
                 </div>
                 <div className="chart-content">
@@ -258,7 +273,9 @@ const ChartsPage: React.FC = () => {
               <div className="chart-card">
                 <div className="chart-header">
                   <h3>🔥 Heat Loss Over Time</h3>
-                  <span className="chart-description">Thermal energy losses</span>
+                  <span className="chart-description">
+                    Thermal energy losses
+                  </span>
                 </div>
                 <div className="chart-content">
                   <HeatLossChart data={heatLossData} height={350} />

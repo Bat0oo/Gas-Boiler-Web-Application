@@ -31,7 +31,6 @@
   color: #1f2937;
 }
 
-/* ========== ADDED: Admin notice ========== */
 .admin-notice {
   background-color: #fff7ed;
   border: 1px solid #fb923c;
@@ -43,7 +42,6 @@
   font-size: 0.9rem;
   font-weight: 500;
 }
-/* ========== END ADDED ========== */
 
 .building-info-box {
   background-color: #f9fafb;
@@ -69,7 +67,7 @@
   margin: 1.5rem 0;
 }
 
-/* Add Boiler Section - Centered button, no heading */
+/* Add Boiler Section  */
 .add-boiler-section {
   display: flex;
   justify-content: center;
@@ -156,7 +154,7 @@
   color: #374151;
 }
 
-/* Boiler Action Buttons - CONSISTENT SIZING */
+/* Boiler Action Buttons */
 .boiler-actions {
   display: flex;
   flex-direction: column;
@@ -195,7 +193,7 @@
   transform: translateY(-1px);
 }
 
-/* Building Action Buttons - UPDATED: Zatvori is now blue */
+/* Building Action Buttons*/
 .building-action-buttons {
   display: flex;
   justify-content: center;
@@ -236,7 +234,7 @@
   transform: translateY(-1px);
 }
 
-/* Zatvori button - Blue to differentiate from delete */
+/* Close button */
 .btn-close {
   background-color: #3b82f6;
   color: white;

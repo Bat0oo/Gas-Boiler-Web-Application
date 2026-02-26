@@ -19,7 +19,6 @@ namespace Gas_Boiler_Backend.Services
 
         public async Task<HeatLossCalculationDto> CalculateBuildingMetricsAsync(BuildingObject building)
         {
-            // Get system parameters
             var sysParams = await _systemParametersRepository.GetAsync();
             if (sysParams == null)
                 throw new InvalidOperationException("System parameters not found");

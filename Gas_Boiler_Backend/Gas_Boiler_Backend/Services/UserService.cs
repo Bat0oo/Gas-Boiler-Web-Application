@@ -123,7 +123,7 @@ namespace Gas_Boiler_Backend.Services
                 Role = user.Role,
                 CreatedAt = user.CreatedAt,
                 GasBoilersCount = user.GasBoilers?.Count ?? 0,
-                IsBlocked = user.IsBlocked  
+                IsBlocked = user.IsBlocked
             };
         }
 

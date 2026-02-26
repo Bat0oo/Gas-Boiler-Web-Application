@@ -163,7 +163,7 @@
   color: #374151;
 }
 
-/* Boiler Action Buttons - CONSISTENT SIZING */
+/* Boiler Action Buttons */
 .boiler-actions {
   display: flex;
   flex-direction: column;
@@ -202,7 +202,7 @@
   transform: translateY(-1px);
 }
 
-/* Building Action Buttons - UPDATED: Zatvori is now blue */
+/* Building Action Buttons*/
 .building-action-buttons {
   display: flex;
   justify-content: center;
@@ -243,7 +243,7 @@
   transform: translateY(-1px);
 }
 
-/* Zatvori button - Blue to differentiate from delete */
+/* Close button */
 .btn-close {
   background-color: #3b82f6;
   color: white;
@@ -361,7 +361,8 @@
   font-weight: 600;
 }
 
-.loading-text, .error-text {
+.loading-text,
+.error-text {
   text-align: center;
   padding: 2rem 0;
   color: #64748b;
@@ -563,15 +564,15 @@
   .breakdown-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .cost-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .power-value {
     font-size: 1.2rem;
   }
-  
+
   .cost-amount {
     font-size: 1.3rem;
   }

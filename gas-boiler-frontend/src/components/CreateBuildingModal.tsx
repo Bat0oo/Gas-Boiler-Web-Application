@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { CreateBuildingPayload } from '../types/buildingtypes';
-import './CreateBuildingModal.css';
+import React, { useState } from "react";
+import { CreateBuildingPayload } from "../types/buildingtypes";
+import "./CreateBuildingModal.css";
 
 interface Props {
   isOpen: boolean;
@@ -9,8 +9,13 @@ interface Props {
   onCreate: (building: CreateBuildingPayload) => Promise<void>;
 }
 
-const CreateBuildingModal: React.FC<Props> = ({ isOpen, position, onClose, onCreate }) => {
-  const [name, setName] = useState('');
+const CreateBuildingModal: React.FC<Props> = ({
+  isOpen,
+  position,
+  onClose,
+  onCreate,
+}) => {
+  const [name, setName] = useState("");
   const [heatingArea, setHeatingArea] = useState(100);
   const [height, setHeight] = useState(2.7);
   const [desiredTemperature, setDesiredTemperature] = useState(22);
@@ -21,7 +26,7 @@ const CreateBuildingModal: React.FC<Props> = ({ isOpen, position, onClose, onCre
 
   const handleSubmit = async () => {
     if (!position || !name.trim()) {
-      alert('Enter building name');
+      alert("Enter building name");
       return;
     }
 
@@ -38,14 +43,14 @@ const CreateBuildingModal: React.FC<Props> = ({ isOpen, position, onClose, onCre
 
       await onCreate(payload);
 
-      setName('');
+      setName("");
       setHeatingArea(100);
       setHeight(2.7);
       setDesiredTemperature(22);
       onClose();
     } catch (err) {
-      console.error('Error creating building:', err);
-      alert('Error creating building');
+      console.error("Error creating building:", err);
+      alert("Error creating building");
     } finally {
       setLoading(false);
     }
@@ -73,7 +78,11 @@ const CreateBuildingModal: React.FC<Props> = ({ isOpen, position, onClose, onCre
           <label>Location:</label>
           <input
             type="text"
-            value={position ? `${position.lat.toFixed(6)}, ${position.lng.toFixed(6)}` : ''}
+            value={
+              position
+                ? `${position.lat.toFixed(6)}, ${position.lng.toFixed(6)}`
+                : ""
+            }
             disabled
           />
         </div>
@@ -109,7 +118,9 @@ const CreateBuildingModal: React.FC<Props> = ({ isOpen, position, onClose, onCre
           <input
             type="number"
             value={desiredTemperature}
-            onChange={(e) => setDesiredTemperature(parseFloat(e.target.value) || 0)}
+            onChange={(e) =>
+              setDesiredTemperature(parseFloat(e.target.value) || 0)
+            }
             min="0"
             max="40"
             step="1"
@@ -122,15 +133,20 @@ const CreateBuildingModal: React.FC<Props> = ({ isOpen, position, onClose, onCre
             className="btn-primary"
             disabled={loading || !name.trim()}
           >
-            {loading ? 'Creating...' : 'Create'}
+            {loading ? "Creating..." : "Create"}
           </button>
-          <button onClick={onClose} className="btn-secondary" disabled={loading}>
+          <button
+            onClick={onClose}
+            className="btn-secondary"
+            disabled={loading}
+          >
             Cancel
           </button>
         </div>
 
         <div className="info-note">
-          ℹ️ Thermal properties and areas will be automatically calculated based on standard values.
+          ℹ️ Thermal properties and areas will be automatically calculated based
+          on standard values.
         </div>
       </div>
     </div>

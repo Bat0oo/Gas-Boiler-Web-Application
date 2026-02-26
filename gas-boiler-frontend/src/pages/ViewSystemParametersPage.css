@@ -203,7 +203,7 @@
   .params-grid-4 {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .params-grid-3 {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -249,7 +249,6 @@
   color: #1e40af;
 }
 
-/* NEW PARAMETER CARDS */
 .param-compact.new-param {
   background-color: white;
   border: 2px solid #3b82f6;

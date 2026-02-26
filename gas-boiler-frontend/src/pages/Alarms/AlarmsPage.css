@@ -36,10 +36,18 @@
   border-left: 4px solid;
 }
 
-.stat-card.total { border-left-color: #3b82f6; }
-.stat-card.active { border-left-color: #dc2626; }
-.stat-card.acknowledged { border-left-color: #f59e0b; }
-.stat-card.resolved { border-left-color: #10b981; }
+.stat-card.total {
+  border-left-color: #3b82f6;
+}
+.stat-card.active {
+  border-left-color: #dc2626;
+}
+.stat-card.acknowledged {
+  border-left-color: #f59e0b;
+}
+.stat-card.resolved {
+  border-left-color: #10b981;
+}
 
 .stat-value {
   font-size: 2.5rem;

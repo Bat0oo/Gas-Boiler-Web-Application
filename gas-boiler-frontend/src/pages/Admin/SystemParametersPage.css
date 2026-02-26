@@ -107,7 +107,7 @@
   cursor: help;
 }
 
-/* Tooltip - Beautiful hover explanation */
+/* Tooltip */
 .param-item::after {
   content: attr(data-tooltip);
   position: absolute;
@@ -127,13 +127,16 @@
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+  transition:
+    opacity 0.3s,
+    visibility 0.3s,
+    transform 0.3s;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 /* Tooltip arrow */
 .param-item::before {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 100%;
   left: 50%;
@@ -143,7 +146,9 @@
   z-index: 1001;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s, visibility 0.3s;
+  transition:
+    opacity 0.3s,
+    visibility 0.3s;
 }
 
 /* Show tooltip on hover */
@@ -178,7 +183,7 @@
   flex: 1;
 }
 
-/* Info icon - subtle indicator */
+/* Info icon */
 .info-icon {
   font-size: 0.75rem;
   color: #9ca3af;
@@ -191,7 +196,7 @@
   color: #3b82f6;
 }
 
-/* Input Wrapper - Fixed overflow */
+/* Input Wrapper  */
 .input-wrapper {
   position: relative;
   display: flex;
@@ -201,7 +206,7 @@
 .param-input {
   width: 100%;
   padding: 0.45rem 0.6rem;
-  padding-right: 4.5rem; /* Extra space for unit label */
+  padding-right: 4.5rem;
   border: 2px solid #e5e7eb;
   border-radius: 6px;
   font-size: 0.9rem;
@@ -220,7 +225,7 @@
   border-color: #d1d5db;
 }
 
-/* Unit Labels - Fixed positioning */
+/* Unit Labels */
 .param-unit {
   position: absolute;
   right: 0.6rem;
@@ -319,12 +324,11 @@
   .params-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .params-grid-3 {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  /* Adjust tooltip width on smaller screens */
   .param-item::after {
     width: 180px;
   }
@@ -363,7 +367,6 @@
     justify-content: center;
   }
 
-  /* Disable tooltips on mobile (no hover) */
   .param-item::after,
   .param-item::before {
     display: none;
@@ -383,7 +386,7 @@
 }
 
 .thermodynamics-section::before {
-  content: '🔬 Thermodynamics Parameters (P-Controller)';
+  content: "🔬 Thermodynamics Parameters (P-Controller)";
   position: absolute;
   top: -12px;
   left: 16px;

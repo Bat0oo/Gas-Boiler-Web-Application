@@ -1,7 +1,6 @@
 ﻿using Gas_Boiler_Backend.DTO.SystemParameters;
 using Gas_Boiler_Backend.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -19,7 +18,7 @@ namespace Gas_Boiler_Backend.Controllers
         }
 
         [HttpGet]
-        [Authorize] // All users can read
+        [Authorize]
         public async Task<ActionResult<SystemParametersResponseDto>> GetParameters()
         {
             try
@@ -40,7 +39,6 @@ namespace Gas_Boiler_Backend.Controllers
         {
             try
             {
-                // Get admin username from JWT token
                 var username = User.FindFirst(ClaimTypes.Name)?.Value ?? "Unknown";
 
                 var updated = await _service.UpdateParametersAsync(updateDto, username);

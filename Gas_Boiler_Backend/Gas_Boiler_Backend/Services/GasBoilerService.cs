@@ -9,7 +9,6 @@ namespace Gas_Boiler_Backend.Services
         private readonly IGasBoilerRepository _repository;
         private readonly IBuildingObjectRepository _buildingRepo;
 
-        // Added building repo injection
         public GasBoilerService(
             IGasBoilerRepository repository,
             IBuildingObjectRepository buildingRepo)
@@ -27,7 +26,6 @@ namespace Gas_Boiler_Backend.Services
             if (building.UserId != ownerUserId)
                 throw new UnauthorizedAccessException("You don't own this building");
 
-            // Create boiler (NO building creation anymore!)
             var gb = new GasBoiler
             {
                 Name = dto.Name,
@@ -121,7 +119,6 @@ namespace Gas_Boiler_Backend.Services
 
         public async Task<IEnumerable<object>> GetMapPointsForUserAsync(int userId)
         {
-            // NOTE: Use BuildingObject/map instead for better map display
             var points = await _repository.GetMapPointsForUserAsync(userId);
             return points.Select(p => new
             {

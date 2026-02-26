@@ -29,7 +29,6 @@ namespace Gas_Boiler_Backend.Controllers
 
         private bool IsAdmin() => User.IsInRole("Admin") || User.FindFirst(ClaimTypes.Role)?.Value == "Admin";
 
-        // Admin and User
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BuildingObjectResponseDto>>> GetAll()
@@ -80,7 +79,6 @@ namespace Gas_Boiler_Backend.Controllers
             }
         }
 
-        // User only
 
         [HttpPost]
         [Authorize(Roles = "User")]
@@ -172,7 +170,6 @@ namespace Gas_Boiler_Backend.Controllers
                 var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
                 var isAdmin = User.IsInRole("Admin");
 
-                // Get the building with all related data
                 var building = await _service.GetBuildingByIdAsync(id, userId, isAdmin);
 
                 if (building == null)

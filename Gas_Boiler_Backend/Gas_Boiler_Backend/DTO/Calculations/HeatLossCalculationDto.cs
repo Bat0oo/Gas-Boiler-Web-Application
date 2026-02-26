@@ -1,8 +1,5 @@
 ﻿namespace Gas_Boiler_Backend.DTO.Calculations
 {
-    /// <summary>
-    /// Heat loss and cost calculation results for a building
-    /// </summary>
     public class HeatLossCalculationDto
     {
         // Individual heat losses (Watts)

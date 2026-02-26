@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { historicalDataService } from '../services/historicalDataService';
-import { BuildingReading } from '../types/historicaldatatypes';
-import PowerChart from './charts/PowerChart';
-import { processPowerData, getDateRangeFromPreset } from '../utils/chartUtils';
-import './PowerRequirementsWidget.css';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { historicalDataService } from "../services/historicalDataService";
+import { BuildingReading } from "../types/historicaldatatypes";
+import PowerChart from "./charts/PowerChart";
+import { processPowerData, getDateRangeFromPreset } from "../utils/chartUtils";
+import "./PowerRequirementsWidget.css";
 
 interface BuildingIssue {
   buildingId: number;
@@ -31,24 +31,24 @@ const PowerRequirementsWidget: React.FC = () => {
     try {
       setLoading(true);
 
-      const { startDate, endDate } = getDateRangeFromPreset('last7days');
-      const readings: BuildingReading[] = await historicalDataService.getAllHistory(
-        user.token,
-        startDate.toISOString(),
-        endDate.toISOString()
-      );
+      const { startDate, endDate } = getDateRangeFromPreset("last7days");
+      const readings: BuildingReading[] =
+        await historicalDataService.getAllHistory(
+          user.token,
+          startDate.toISOString(),
+          endDate.toISOString(),
+        );
 
       const processed = processPowerData(readings);
       setPowerData(processed);
 
-      // NEW: Group issues by building!
       const issuesByBuilding = new Map<number, BuildingIssue>();
 
       processed
         .filter((d) => !d.hasCapacity)
         .forEach((d) => {
           const buildingId = d.buildingId || 0;
-          const buildingName = d.buildingName || 'Unknown Building';
+          const buildingName = d.buildingName || "Unknown Building";
           const deficit = d.requiredPower - d.availablePower;
 
           if (issuesByBuilding.has(buildingId)) {
@@ -67,19 +67,19 @@ const PowerRequirementsWidget: React.FC = () => {
 
       // Convert to array and sort by worst deficit
       const issues = Array.from(issuesByBuilding.values()).sort(
-        (a, b) => b.worstDeficit - a.worstDeficit
+        (a, b) => b.worstDeficit - a.worstDeficit,
       );
 
       setBuildingIssues(issues);
     } catch (err) {
-      console.error('Error loading power data:', err);
+      console.error("Error loading power data:", err);
     } finally {
       setLoading(false);
     }
   };
 
   const handleViewDetails = () => {
-    navigate('/charts');
+    navigate("/charts");
   };
 
   if (loading) {
@@ -122,7 +122,8 @@ const PowerRequirementsWidget: React.FC = () => {
           <h3>⚡ Power Requirements (Last 7 Days)</h3>
           {hasIssues ? (
             <span className="status-badge warning">
-              ⚠️ {buildingIssues.length} Building{buildingIssues.length > 1 ? 's' : ''} with Issues
+              ⚠️ {buildingIssues.length} Building
+              {buildingIssues.length > 1 ? "s" : ""} with Issues
             </span>
           ) : (
             <span className="status-badge success">✅ All Buildings OK</span>
@@ -133,7 +134,7 @@ const PowerRequirementsWidget: React.FC = () => {
         </button>
       </div>
 
-      {/* NEW: Building-Specific Capacity Issues */}
+      {/* Building-Specific Capacity Issues */}
       {hasIssues && (
         <div className="capacity-issues-summary">
           <div className="issue-header">
@@ -168,8 +169,9 @@ const PowerRequirementsWidget: React.FC = () => {
           </div>
 
           <div className="issue-note">
-            <strong>How to fix:</strong> Hover over RED bars to see exactly when each building had
-            issues. Then add boilers or adjust settings for that building.
+            <strong>How to fix:</strong> Hover over RED bars to see exactly when
+            each building had issues. Then add boilers or adjust settings for
+            that building.
           </div>
         </div>
       )}
@@ -194,8 +196,9 @@ const PowerRequirementsWidget: React.FC = () => {
           </div>
         </div>
         <p className="widget-info">
-          💡 <strong>Hover over any bar</strong> to see the building name, date, time, and exact
-          power details. RED bars show which buildings need more boilers.
+          💡 <strong>Hover over any bar</strong> to see the building name, date,
+          time, and exact power details. RED bars show which buildings need more
+          boilers.
         </p>
       </div>
     </div>

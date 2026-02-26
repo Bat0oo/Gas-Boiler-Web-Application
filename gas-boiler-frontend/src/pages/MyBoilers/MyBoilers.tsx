@@ -1,23 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import { gasBoilerService, GasBoilerFullResponse } from '../../services/gasBoilerService';
-import EditBoilerModal from './EditBoilerModal';
-import './MyBoilers.css';
-import Navbar from '../../components/Navbar';
+import React, { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import {
+  gasBoilerService,
+  GasBoilerFullResponse,
+} from "../../services/gasBoilerService";
+import EditBoilerModal from "./EditBoilerModal";
+import "./MyBoilers.css";
+import Navbar from "../../components/Navbar";
 
 const MyBoilersPage: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const isAdmin = user?.role === 'Admin';
-  const filterUserId = searchParams.get('userId');
-  const filterUsername = searchParams.get('username');
-  
+  const isAdmin = user?.role === "Admin";
+  const filterUserId = searchParams.get("userId");
+  const filterUsername = searchParams.get("username");
+
   const [boilers, setBoilers] = useState<GasBoilerFullResponse[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [editingBoiler, setEditingBoiler] = useState<GasBoilerFullResponse | null>(null);
+  const [error, setError] = useState("");
+  const [editingBoiler, setEditingBoiler] =
+    useState<GasBoilerFullResponse | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
 
   const [showBanner, setShowBanner] = useState(true);
@@ -38,26 +42,26 @@ const MyBoilersPage: React.FC = () => {
 
   const loadBoilers = async () => {
     if (!user?.token) return;
-    
+
     setLoading(true);
     try {
       const data = await gasBoilerService.getAllBoilers(user.token);
       setBoilers(data);
-      setError('');
+      setError("");
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to load boilers');
+      setError(err.response?.data?.message || "Failed to load boilers");
     } finally {
       setLoading(false);
     }
   };
 
   const filteredBoilers = filterUserId
-    ? boilers.filter(b => b.userId === parseInt(filterUserId))
+    ? boilers.filter((b) => b.userId === parseInt(filterUserId))
     : boilers;
 
   const handleEdit = (boiler: GasBoilerFullResponse) => {
     if (isAdmin) {
-      alert('Administrators cannot edit boilers. You can only view.');
+      alert("Administrators cannot edit boilers. You can only view.");
       return;
     }
     setEditingBoiler(boiler);
@@ -67,27 +71,29 @@ const MyBoilersPage: React.FC = () => {
     if (!user?.token) return;
 
     if (isAdmin) {
-      alert('Administrators cannot delete boilers. You can only view.');
+      alert("Administrators cannot delete boilers. You can only view.");
       return;
     }
 
     try {
       await gasBoilerService.deleteGasBoiler(id, user.token);
-      setBoilers(boilers.filter(b => b.id !== id));
+      setBoilers(boilers.filter((b) => b.id !== id));
       setDeleteConfirm(null);
-      setError('');
+      setError("");
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to delete boiler');
+      setError(err.response?.data?.message || "Failed to delete boiler");
     }
   };
 
   const handleSaveEdit = async (updatedBoiler: GasBoilerFullResponse) => {
-    setBoilers(boilers.map(b => b.id === updatedBoiler.id ? updatedBoiler : b));
+    setBoilers(
+      boilers.map((b) => (b.id === updatedBoiler.id ? updatedBoiler : b)),
+    );
     setEditingBoiler(null);
   };
 
   const handleClearFilter = () => {
-    navigate('/my-boilers');
+    navigate("/my-boilers");
   };
 
   if (loading) {
@@ -100,7 +106,10 @@ const MyBoilersPage: React.FC = () => {
 
       {isAdmin && !filterUserId && showBanner && (
         <div className="admin-mode-banner-sticky">
-          <span>🛡️ Administrator Mode - View Only (you cannot create, edit, or delete)</span>
+          <span>
+            🛡️ Administrator Mode - View Only (you cannot create, edit, or
+            delete)
+          </span>
           <button
             onClick={() => setShowBanner(false)}
             className="banner-dismiss"
@@ -120,8 +129,12 @@ const MyBoilersPage: React.FC = () => {
             </>
           ) : (
             <>
-              <h1>{isAdmin ? '🔥 All Boilers' : 'My Boilers'}</h1>
-              <p>{isAdmin ? 'View all boilers of all users' : 'Manage your gas boilers'}</p>
+              <h1>{isAdmin ? "🔥 All Boilers" : "My Boilers"}</h1>
+              <p>
+                {isAdmin
+                  ? "View all boilers of all users"
+                  : "Manage your gas boilers"}
+              </p>
             </>
           )}
         </div>
@@ -129,7 +142,8 @@ const MyBoilersPage: React.FC = () => {
         {filterUsername && (
           <div className="filter-info-box">
             <span className="filter-text">
-              📊 Showing: <strong>{filteredBoilers.length}</strong> {filteredBoilers.length === 1 ? 'boiler' : 'boilers'}
+              📊 Showing: <strong>{filteredBoilers.length}</strong>{" "}
+              {filteredBoilers.length === 1 ? "boiler" : "boilers"}
             </span>
             <button onClick={handleClearFilter} className="btn-clear-filter">
               ✕ Remove filter
@@ -173,22 +187,32 @@ const MyBoilersPage: React.FC = () => {
                   <tr key={boiler.id}>
                     <td>{boiler.id}</td>
                     <td>{boiler.name}</td>
-                    <td>{boiler.buildingName || 'N/A'}</td>
+                    <td>{boiler.buildingName || "N/A"}</td>
                     <td>{boiler.maxPower.toFixed(2)}</td>
                     <td>{(boiler.efficiency * 100).toFixed(0)}%</td>
-                    <td className="current-power">{boiler.currentPower.toFixed(2)}</td>
+                    <td className="current-power">
+                      {boiler.currentPower.toFixed(2)}
+                    </td>
                     <td className="location">
                       {boiler.buildingObject ? (
                         <>
-                          {boiler.buildingObject.latitude.toFixed(4)}, {boiler.buildingObject.longitude.toFixed(4)}
+                          {boiler.buildingObject.latitude.toFixed(4)},{" "}
+                          {boiler.buildingObject.longitude.toFixed(4)}
                         </>
                       ) : (
-                        'N/A'
+                        "N/A"
                       )}
                     </td>
-                    <td>{boiler.buildingObject?.heatingArea.toFixed(0) ?? 'N/A'}</td>
-                    <td>{boiler.buildingObject?.desiredTemperature.toFixed(1) ?? 'N/A'}</td>
-                    <td>{new Date(boiler.createdAt).toLocaleDateString('sr-RS')}</td>
+                    <td>
+                      {boiler.buildingObject?.heatingArea.toFixed(0) ?? "N/A"}
+                    </td>
+                    <td>
+                      {boiler.buildingObject?.desiredTemperature.toFixed(1) ??
+                        "N/A"}
+                    </td>
+                    <td>
+                      {new Date(boiler.createdAt).toLocaleDateString("sr-RS")}
+                    </td>
                     <td className="actions">
                       <div className="actions-wrapper">
                         {!isAdmin && (
@@ -242,7 +266,7 @@ const MyBoilersPage: React.FC = () => {
             boiler={editingBoiler}
             onClose={() => setEditingBoiler(null)}
             onSave={handleSaveEdit}
-            token={user?.token || ''}
+            token={user?.token || ""}
           />
         )}
       </div>

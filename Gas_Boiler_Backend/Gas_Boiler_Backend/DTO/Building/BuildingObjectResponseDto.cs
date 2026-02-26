@@ -1,9 +1,8 @@
 ﻿namespace Gas_Boiler_Backend.DTO.Building
 {
-    /// <summary>
-    /// Basic building response with boiler count
-    /// Used for: GET /api/BuildingObject (list all buildings)
-    /// </summary>
+
+    // Used for: GET /api/BuildingObject (list all buildings)
+
     public class BuildingObjectResponseDto
     {
         public int Id { get; set; }

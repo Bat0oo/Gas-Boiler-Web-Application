@@ -62,7 +62,7 @@ namespace Gas_Boiler_Backend.Services
                 BuildingId = building.Id,
                 Timestamp = timestamp,
                 // IndoorTemperature = calculations.IndoorTemperature,
-                IndoorTemperature = previousReading?.IndoorTemperature ?? (building.DesiredTemperature - 6.0),
+                IndoorTemperature = previousReading?.IndoorTemperature ?? (building.DesiredTemperature - 6.0), // TODO: Maybe do this more elegant
                 OutdoorTemperature = calculations.OutdoorTemperature,
                 TemperatureDifference = calculations.TemperatureDifference,
 
@@ -200,10 +200,6 @@ namespace Gas_Boiler_Backend.Services
                 CreatedAt = DateTime.UtcNow
             };
         }
-
-        /// <summary>
-        /// Gets total count of all readings in database
-        /// </summary>
         public async Task<int> GetTotalReadingsCountAsync()
         {
             return await _readingRepository.GetCountAsync();

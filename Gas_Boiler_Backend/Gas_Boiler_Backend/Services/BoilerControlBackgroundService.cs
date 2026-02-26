@@ -1,5 +1,5 @@
-﻿using Gas_Boiler_Backend.Interfaces;
-using Gas_Boiler_Backend.Hubs;
+﻿using Gas_Boiler_Backend.Hubs;
+using Gas_Boiler_Backend.Interfaces;
 using Gas_Boiler_Backend.Models;
 using Microsoft.AspNetCore.SignalR;
 
@@ -113,19 +113,19 @@ namespace Gas_Boiler_Backend.Services
 
                 var feedForward = reading.HeatLossWatts / 1000.0; // kW
 
-                // 🔴 1) Ako je pretoplo → potpuno ugasi
+                // 1) Ako je pretoplo → potpuno ugasi
                 if (indoorTemp > building.DesiredTemperature)
                 {
                     newTotalPower = 0;
                     _logger.LogInformation("  🔴 Above target → boilers OFF");
                 }
-                // 🟡 2) Ako smo u deadband zoni → samo pokrij heat loss
+                // 2) Ako smo u deadband zoni → samo pokrij heat loss
                 else if (Math.Abs(error) <= Deadband)
                 {
                     newTotalPower = feedForward;
                     _logger.LogInformation("  🟡 Within deadband → maintain heat loss power");
                 }
-                // 🟢 3) Normalna P regulacija
+                // 3) Normalna P regulacija
                 else
                 {
                     var pComponent = error * Kp;
@@ -144,7 +144,7 @@ namespace Gas_Boiler_Backend.Services
                     await boilerRepo.UpdateAsync(boiler);
                 }
 
-                await boilerRepo.SaveChangesAsync(); // ✅ single commit
+                await boilerRepo.SaveChangesAsync();
 
                 var requiredPower = reading.RequiredPowerKw;
                 if (requiredPower > totalAvailablePower)

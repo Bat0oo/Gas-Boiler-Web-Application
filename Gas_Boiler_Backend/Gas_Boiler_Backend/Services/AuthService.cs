@@ -1,10 +1,7 @@
-﻿using Gas_Boiler_Backend.Data;
-using Gas_Boiler_Backend.DTO.Auth;
+﻿using Gas_Boiler_Backend.DTO.Auth;
 using Gas_Boiler_Backend.Helpers;
 using Gas_Boiler_Backend.Interfaces;
 using Gas_Boiler_Backend.Models;
-using Gas_Boiler_Backend.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 namespace Gas_Boiler_Backend.Services
 {
@@ -73,7 +70,7 @@ namespace Gas_Boiler_Backend.Services
                 Email = createdUser.Email,
                 Role = createdUser.Role,
                 UserId = createdUser.Id
-            }; 
+            };
         }
 
     }

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Building, UpdateBuildingPayload } from '../types/buildingtypes';
-import { buildingService } from '../services/buildingService';
-import './EditBuildingModal.css';
+import React, { useState, useEffect } from "react";
+import { Building, UpdateBuildingPayload } from "../types/buildingtypes";
+import { buildingService } from "../services/buildingService";
+import "./EditBuildingModal.css";
 
 interface Props {
   isOpen: boolean;
@@ -11,14 +11,20 @@ interface Props {
   onSuccess: (updatedBuilding: Building) => void;
 }
 
-const EditBuildingModal: React.FC<Props> = ({ isOpen, building, token, onClose, onSuccess }) => {
-  const [name, setName] = useState('');
+const EditBuildingModal: React.FC<Props> = ({
+  isOpen,
+  building,
+  token,
+  onClose,
+  onSuccess,
+}) => {
+  const [name, setName] = useState("");
   const [heatingArea, setHeatingArea] = useState(0);
   const [height, setHeight] = useState(2.7);
   const [desiredTemperature, setDesiredTemperature] = useState(22);
-  
+
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const calculatedVolume = heatingArea * height;
 
@@ -28,7 +34,7 @@ const EditBuildingModal: React.FC<Props> = ({ isOpen, building, token, onClose, 
       setHeatingArea(building.heatingArea);
       setHeight(building.height);
       setDesiredTemperature(building.desiredTemperature);
-      setError('');
+      setError("");
     }
   }, [isOpen, building]);
 
@@ -37,7 +43,7 @@ const EditBuildingModal: React.FC<Props> = ({ isOpen, building, token, onClose, 
     if (!building) return;
 
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
       const payload: UpdateBuildingPayload = {
@@ -57,11 +63,15 @@ const EditBuildingModal: React.FC<Props> = ({ isOpen, building, token, onClose, 
         floorArea: building.floorArea,
       };
 
-      const updated = await buildingService.updateBuilding(building.id, payload, token);
+      const updated = await buildingService.updateBuilding(
+        building.id,
+        payload,
+        token,
+      );
       onSuccess(updated);
       onClose();
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to update building');
+      setError(err.response?.data?.message || "Failed to update building");
     } finally {
       setLoading(false);
     }
@@ -79,11 +89,7 @@ const EditBuildingModal: React.FC<Props> = ({ isOpen, building, token, onClose, 
           </button>
         </div>
 
-        {error && (
-          <div className="error-message">
-            {error}
-          </div>
-        )}
+        {error && <div className="error-message">{error}</div>}
 
         <form onSubmit={handleSubmit}>
           <div className="form-section">
@@ -115,7 +121,9 @@ const EditBuildingModal: React.FC<Props> = ({ isOpen, building, token, onClose, 
               <input
                 type="number"
                 value={heatingArea}
-                onChange={(e) => setHeatingArea(parseFloat(e.target.value) || 0)}
+                onChange={(e) =>
+                  setHeatingArea(parseFloat(e.target.value) || 0)
+                }
                 min="1"
                 step="1"
                 required
@@ -145,7 +153,9 @@ const EditBuildingModal: React.FC<Props> = ({ isOpen, building, token, onClose, 
               <input
                 type="number"
                 value={desiredTemperature}
-                onChange={(e) => setDesiredTemperature(parseFloat(e.target.value) || 0)}
+                onChange={(e) =>
+                  setDesiredTemperature(parseFloat(e.target.value) || 0)
+                }
                 min="0"
                 max="40"
                 step="1"
@@ -161,7 +171,7 @@ const EditBuildingModal: React.FC<Props> = ({ isOpen, building, token, onClose, 
               className="btn-primary"
               disabled={loading || !name.trim()}
             >
-              {loading ? 'Saving...' : 'Save Changes'}
+              {loading ? "Saving..." : "Save Changes"}
             </button>
             <button
               type="button"
