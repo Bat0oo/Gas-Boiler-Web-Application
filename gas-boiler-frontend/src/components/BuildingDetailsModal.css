@@ -361,7 +361,8 @@
   font-weight: 600;
 }
 
-.loading-text, .error-text {
+.loading-text,
+.error-text {
   text-align: center;
   padding: 2rem 0;
   color: #64748b;
@@ -563,15 +564,15 @@
   .breakdown-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .cost-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .power-value {
     font-size: 1.2rem;
   }
-  
+
   .cost-amount {
     font-size: 1.3rem;
   }

@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
-import { gasBoilerService, GasBoilerFullResponse } from '../../services/gasBoilerService';
-import './EditBoilerModal.css';
+import React, { useState } from "react";
+import {
+  gasBoilerService,
+  GasBoilerFullResponse,
+} from "../../services/gasBoilerService";
+import "./EditBoilerModal.css";
 
 interface Props {
   boiler: GasBoilerFullResponse;
@@ -10,7 +13,13 @@ interface Props {
   token: string;
 }
 
-const EditBoilerModal: React.FC<Props> = ({ boiler, onClose, onSave, onEditBuilding, token }) => {
+const EditBoilerModal: React.FC<Props> = ({
+  boiler,
+  onClose,
+  onSave,
+  onEditBuilding,
+  token,
+}) => {
   const [formData, setFormData] = useState({
     name: boiler.name,
     maxPower: boiler.maxPower,
@@ -19,23 +28,24 @@ const EditBoilerModal: React.FC<Props> = ({ boiler, onClose, onSave, onEditBuild
   });
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
-  const buildingName = boiler.buildingName || boiler.buildingObject?.name || 'N/A';
+  const buildingName =
+    boiler.buildingName || boiler.buildingObject?.name || "N/A";
   const buildingId = boiler.buildingObjectId || boiler.buildingObject?.id;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: parseFloat(value) || 0
+      [name]: parseFloat(value) || 0,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
       const payload = {
@@ -45,10 +55,14 @@ const EditBoilerModal: React.FC<Props> = ({ boiler, onClose, onSave, onEditBuild
         currentPower: formData.currentPower,
       };
 
-      const updated = await gasBoilerService.updateGasBoiler(boiler.id, payload, token);
+      const updated = await gasBoilerService.updateGasBoiler(
+        boiler.id,
+        payload,
+        token,
+      );
       onSave(updated);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to update boiler');
+      setError(err.response?.data?.message || "Failed to update boiler");
     } finally {
       setLoading(false);
     }
@@ -65,7 +79,9 @@ const EditBoilerModal: React.FC<Props> = ({ boiler, onClose, onSave, onEditBuild
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>✏️ Edit Gas Boiler</h2>
-          <button onClick={onClose} className="close-btn">&times;</button>
+          <button onClick={onClose} className="close-btn">
+            &times;
+          </button>
         </div>
 
         {error && <div className="error-message">{error}</div>}
@@ -80,7 +96,9 @@ const EditBoilerModal: React.FC<Props> = ({ boiler, onClose, onSave, onEditBuild
                 type="text"
                 name="name"
                 value={formData.name}
-                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, name: e.target.value }))
+                }
                 required
                 disabled={loading}
               />
@@ -126,7 +144,9 @@ const EditBoilerModal: React.FC<Props> = ({ boiler, onClose, onSave, onEditBuild
                 disabled
                 className="readonly-input"
               />
-              <span className="help-text">📊 Current operating power of the boiler (controlled by system)</span>
+              <span className="help-text">
+                📊 Current operating power of the boiler (controlled by system)
+              </span>
             </div>
           </div>
 
@@ -140,7 +160,8 @@ const EditBoilerModal: React.FC<Props> = ({ boiler, onClose, onSave, onEditBuild
               </div>
 
               <div className="info-notice">
-                ℹ️ Other building properties (area, temperature, U-values) can be changed through "Edit Building" option
+                ℹ️ Other building properties (area, temperature, U-values) can
+                be changed through "Edit Building" option
               </div>
 
               {onEditBuilding && buildingId && (
@@ -170,7 +191,7 @@ const EditBoilerModal: React.FC<Props> = ({ boiler, onClose, onSave, onEditBuild
               className="btn-primary"
               disabled={loading || !formData.name.trim()}
             >
-              {loading ? 'Saving...' : 'Save'}
+              {loading ? "Saving..." : "Save"}
             </button>
           </div>
         </form>

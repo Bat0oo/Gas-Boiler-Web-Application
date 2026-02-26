@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -9,10 +9,10 @@ import {
   Tooltip,
   Legend,
   Filler,
-} from 'chart.js';
-import { Line } from 'react-chartjs-2';
-import { HeatLossDataPoint } from '../../types/chartstypes';
-import { formatChartLabel } from '../../utils/chartUtils';
+} from "chart.js";
+import { Line } from "react-chartjs-2";
+import { HeatLossDataPoint } from "../../types/chartstypes";
+import { formatChartLabel } from "../../utils/chartUtils";
 
 ChartJS.register(
   CategoryScale,
@@ -22,7 +22,7 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  Filler
+  Filler,
 );
 
 interface HeatLossChartProps {
@@ -40,10 +40,10 @@ const HeatLossChart: React.FC<HeatLossChartProps> = ({
     labels: data.map((d) => formatChartLabel(d.timestamp)),
     datasets: [
       {
-        label: 'Heat Loss',
+        label: "Heat Loss",
         data: data.map((d) => d.heatLossKw),
-        borderColor: 'rgb(245, 158, 11)',
-        backgroundColor: 'rgba(245, 158, 11, 0.3)',
+        borderColor: "rgb(245, 158, 11)",
+        backgroundColor: "rgba(245, 158, 11, 0.3)",
         borderWidth: 2,
         tension: 0.4,
         fill: true,
@@ -59,7 +59,7 @@ const HeatLossChart: React.FC<HeatLossChartProps> = ({
     plugins: {
       legend: {
         display: showLegend,
-        position: 'top' as const,
+        position: "top" as const,
       },
       title: {
         display: false,
@@ -67,7 +67,7 @@ const HeatLossChart: React.FC<HeatLossChartProps> = ({
       tooltip: {
         callbacks: {
           label: function (context: any) {
-            return 'Heat Loss: ' + context.parsed.y.toFixed(2) + ' kW';
+            return "Heat Loss: " + context.parsed.y.toFixed(2) + " kW";
           },
         },
       },
@@ -82,10 +82,10 @@ const HeatLossChart: React.FC<HeatLossChartProps> = ({
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Heat Loss (kW)',
+          text: "Heat Loss (kW)",
         },
         grid: {
-          color: 'rgba(0, 0, 0, 0.05)',
+          color: "rgba(0, 0, 0, 0.05)",
         },
       },
     },

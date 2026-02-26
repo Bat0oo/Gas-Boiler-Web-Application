@@ -1,4 +1,4 @@
-import apiClient from './apiService';
+import apiClient from "./apiService";
 
 export interface SystemParameters {
   id: number;
@@ -9,7 +9,7 @@ export interface SystemParameters {
   outdoorDesignTemp: number;
   groundTemp: number;
   gasPricePerKwh: number;
-  windowToWallRatio: number;  
+  windowToWallRatio: number;
   safetyFactor: number;
   defaultBoilerEfficiency: number;
 
@@ -29,7 +29,7 @@ export interface UpdateSystemParametersDto {
   outdoorDesignTemp: number;
   groundTemp: number;
   gasPricePerKwh: number;
-  windowToWallRatio: number;  
+  windowToWallRatio: number;
   safetyFactor: number;
   defaultBoilerEfficiency: number;
 
@@ -39,17 +39,18 @@ export interface UpdateSystemParametersDto {
 }
 
 export const systemParametersService = {
-
   async getParameters(): Promise<SystemParameters> {
-    const response = await apiClient.get<SystemParameters>('/systemparameters');
+    const response = await apiClient.get<SystemParameters>("/systemparameters");
     return response.data;
   },
 
-  async updateParameters(params: UpdateSystemParametersDto): Promise<SystemParameters> {
-    const response = await apiClient.put<{ message: string; data: SystemParameters }>(
-      '/systemparameters',
-      params
-    );
+  async updateParameters(
+    params: UpdateSystemParametersDto,
+  ): Promise<SystemParameters> {
+    const response = await apiClient.put<{
+      message: string;
+      data: SystemParameters;
+    }>("/systemparameters", params);
     return response.data.data;
   },
 };

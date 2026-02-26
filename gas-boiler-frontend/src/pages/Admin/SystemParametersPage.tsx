@@ -1,38 +1,42 @@
-import React, { useEffect, useState } from 'react';
-import Navbar from '../../components/Navbar';
-import { useAuth } from '../../context/AuthContext';
-import { systemParametersService, SystemParameters } from '../../services/systemParametersService';
-import './SystemParametersPage.css';
-import { historicalDataService } from '../../services/historicalDataService';
+import React, { useEffect, useState } from "react";
+import Navbar from "../../components/Navbar";
+import { useAuth } from "../../context/AuthContext";
+import {
+  systemParametersService,
+  SystemParameters,
+} from "../../services/systemParametersService";
+import "./SystemParametersPage.css";
+import { historicalDataService } from "../../services/historicalDataService";
 
 const SystemParametersPage: React.FC = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const [params, setParams] = useState<SystemParameters | null>(null);
 
-  const [wallUValue, setWallUValue] = useState('');
-  const [windowUValue, setWindowUValue] = useState('');
-  const [ceilingUValue, setCeilingUValue] = useState('');
-  const [floorUValue, setFloorUValue] = useState('');
-  const [outdoorDesignTemp, setOutdoorDesignTemp] = useState('');
-  const [groundTemp, setGroundTemp] = useState('');
-  const [gasPricePerKwh, setGasPricePerKwh] = useState('');
-  const [windowToWallRatio, setWindowToWallRatio] = useState('');
-  const [safetyFactor, setSafetyFactor] = useState('');
-  const [defaultBoilerEfficiency, setDefaultBoilerEfficiency] = useState('');
+  const [wallUValue, setWallUValue] = useState("");
+  const [windowUValue, setWindowUValue] = useState("");
+  const [ceilingUValue, setCeilingUValue] = useState("");
+  const [floorUValue, setFloorUValue] = useState("");
+  const [outdoorDesignTemp, setOutdoorDesignTemp] = useState("");
+  const [groundTemp, setGroundTemp] = useState("");
+  const [gasPricePerKwh, setGasPricePerKwh] = useState("");
+  const [windowToWallRatio, setWindowToWallRatio] = useState("");
+  const [safetyFactor, setSafetyFactor] = useState("");
+  const [defaultBoilerEfficiency, setDefaultBoilerEfficiency] = useState("");
 
-  const [thermalMassCoefficient, setThermalMassCoefficient] = useState('');
-  const [outdoorInfluenceFactor, setOutdoorInfluenceFactor] = useState('');
-  const [temperatureTimeStepSeconds, setTemperatureTimeStepSeconds] = useState('');
+  const [thermalMassCoefficient, setThermalMassCoefficient] = useState("");
+  const [outdoorInfluenceFactor, setOutdoorInfluenceFactor] = useState("");
+  const [temperatureTimeStepSeconds, setTemperatureTimeStepSeconds] =
+    useState("");
 
   // Historical data states
   const [readingsCount, setReadingsCount] = useState<number>(0);
   const [isSeeding, setIsSeeding] = useState(false);
-  const [seedMessage, setSeedMessage] = useState('');
+  const [seedMessage, setSeedMessage] = useState("");
 
   useEffect(() => {
     loadParameters();
@@ -56,13 +60,19 @@ const SystemParametersPage: React.FC = () => {
       setSafetyFactor(data.safetyFactor.toString());
       setDefaultBoilerEfficiency(data.defaultBoilerEfficiency.toString());
 
-      setThermalMassCoefficient(data.thermalMassCoefficient?.toString() || '1200');
-      setOutdoorInfluenceFactor(data.outdoorInfluenceFactor?.toString() || '0.15');
-      setTemperatureTimeStepSeconds(data.temperatureTimeStepSeconds?.toString() || '60');
+      setThermalMassCoefficient(
+        data.thermalMassCoefficient?.toString() || "1200",
+      );
+      setOutdoorInfluenceFactor(
+        data.outdoorInfluenceFactor?.toString() || "0.15",
+      );
+      setTemperatureTimeStepSeconds(
+        data.temperatureTimeStepSeconds?.toString() || "60",
+      );
 
-      setError('');
+      setError("");
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to load parameters');
+      setError(err.response?.data?.message || "Failed to load parameters");
     } finally {
       setLoading(false);
     }
@@ -73,17 +83,17 @@ const SystemParametersPage: React.FC = () => {
       const count = await historicalDataService.getReadingsCount(user!.token);
       setReadingsCount(count);
     } catch (err) {
-      console.error('Error loading readings count:', err);
+      console.error("Error loading readings count:", err);
     }
   };
 
   const handleGenerateTestData = async () => {
-    if (!window.confirm('Generate 30 days of test data for all buildings?')) {
+    if (!window.confirm("Generate 30 days of test data for all buildings?")) {
       return;
     }
 
     setIsSeeding(true);
-    setSeedMessage('');
+    setSeedMessage("");
 
     try {
       const response = await historicalDataService.seedData(user!.token, 30);
@@ -98,8 +108,8 @@ const SystemParametersPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
     setSaving(true);
 
     try {
@@ -114,7 +124,7 @@ const SystemParametersPage: React.FC = () => {
         windowToWallRatio: parseFloat(windowToWallRatio),
         safetyFactor: parseFloat(safetyFactor),
         defaultBoilerEfficiency: parseFloat(defaultBoilerEfficiency),
-        
+
         // ⭐ NEW THERMODYNAMICS PARAMETERS
         thermalMassCoefficient: parseFloat(thermalMassCoefficient),
         outdoorInfluenceFactor: parseFloat(outdoorInfluenceFactor),
@@ -122,11 +132,11 @@ const SystemParametersPage: React.FC = () => {
       });
 
       setParams(updated);
-      setSuccess('✅ Parameters successfully updated!');
+      setSuccess("✅ Parameters successfully updated!");
 
-      setTimeout(() => setSuccess(''), 5000);
+      setTimeout(() => setSuccess(""), 5000);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to update parameters');
+      setError(err.response?.data?.message || "Failed to update parameters");
     } finally {
       setSaving(false);
     }
@@ -144,14 +154,20 @@ const SystemParametersPage: React.FC = () => {
       setWindowToWallRatio(params.windowToWallRatio.toString());
       setSafetyFactor(params.safetyFactor.toString());
       setDefaultBoilerEfficiency(params.defaultBoilerEfficiency.toString());
-      
+
       // ⭐ NEW THERMODYNAMICS PARAMETERS
-      setThermalMassCoefficient(params.thermalMassCoefficient?.toString() || '1200');
-      setOutdoorInfluenceFactor(params.outdoorInfluenceFactor?.toString() || '0.15');
-      setTemperatureTimeStepSeconds(params.temperatureTimeStepSeconds?.toString() || '60');
-      
-      setError('');
-      setSuccess('');
+      setThermalMassCoefficient(
+        params.thermalMassCoefficient?.toString() || "1200",
+      );
+      setOutdoorInfluenceFactor(
+        params.outdoorInfluenceFactor?.toString() || "0.15",
+      );
+      setTemperatureTimeStepSeconds(
+        params.temperatureTimeStepSeconds?.toString() || "60",
+      );
+
+      setError("");
+      setSuccess("");
     }
   };
 
@@ -185,7 +201,10 @@ const SystemParametersPage: React.FC = () => {
           <div className="page-header">
             <h1>⚙️ System Parameters</h1>
             <div className="metadata-inline">
-              <span>Last updated: {new Date(params.lastUpdated).toLocaleString('sr-RS')}</span>
+              <span>
+                Last updated:{" "}
+                {new Date(params.lastUpdated).toLocaleString("sr-RS")}
+              </span>
               <span>•</span>
               <span>User: {params.updatedBy}</span>
             </div>
@@ -195,10 +214,12 @@ const SystemParametersPage: React.FC = () => {
           {success && <div className="alert alert-success">{success}</div>}
 
           <form onSubmit={handleSubmit} className="params-form">
-
             {/* U-VALUES SECTION */}
             <div className="params-grid">
-              <div className="param-item" data-tooltip="Heat transfer coefficient through wall. Lower value = better insulation.">
+              <div
+                className="param-item"
+                data-tooltip="Heat transfer coefficient through wall. Lower value = better insulation."
+              >
                 <label>
                   <span className="param-icon">🏗️</span>
                   <span className="param-name">Wall</span>
@@ -220,7 +241,10 @@ const SystemParametersPage: React.FC = () => {
                 <span className="param-hint">0.3 - 1.5</span>
               </div>
 
-              <div className="param-item" data-tooltip="Heat transfer coefficient through window. Lower value = better window.">
+              <div
+                className="param-item"
+                data-tooltip="Heat transfer coefficient through window. Lower value = better window."
+              >
                 <label>
                   <span className="param-icon">🪟</span>
                   <span className="param-name">Window</span>
@@ -242,7 +266,10 @@ const SystemParametersPage: React.FC = () => {
                 <span className="param-hint">1.1 - 5.8</span>
               </div>
 
-              <div className="param-item" data-tooltip="Heat transfer coefficient through ceiling/roof.">
+              <div
+                className="param-item"
+                data-tooltip="Heat transfer coefficient through ceiling/roof."
+              >
                 <label>
                   <span className="param-icon">🏠</span>
                   <span className="param-name">Ceiling</span>
@@ -264,7 +291,10 @@ const SystemParametersPage: React.FC = () => {
                 <span className="param-hint">0.15 - 2.0</span>
               </div>
 
-              <div className="param-item" data-tooltip="Heat transfer coefficient through floor.">
+              <div
+                className="param-item"
+                data-tooltip="Heat transfer coefficient through floor."
+              >
                 <label>
                   <span className="param-icon">📐</span>
                   <span className="param-name">Floor</span>
@@ -289,7 +319,10 @@ const SystemParametersPage: React.FC = () => {
 
             {/* TEMPERATURES & PRICES */}
             <div className="params-grid params-grid-3">
-              <div className="param-item" data-tooltip="Coldest expected outdoor temperature in winter. Used for heating system sizing.">
+              <div
+                className="param-item"
+                data-tooltip="Coldest expected outdoor temperature in winter. Used for heating system sizing."
+              >
                 <label>
                   <span className="param-icon">❄️</span>
                   <span className="param-name">Outdoor temp.</span>
@@ -311,7 +344,10 @@ const SystemParametersPage: React.FC = () => {
                 <span className="param-hint">-30 to 5</span>
               </div>
 
-              <div className="param-item" data-tooltip="Average ground temperature.">
+              <div
+                className="param-item"
+                data-tooltip="Average ground temperature."
+              >
                 <label>
                   <span className="param-icon">🌍</span>
                   <span className="param-name">Ground temp.</span>
@@ -333,7 +369,10 @@ const SystemParametersPage: React.FC = () => {
                 <span className="param-hint">0 - 20</span>
               </div>
 
-              <div className="param-item" data-tooltip="Natural gas price per kilowatt-hour.">
+              <div
+                className="param-item"
+                data-tooltip="Natural gas price per kilowatt-hour."
+              >
                 <label>
                   <span className="param-icon">💰</span>
                   <span className="param-name">Gas price</span>
@@ -358,7 +397,10 @@ const SystemParametersPage: React.FC = () => {
 
             {/* BUILDING PARAMETERS */}
             <div className="params-grid params-grid-3">
-              <div className="param-item" data-tooltip="Window area ratio relative to wall.">
+              <div
+                className="param-item"
+                data-tooltip="Window area ratio relative to wall."
+              >
                 <label>
                   <span className="param-icon">🪟</span>
                   <span className="param-name">Window ratio</span>
@@ -380,7 +422,10 @@ const SystemParametersPage: React.FC = () => {
                 <span className="param-hint">0.10 - 0.40</span>
               </div>
 
-              <div className="param-item" data-tooltip="Safety factor for heating system design.">
+              <div
+                className="param-item"
+                data-tooltip="Safety factor for heating system design."
+              >
                 <label>
                   <span className="param-icon">🛡️</span>
                   <span className="param-name">Safety factor</span>
@@ -402,7 +447,10 @@ const SystemParametersPage: React.FC = () => {
                 <span className="param-hint">1.00 - 1.50</span>
               </div>
 
-              <div className="param-item" data-tooltip="Default boiler efficiency for cost calculations.">
+              <div
+                className="param-item"
+                data-tooltip="Default boiler efficiency for cost calculations."
+              >
                 <label>
                   <span className="param-icon">⚙️</span>
                   <span className="param-name">Boiler efficiency</span>
@@ -427,7 +475,10 @@ const SystemParametersPage: React.FC = () => {
 
             {/* ⭐ NEW THERMODYNAMICS PARAMETERS SECTION */}
             <div className="params-grid params-grid-3 thermodynamics-section">
-              <div className="param-item" data-tooltip="Thermal mass coefficient (J/m³·K). Higher = building heats/cools slower. Typical: 1200 (light), 2000 (medium), 3500 (heavy concrete).">
+              <div
+                className="param-item"
+                data-tooltip="Thermal mass coefficient (J/m³·K). Higher = building heats/cools slower. Typical: 1200 (light), 2000 (medium), 3500 (heavy concrete)."
+              >
                 <label>
                   <span className="param-icon">🧱</span>
                   <span className="param-name">Thermal mass</span>
@@ -449,7 +500,10 @@ const SystemParametersPage: React.FC = () => {
                 <span className="param-hint">500 - 5000</span>
               </div>
 
-              <div className="param-item" data-tooltip="Outdoor influence factor (0-1). How much outdoor temperature affects indoor. Typical: 0.15 (well insulated), 0.30 (poorly insulated).">
+              <div
+                className="param-item"
+                data-tooltip="Outdoor influence factor (0-1). How much outdoor temperature affects indoor. Typical: 0.15 (well insulated), 0.30 (poorly insulated)."
+              >
                 <label>
                   <span className="param-icon">🌡️</span>
                   <span className="param-name">Outdoor influence</span>
@@ -471,7 +525,10 @@ const SystemParametersPage: React.FC = () => {
                 <span className="param-hint">0.05 - 0.50</span>
               </div>
 
-              <div className="param-item" data-tooltip="Time step for temperature calculations (seconds). P-Controller runs at this interval. Typical: 60 seconds.">
+              <div
+                className="param-item"
+                data-tooltip="Time step for temperature calculations (seconds). P-Controller runs at this interval. Typical: 60 seconds."
+              >
                 <label>
                   <span className="param-icon">⏱️</span>
                   <span className="param-name">Time step</span>
@@ -481,7 +538,9 @@ const SystemParametersPage: React.FC = () => {
                   <input
                     type="number"
                     value={temperatureTimeStepSeconds}
-                    onChange={(e) => setTemperatureTimeStepSeconds(e.target.value)}
+                    onChange={(e) =>
+                      setTemperatureTimeStepSeconds(e.target.value)
+                    }
                     step="10"
                     min="30"
                     max="300"
@@ -508,90 +567,115 @@ const SystemParametersPage: React.FC = () => {
                 className="btn btn-primary"
                 disabled={saving}
               >
-                {saving ? '⏳ Saving...' : '💾 Save'}
+                {saving ? "⏳ Saving..." : "💾 Save"}
               </button>
             </div>
           </form>
 
           {/* Historical Data Management Section */}
-          <hr style={{ margin: '2rem 0', border: 'none', borderTop: '2px solid #e5e7eb' }} />
-          
-          <div style={{
-            background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
-            padding: '1.5rem',
-            borderRadius: '12px',
-            border: '2px solid #38bdf8',
-            marginTop: '2rem'
-          }}>
-            <h3 style={{ 
-              margin: '0 0 1rem 0', 
-              color: '#0c4a6e', 
-              fontSize: '1.3rem',
-              fontWeight: '700'
-            }}>
+          <hr
+            style={{
+              margin: "2rem 0",
+              border: "none",
+              borderTop: "2px solid #e5e7eb",
+            }}
+          />
+
+          <div
+            style={{
+              background: "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)",
+              padding: "1.5rem",
+              borderRadius: "12px",
+              border: "2px solid #38bdf8",
+              marginTop: "2rem",
+            }}
+          >
+            <h3
+              style={{
+                margin: "0 0 1rem 0",
+                color: "#0c4a6e",
+                fontSize: "1.3rem",
+                fontWeight: "700",
+              }}
+            >
               📊 Historical Data Management
             </h3>
-            
-            <p style={{ 
-              margin: '0 0 1rem 0', 
-              color: '#475569',
-              fontSize: '1rem'
-            }}>
-              <strong>Current readings in database:</strong> {readingsCount.toLocaleString()}
+
+            <p
+              style={{
+                margin: "0 0 1rem 0",
+                color: "#475569",
+                fontSize: "1rem",
+              }}
+            >
+              <strong>Current readings in database:</strong>{" "}
+              {readingsCount.toLocaleString()}
             </p>
-            
-            <div style={{ 
-              background: 'white', 
-              padding: '1rem', 
-              borderRadius: '8px',
-              marginBottom: '1rem',
-              border: '1px solid #bae6fd'
-            }}>
-              <p style={{ 
-                margin: '0 0 1rem 0', 
-                color: '#64748b', 
-                fontSize: '0.9rem',
-                lineHeight: '1.6'
-              }}>
-                ⚠️ <strong>Generate Test Data:</strong> Creates 30 days of historical readings.
+
+            <div
+              style={{
+                background: "white",
+                padding: "1rem",
+                borderRadius: "8px",
+                marginBottom: "1rem",
+                border: "1px solid #bae6fd",
+              }}
+            >
+              <p
+                style={{
+                  margin: "0 0 1rem 0",
+                  color: "#64748b",
+                  fontSize: "0.9rem",
+                  lineHeight: "1.6",
+                }}
+              >
+                ⚠️ <strong>Generate Test Data:</strong> Creates 30 days of
+                historical readings.
               </p>
-              
+
               <button
                 onClick={handleGenerateTestData}
                 disabled={isSeeding}
                 style={{
-                  backgroundColor: isSeeding ? '#94a3b8' : '#3b82f6',
-                  color: 'white',
-                  padding: '0.75rem 1.5rem',
-                  borderRadius: '8px',
-                  border: 'none',
-                  fontSize: '1rem',
-                  fontWeight: '600',
-                  cursor: isSeeding ? 'not-allowed' : 'pointer',
-                  transition: 'all 0.2s',
-                  width: '100%'
+                  backgroundColor: isSeeding ? "#94a3b8" : "#3b82f6",
+                  color: "white",
+                  padding: "0.75rem 1.5rem",
+                  borderRadius: "8px",
+                  border: "none",
+                  fontSize: "1rem",
+                  fontWeight: "600",
+                  cursor: isSeeding ? "not-allowed" : "pointer",
+                  transition: "all 0.2s",
+                  width: "100%",
                 }}
               >
-                {isSeeding ? '⏳ Generating...' : '🔄 Generate 30 Days of Test Data'}
+                {isSeeding
+                  ? "⏳ Generating..."
+                  : "🔄 Generate 30 Days of Test Data"}
               </button>
-              
+
               {seedMessage && (
-                <div style={{
-                  marginTop: '1rem',
-                  padding: '0.75rem',
-                  borderRadius: '6px',
-                  background: seedMessage.startsWith('✅') ? '#dcfce7' : '#fee2e2',
-                  color: seedMessage.startsWith('✅') ? '#166534' : '#991b1b',
-                  fontSize: '0.9rem',
-                  fontWeight: '500',
-                  border: seedMessage.startsWith('✅') ? '1px solid #86efac' : '1px solid #fca5a5'
-                }}>
+                <div
+                  style={{
+                    marginTop: "1rem",
+                    padding: "0.75rem",
+                    borderRadius: "6px",
+                    background: seedMessage.startsWith("✅")
+                      ? "#dcfce7"
+                      : "#fee2e2",
+                    color: seedMessage.startsWith("✅") ? "#166534" : "#991b1b",
+                    fontSize: "0.9rem",
+                    fontWeight: "500",
+                    border: seedMessage.startsWith("✅")
+                      ? "1px solid #86efac"
+                      : "1px solid #fca5a5",
+                  }}
+                >
                   {seedMessage}
                 </div>
               )}
             </div>
           </div>
-
         </div>
       </div>
     </>

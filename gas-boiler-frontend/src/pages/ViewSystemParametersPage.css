@@ -203,7 +203,7 @@
   .params-grid-4 {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .params-grid-3 {
     grid-template-columns: repeat(2, 1fr);
   }

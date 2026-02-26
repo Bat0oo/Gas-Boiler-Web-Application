@@ -127,13 +127,16 @@
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+  transition:
+    opacity 0.3s,
+    visibility 0.3s,
+    transform 0.3s;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 /* Tooltip arrow */
 .param-item::before {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 100%;
   left: 50%;
@@ -143,7 +146,9 @@
   z-index: 1001;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s, visibility 0.3s;
+  transition:
+    opacity 0.3s,
+    visibility 0.3s;
 }
 
 /* Show tooltip on hover */
@@ -319,7 +324,7 @@
   .params-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .params-grid-3 {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -383,7 +388,7 @@
 }
 
 .thermodynamics-section::before {
-  content: '🔬 Thermodynamics Parameters (P-Controller)';
+  content: "🔬 Thermodynamics Parameters (P-Controller)";
   position: absolute;
   top: -12px;
   left: 16px;

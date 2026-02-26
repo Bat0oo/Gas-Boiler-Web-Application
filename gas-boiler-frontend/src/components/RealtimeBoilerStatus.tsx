@@ -1,6 +1,6 @@
-import React from 'react';
-import { useRealtimeBoilers } from '../hooks/useRealtimeBoilers';
-import './RealtimeBoilerStatus.css';
+import React from "react";
+import { useRealtimeBoilers } from "../hooks/useRealtimeBoilers";
+import "./RealtimeBoilerStatus.css";
 
 interface Props {
   token: string;
@@ -8,10 +8,17 @@ interface Props {
 }
 
 const RealtimeBoilerStatus: React.FC<Props> = ({ token, buildingIds }) => {
-  const { boilerPowers, temperatures, capacityWarnings, lastUpdate, isConnected } =
-    useRealtimeBoilers(token);
+  const {
+    boilerPowers,
+    temperatures,
+    capacityWarnings,
+    lastUpdate,
+    isConnected,
+  } = useRealtimeBoilers(token);
 
-  const filterByBuilding = <T extends { buildingId: number }>(map: Map<number, T>): Map<number, T> => {
+  const filterByBuilding = <T extends { buildingId: number }>(
+    map: Map<number, T>,
+  ): Map<number, T> => {
     if (!buildingIds || buildingIds.length === 0) return map;
     const filtered = new Map<number, T>();
     map.forEach((value, key) => {
@@ -26,16 +33,16 @@ const RealtimeBoilerStatus: React.FC<Props> = ({ token, buildingIds }) => {
 
   const getPowerColor = (power: number, maxPower: number) => {
     const percentage = (power / maxPower) * 100;
-    if (percentage > 80) return '#ef4444'; // Red
-    if (percentage > 50) return '#f59e0b'; // Orange
-    return '#10b981'; // Green
+    if (percentage > 80) return "#ef4444"; // Red
+    if (percentage > 50) return "#f59e0b"; // Orange
+    return "#10b981"; // Green
   };
 
   const getTempColor = (error: number) => {
     const absError = Math.abs(error);
-    if (absError < 0.5) return '#10b981'; // Green
-    if (absError < 2.0) return '#f59e0b'; // Orange
-    return '#ef4444'; // Red
+    if (absError < 0.5) return "#10b981"; // Green
+    if (absError < 2.0) return "#f59e0b"; // Orange
+    return "#ef4444"; // Red
   };
 
   return (
@@ -44,8 +51,10 @@ const RealtimeBoilerStatus: React.FC<Props> = ({ token, buildingIds }) => {
       <div className="realtime-header">
         <h3>⚡ Real-Time P-Controller Status</h3>
         <div className="realtime-indicators">
-          <span className={`connection-badge ${isConnected ? 'connected' : 'disconnected'}`}>
-            {isConnected ? '🟢 Live' : '🔴 Offline'}
+          <span
+            className={`connection-badge ${isConnected ? "connected" : "disconnected"}`}
+          >
+            {isConnected ? "🟢 Live" : "🔴 Offline"}
           </span>
           {lastUpdate && (
             <span className="last-update">
@@ -64,14 +73,22 @@ const RealtimeBoilerStatus: React.FC<Props> = ({ token, buildingIds }) => {
               <div key={temp.buildingId} className="temp-card">
                 <div className="temp-building">{temp.buildingName}</div>
                 <div className="temp-display">
-                  <span className="temp-current" style={{ color: getTempColor(temp.error) }}>
+                  <span
+                    className="temp-current"
+                    style={{ color: getTempColor(temp.error) }}
+                  >
                     {temp.temperature.toFixed(1)}°C
                   </span>
                   <span className="temp-arrow">→</span>
-                  <span className="temp-desired">{temp.desiredTemperature.toFixed(1)}°C</span>
+                  <span className="temp-desired">
+                    {temp.desiredTemperature.toFixed(1)}°C
+                  </span>
                 </div>
                 <div className="temp-details">
-                  <span>Error: {temp.error > 0 ? '+' : ''}{temp.error.toFixed(2)}°C</span>
+                  <span>
+                    Error: {temp.error > 0 ? "+" : ""}
+                    {temp.error.toFixed(2)}°C
+                  </span>
                   <span>Outside: {temp.outdoorTemperature.toFixed(1)}°C</span>
                 </div>
               </div>
@@ -97,17 +114,27 @@ const RealtimeBoilerStatus: React.FC<Props> = ({ token, buildingIds }) => {
                       className="power-bar"
                       style={{
                         width: `${Math.min(100, (boiler.newPower / boiler.maxPower) * 100)}%`,
-                        backgroundColor: getPowerColor(boiler.newPower, boiler.maxPower),
+                        backgroundColor: getPowerColor(
+                          boiler.newPower,
+                          boiler.maxPower,
+                        ),
                       }}
                     />
                   </div>
                   <div className="power-info">
-                    <span className="power-value">{boiler.newPower.toFixed(1)} kW</span>
-                    <span className="power-max">/ {boiler.maxPower.toFixed(1)} kW</span>
+                    <span className="power-value">
+                      {boiler.newPower.toFixed(1)} kW
+                    </span>
+                    <span className="power-max">
+                      / {boiler.maxPower.toFixed(1)} kW
+                    </span>
                     {Math.abs(boiler.newPower - boiler.oldPower) > 0.1 && (
                       <span className="power-change">
-                        {boiler.newPower > boiler.oldPower ? '↑' : '↓'}
-                        {Math.abs(boiler.newPower - boiler.oldPower).toFixed(1)} kW
+                        {boiler.newPower > boiler.oldPower ? "↑" : "↓"}
+                        {Math.abs(boiler.newPower - boiler.oldPower).toFixed(
+                          1,
+                        )}{" "}
+                        kW
                       </span>
                     )}
                   </div>
@@ -129,8 +156,14 @@ const RealtimeBoilerStatus: React.FC<Props> = ({ token, buildingIds }) => {
                 <div className="warning-content">
                   <div className="warning-building">{warning.buildingName}</div>
                   <div className="warning-details">
-                    <div>Required: <strong>{warning.requiredPower.toFixed(1)} kW</strong></div>
-                    <div>Available: <strong>{warning.availablePower.toFixed(1)} kW</strong></div>
+                    <div>
+                      Required:{" "}
+                      <strong>{warning.requiredPower.toFixed(1)} kW</strong>
+                    </div>
+                    <div>
+                      Available:{" "}
+                      <strong>{warning.availablePower.toFixed(1)} kW</strong>
+                    </div>
                     <div className="warning-deficit">
                       Deficit: <strong>{warning.deficit.toFixed(1)} kW</strong>
                     </div>
