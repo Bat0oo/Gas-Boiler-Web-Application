@@ -29,7 +29,6 @@ const UsersList: React.FC = () => {
 
     try {
       const response = await apiClient.get('/user');
-      console.log('✅ Loaded users:', response.data);
       setUsers(response.data);
       setError('');
     } catch (err: any) {
@@ -45,42 +44,27 @@ const UsersList: React.FC = () => {
   }, [user]);
 
   const handleBlockToggle = async (id: number, currentIsBlocked: boolean) => {
-    console.log(`🔄 Toggling block for user ${id}, current: ${currentIsBlocked ? 'Blocked' : 'Active'}`);
-
     setProcessingUserId(id);
 
     try {
       const endpoint = currentIsBlocked ? `/user/${id}/unblock` : `/user/${id}/block`;
-      console.log(`📡 POST ${endpoint}`);
 
-      const response = await apiClient.post(endpoint);
-      console.log('✅ API success:', response.data);
+      await apiClient.post(endpoint);
 
-      console.log('🔄 Method 1: Immediate optimistic update');
-      setUsers(prevUsers => {
-        const updated = prevUsers.map(u =>
-          u.id === id ? { ...u, isBlocked: !currentIsBlocked } : u
-        );
-        console.log('📊 Updated users state:', updated.find(u => u.id === id));
-        return updated;
-      });
+      setUsers(prevUsers =>
+        prevUsers.map(u => u.id === id ? { ...u, isBlocked: !currentIsBlocked } : u)
+      );
 
-      console.log('🔄 Method 2: Reloading from server in 500ms...');
       setTimeout(async () => {
         try {
           const freshResponse = await apiClient.get('/user');
-          console.log('✅ Fresh data:', freshResponse.data);
           setUsers(freshResponse.data);
-          console.log('✅ State updated from server');
         } catch (err) {
-          console.error('❌ Failed to reload:', err);
+          console.error('Failed to reload users:', err);
         }
       }, 500);
-
-      console.log('✅ Block toggle complete!');
     } catch (err: any) {
-      console.error('❌ Block toggle failed:', err);
-      console.error('❌ Response:', err.response?.data);
+      console.error('Block toggle failed:', err);
       alert(`Error: ${err.response?.data?.message || 'Unknown error'}`);
     } finally {
       setProcessingUserId(null);
@@ -199,7 +183,6 @@ const UsersList: React.FC = () => {
                         <td>
                           <span
                             className={u.isBlocked ? 'status blocked' : 'status active'}
-                            title={`DEBUG: isBlocked = ${u.isBlocked}`}
                           >
                             {u.isBlocked ? 'Blocked' : 'Active'}
                           </span>

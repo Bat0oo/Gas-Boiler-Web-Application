@@ -17,7 +17,6 @@ const AdminMap: React.FC = () => {
         <div className="map-section">
           <GasBoilerMap token={localStorage.getItem('token')!} />
         </div>
-
       </div>
     </>
   );
