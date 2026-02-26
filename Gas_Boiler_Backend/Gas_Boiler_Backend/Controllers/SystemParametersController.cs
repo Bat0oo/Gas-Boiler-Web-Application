@@ -19,7 +19,7 @@ namespace Gas_Boiler_Backend.Controllers
         }
 
         [HttpGet]
-        [Authorize] // All users can read
+        [Authorize]
         public async Task<ActionResult<SystemParametersResponseDto>> GetParameters()
         {
             try
@@ -40,7 +40,6 @@ namespace Gas_Boiler_Backend.Controllers
         {
             try
             {
-                // Get admin username from JWT token
                 var username = User.FindFirst(ClaimTypes.Name)?.Value ?? "Unknown";
 
                 var updated = await _service.UpdateParametersAsync(updateDto, username);
