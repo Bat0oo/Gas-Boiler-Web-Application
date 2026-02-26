@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Security.Claims;
 
 namespace Gas_Boiler_Backend.Models
 {
@@ -40,7 +39,7 @@ namespace Gas_Boiler_Backend.Models
         public int BuildingObjectId { get; set; }
 
         [Required]
-        public BuildingObject BuildingObject { get; set; } = null!; 
+        public BuildingObject BuildingObject { get; set; } = null!;
 
         public ICollection<HistoricalData> HistoricalData { get; set; } = new List<HistoricalData>();
     }

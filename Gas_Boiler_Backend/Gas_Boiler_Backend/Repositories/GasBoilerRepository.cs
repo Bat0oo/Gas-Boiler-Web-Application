@@ -31,7 +31,7 @@ namespace Gas_Boiler_Backend.Repositories
         public async Task<IEnumerable<GasBoiler>> GetAllAsync()
         {
             return await _context.GasBoilers
-                .Include(g => g.BuildingObject) //
+                .Include(g => g.BuildingObject)
                 .Include(gb => gb.User)
                 .ToListAsync();
         }
@@ -48,7 +48,7 @@ namespace Gas_Boiler_Backend.Repositories
         {
             return await _context.GasBoilers
                 .Include(g => g.BuildingObject)
-                .Include(gb => gb.User) //
+                .Include(gb => gb.User)
                 .FirstOrDefaultAsync(g => g.Id == id);
         }
 

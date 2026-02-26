@@ -4,7 +4,6 @@ namespace Gas_Boiler_Backend.Interfaces
 {
     public interface IAlarmService
     {
-        // Alarm CRUD
         Task<AlarmDto?> GetByIdAsync(int id, int userId, bool isAdmin);
         Task<IEnumerable<AlarmDto>> GetAllAsync(AlarmFiltersDto? filters, int userId, bool isAdmin);
         Task<IEnumerable<AlarmDto>> GetActiveAlarmsAsync(int userId, bool isAdmin);

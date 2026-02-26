@@ -5,10 +5,10 @@ namespace Gas_Boiler_Backend.Interfaces
     public interface IBuildingObjectRepository
     {
         Task<BuildingObject?> GetByIdAsync(int id);
-        Task<BuildingObject?> GetByIdWithBoilersAsync(int id);  // Include related boilers
+        Task<BuildingObject?> GetByIdWithBoilersAsync(int id);
         Task<IEnumerable<BuildingObject>> GetAllAsync();
         Task<IEnumerable<BuildingObject>> GetByUserIdAsync(int userId);
-        Task<IEnumerable<BuildingObject>> GetByUserIdWithBoilersAsync(int userId);  // Include boilers
+        Task<IEnumerable<BuildingObject>> GetByUserIdWithBoilersAsync(int userId);
         Task AddAsync(BuildingObject buildingObject);
         Task UpdateAsync(BuildingObject buildingObject);
         Task DeleteAsync(BuildingObject buildingObject);
