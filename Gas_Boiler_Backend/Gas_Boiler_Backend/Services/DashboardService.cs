@@ -1,7 +1,5 @@
 ﻿using Gas_Boiler_Backend.DTO.Dashboard;
 using Gas_Boiler_Backend.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace Gas_Boiler_Backend.Services
 {
@@ -80,7 +78,7 @@ namespace Gas_Boiler_Backend.Services
 
             // Add recent buildings (last 5)
             var recentBuildings = buildings
-                .OrderByDescending(b => b.Id) // Assuming higher ID = more recent
+                .OrderByDescending(b => b.Id)
                 .Take(5);
 
             foreach (var building in recentBuildings)
