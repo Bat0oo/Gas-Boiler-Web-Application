@@ -17,21 +17,21 @@ namespace Gas_Boiler_Backend.Repositories
         public async Task<BuildingObject?> GetByIdAsync(int id)
         {
             return await _context.BuildingObjects
-                .Include(b => b.GasBoilers)  
+                .Include(b => b.GasBoilers)
                 .FirstOrDefaultAsync(b => b.Id == id);
         }
 
         public async Task<BuildingObject?> GetByIdWithBoilersAsync(int id)
         {
             return await _context.BuildingObjects
-                .Include(b => b.GasBoilers)  // Include all boilers in this building
+                .Include(b => b.GasBoilers)
                 .FirstOrDefaultAsync(b => b.Id == id);
         }
 
         public async Task<IEnumerable<BuildingObject>> GetAllAsync()
         {
             return await _context.BuildingObjects
-                .Include(b => b.GasBoilers)  // Include boiler count
+                .Include(b => b.GasBoilers)
                 .ToListAsync();
         }
 
