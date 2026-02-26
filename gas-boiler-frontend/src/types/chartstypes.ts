@@ -15,8 +15,8 @@ export interface PowerDataPoint {
   requiredPower: number;
   availablePower: number;
   hasCapacity: boolean;
-  buildingId?: number; 
-  buildingName?: string; 
+  buildingId?: number;
+  buildingName?: string;
 }
 
 export interface CostDataPoint {
@@ -29,7 +29,7 @@ export interface HeatLossDataPoint {
   heatLossKw: number;
 }
 
-export type DateRangeOption = 'last7days' | 'last30days' | 'custom';
+export type DateRangeOption = "last7days" | "last30days" | "custom";
 
 export interface ChartFilters {
   buildingId: number | null;

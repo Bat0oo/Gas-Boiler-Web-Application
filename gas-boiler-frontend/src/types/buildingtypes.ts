@@ -16,7 +16,7 @@ export interface Building {
   ceilingArea: number;
   floorArea: number;
   boilerCount: number;
-  
+
   desiredTemperature: number;
   indoorTemperature?: number;
   currentTemperature?: number;
@@ -24,7 +24,7 @@ export interface Building {
 
 export interface BuildingDetail extends Building {
   gasBoilers: BuildingBoiler[];
-  
+
   currentTemperature?: number;
   weatherDescription?: string;
   weatherIcon?: string;
@@ -46,11 +46,11 @@ export interface BuildingMapPoint {
   boilerCount: number;
   totalMaxPower: number;
   totalCurrentPower: number;
-  
+
   desiredTemperature: number;
   indoorTemperature?: number;
   currentTemperature?: number;
-  
+
   weatherDescription?: string;
 }
 
@@ -86,29 +86,29 @@ export interface HeatLossCalculation {
   windowHeatLoss: number;
   ceilingHeatLoss: number;
   floorHeatLoss: number;
-  
+
   // Total heat loss
   totalHeatLossBeforeSafety: number;
   safetyFactor: number;
   totalHeatLoss: number;
   requiredPowerKw: number;
-  
+
   // Temperature data
   indoorTemperature: number;
   outdoorTemperature: number;
   groundTemperature: number;
   temperatureDifference: number;
-  
+
   // Cost calculations
   dailyEnergyKwh: number;
   dailyCostEur: number;
   monthlyCostEur: number;
   annualCostEur: number;
-  
+
   // Efficiency & Price
   boilerEfficiency: number;
   gasPricePerKwh: number;
-  
+
   // Capacity
   currentBoilerCapacityKw: number;
   hasSufficientCapacity: boolean;

@@ -14,7 +14,7 @@ namespace Gas_Boiler_Backend.Data
         public DbSet<BuildingObject> BuildingObjects { get; set; }
         public DbSet<HistoricalData> HistoricalData { get; set; }
         public DbSet<Alarm> Alarms { get; set; }
-        public DbSet<AlarmSettings> AlarmSettings { get; set; }  
+        public DbSet<AlarmSettings> AlarmSettings { get; set; }
         public DbSet<SystemParameters> SystemParameters { get; set; }
         public DbSet<BuildingReading> BuildingReadings { get; set; }
         public DbSet<DataManagementSettings> DataManagementSettings { get; set; }
@@ -137,6 +137,7 @@ namespace Gas_Boiler_Backend.Data
             );
 
             // Admin user seed data
+            // TODO: DO THIS MORE ELEGANT
             string adminPasswordHash = "$2a$12$xYluxINGkkohipBPd/xZLe2cJl2Y7dSomJAu5WT8MJRkd8u6J6nJW";
             modelBuilder.Entity<User>().HasData(
                 new User

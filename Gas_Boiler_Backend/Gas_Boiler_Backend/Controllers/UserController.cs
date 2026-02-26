@@ -1,7 +1,6 @@
 ﻿using Gas_Boiler_Backend.DTO.User;
 using Gas_Boiler_Backend.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 

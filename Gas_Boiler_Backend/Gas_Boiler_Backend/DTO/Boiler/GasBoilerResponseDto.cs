@@ -16,7 +16,6 @@
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
-        // Full building details (for backward compatibility)
         public BuildingObjectDto? BuildingObject { get; set; }
     }
 }

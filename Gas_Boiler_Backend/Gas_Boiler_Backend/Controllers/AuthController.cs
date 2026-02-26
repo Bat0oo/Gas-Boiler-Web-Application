@@ -1,6 +1,5 @@
 ﻿using Gas_Boiler_Backend.DTO.Auth;
 using Gas_Boiler_Backend.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gas_Boiler_Backend.Controllers

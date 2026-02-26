@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import Navbar from '../../components/Navbar';
-import { useAuth } from '../../context/AuthContext';
-import apiClient from '../../services/apiService';
-import './Profile.css';
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import Navbar from "../../components/Navbar";
+import { useAuth } from "../../context/AuthContext";
+import apiClient from "../../services/apiService";
+import "./Profile.css";
 
 interface FormData {
   username: string;
@@ -21,16 +21,16 @@ const Profile: React.FC = () => {
   const userIdToEdit = id ? parseInt(id) : user?.userId;
 
   const [formData, setFormData] = useState<FormData>({
-    username: '',
-    email: '',
-    currentPassword: '',
-    newPassword: '',
-    role: '',
+    username: "",
+    email: "",
+    currentPassword: "",
+    newPassword: "",
+    role: "",
     isBlocked: false,
   });
 
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (!userIdToEdit) return;
@@ -42,23 +42,23 @@ const Profile: React.FC = () => {
         setFormData({
           username: data.username,
           email: data.email,
-          currentPassword: '',
-          newPassword: '',
+          currentPassword: "",
+          newPassword: "",
           role: data.role,
           isBlocked: data.isBlocked ?? false,
         });
       })
-      .catch(() => setError('Failed to load profile.'));
+      .catch(() => setError("Failed to load profile."));
   }, [userIdToEdit]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const target = e.target as HTMLInputElement | HTMLSelectElement;
     const name = target.name;
     let value: string | boolean = target.value;
 
-    if (target instanceof HTMLInputElement && target.type === 'checkbox') {
+    if (target instanceof HTMLInputElement && target.type === "checkbox") {
       value = target.checked;
     }
 
@@ -70,18 +70,18 @@ const Profile: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setMessage('');
-    setError('');
+    setMessage("");
+    setError("");
 
     try {
       await apiClient.put(`/user/${userIdToEdit}`, formData);
-      setMessage('Profile successfully updated.');
+      setMessage("Profile successfully updated.");
 
-      if (id && user?.role === 'Admin') {
-        setTimeout(() => navigate('/admin/users'), 1500);
+      if (id && user?.role === "Admin") {
+        setTimeout(() => navigate("/admin/users"), 1500);
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Error updating profile.');
+      setError(err.response?.data?.message || "Error updating profile.");
     }
   };
 
@@ -91,9 +91,9 @@ const Profile: React.FC = () => {
       <div className="profile-container">
         <div className="profile-card">
           <h2>
-            {id && user?.role === 'Admin'
+            {id && user?.role === "Admin"
               ? `Edit user profile #${id}`
-              : 'My Profile'}
+              : "My Profile"}
           </h2>
 
           {message && <div className="alert success">{message}</div>}
@@ -136,7 +136,7 @@ const Profile: React.FC = () => {
               placeholder="Enter new password"
             />
 
-            {user?.role === 'Admin' && (
+            {user?.role === "Admin" && (
               <>
                 <label>Role:</label>
                 <select
@@ -164,11 +164,11 @@ const Profile: React.FC = () => {
               Save changes
             </button>
 
-            {id && user?.role === 'Admin' && (
+            {id && user?.role === "Admin" && (
               <button
                 type="button"
                 className="btn-secondary"
-                onClick={() => navigate('/admin/users')}
+                onClick={() => navigate("/admin/users")}
               >
                 Back to user list
               </button>

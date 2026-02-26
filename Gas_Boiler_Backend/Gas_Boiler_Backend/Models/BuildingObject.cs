@@ -28,7 +28,7 @@ namespace Gas_Boiler_Backend.Models
 
         [Required]
         [Range(0.1, 10)]
-        public double Height { get; set; } = 2.7; // m (ceiling height) - NEW PROPERTY!
+        public double Height { get; set; } = 2.7; // m (ceiling height)
 
         // Calculated property: Volume
         public double Volume => HeatingArea * Height; // m³

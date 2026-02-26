@@ -14,6 +14,7 @@ namespace Gas_Boiler_Backend
 {
     public class Program
     {
+        // TODO: Format this better, it's awful
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -144,7 +145,7 @@ namespace Gas_Boiler_Backend
                 app.UseSwagger();
                 app.UseSwaggerUI(options =>
                 {
-                    options.InjectStylesheet("/swagger-ui/dark-theme.css");
+                    options.InjectStylesheet("/swagger-ui/dark-theme.css"); // !!!! * DARK THEME FOR SWAGGER * !!!!
                 }
                     );
             }

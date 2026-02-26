@@ -1,12 +1,12 @@
- export type AlarmType =
-  | 'INSUFFICIENT_CAPACITY'
-  | 'HIGH_INDOOR_TEMP'
-  | 'LOW_INDOOR_TEMP'
-  | 'HIGH_OUTDOOR_TEMP'
-  | 'LOW_OUTDOOR_TEMP'
-  | 'HIGH_DAILY_COST';
+export type AlarmType =
+  | "INSUFFICIENT_CAPACITY"
+  | "HIGH_INDOOR_TEMP"
+  | "LOW_INDOOR_TEMP"
+  | "HIGH_OUTDOOR_TEMP"
+  | "LOW_OUTDOOR_TEMP"
+  | "HIGH_DAILY_COST";
 
-export type AlarmSeverity = 'INFO' | 'WARNING' | 'CRITICAL';
+export type AlarmSeverity = "INFO" | "WARNING" | "CRITICAL";
 
 export interface Alarm {
   id: number;

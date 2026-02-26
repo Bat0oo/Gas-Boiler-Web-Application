@@ -1,6 +1,6 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import { AuthResponse, LoginData, RegisterData } from '../types/authtypes';
-import { authService } from '../services/authService';
+import React, { createContext, useState, useContext, useEffect } from "react";
+import { AuthResponse, LoginData, RegisterData } from "../types/authtypes";
+import { authService } from "../services/authService";
 
 interface AuthContextType {
   user: AuthResponse | null;
@@ -14,9 +14,11 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState<AuthResponse | null>(null);
-  const [loading, setLoading] = useState(true); // Start with loading true
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const currentUser = authService.getCurrentUser();
@@ -28,15 +30,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (data: LoginData) => {
     const response = await authService.login(data);
-    localStorage.setItem('token', response.token);
-    localStorage.setItem('user', JSON.stringify(response));
+    localStorage.setItem("token", response.token);
+    localStorage.setItem("user", JSON.stringify(response));
     setUser(response);
   };
 
   const register = async (data: RegisterData) => {
     const response = await authService.register(data);
-    localStorage.setItem('token', response.token);
-    localStorage.setItem('user', JSON.stringify(response));
+    localStorage.setItem("token", response.token);
+    localStorage.setItem("user", JSON.stringify(response));
     setUser(response);
   };
 
@@ -53,7 +55,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         register,
         logout,
         isAuthenticated: !!user,
-        isAdmin: user?.role === 'Admin',
+        isAdmin: user?.role === "Admin",
         loading,
       }}
     >
@@ -65,7 +67,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
+    throw new Error("useAuth must be used within AuthProvider");
   }
   return context;
 };

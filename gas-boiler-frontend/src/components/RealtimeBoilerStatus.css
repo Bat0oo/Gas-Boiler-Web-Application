@@ -174,7 +174,9 @@
 
 .power-bar {
   height: 100%;
-  transition: width 0.6s ease, background-color 0.3s ease;
+  transition:
+    width 0.6s ease,
+    background-color 0.3s ease;
   border-radius: 12px;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -209,13 +211,14 @@
 }
 
 @keyframes pulse-change {
-  0%, 100% { 
-    opacity: 1; 
-    transform: scale(1); 
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
   }
-  50% { 
-    opacity: 0.7; 
-    transform: scale(1.05); 
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
   }
 }
 

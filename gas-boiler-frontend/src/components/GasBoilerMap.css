@@ -1,9 +1,7 @@
-/* GasBoilerMap.css - WITH ADMIN BANNER STYLES */
-
 /* Map container */
 .map-container {
-  position: relative; /* ← CHANGED: Added for banner positioning */
-  height: 100vh; /* ← CHANGED: Full viewport height */
+  position: relative;
+  height: 100vh;
   width: 100%;
 }
 
@@ -12,7 +10,6 @@
   width: 100%;
 }
 
-/* ========== ADDED: Admin mode banner ========== */
 .admin-mode-banner {
   position: absolute;
   top: 10px;
@@ -51,7 +48,6 @@
     text-align: center;
   }
 }
-/* ========== END ADDED ========== */
 
 /* Building popup styles */
 .building-popup {
@@ -185,9 +181,6 @@
   cursor: not-allowed;
 }
 
-/* ADD THESE STYLES TO GasBoilerMap.css */
-
-/* ========== Hover Tooltip Styles ========== */
 .marker-tooltip {
   text-align: center;
   padding: 0;
@@ -257,4 +250,43 @@
   margin: 0 !important;
   color: #1e40af;
   font-weight: 600;
+}
+
+.popup-temp-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  vertical-align: middle;
+}
+
+.popup-temp-btn {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid #c7d2fe;
+  border-radius: 3px;
+  background: #eef2ff;
+  color: #4f46e5;
+  font-size: 0.65rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.popup-temp-btn:hover:not(:disabled) {
+  background: #667eea;
+  border-color: #667eea;
+  color: white;
+}
+
+.popup-temp-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.temp-saving {
+  color: #667eea;
+  opacity: 0.7;
 }

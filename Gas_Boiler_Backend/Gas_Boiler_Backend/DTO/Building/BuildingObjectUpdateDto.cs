@@ -20,7 +20,7 @@ namespace Gas_Boiler_Backend.DTO.Building
 
         [Required]
         [Range(0.1, 10)]
-        public double Height { get; set; } 
+        public double Height { get; set; }
 
         [Required]
         [Range(-50, 50)]

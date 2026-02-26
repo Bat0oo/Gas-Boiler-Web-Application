@@ -1,12 +1,10 @@
-/* ===== LANDING PAGE ===== */
-
 .landing-page {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: #1a1a2e;
   background: #fff;
 }
 
-/* ===== HEADER ===== */
 .landing-header {
   position: sticky;
   top: 0;
@@ -56,7 +54,9 @@
   font-weight: 500;
   padding: 0.5rem 1rem;
   border-radius: 6px;
-  transition: color 0.2s, background 0.2s;
+  transition:
+    color 0.2s,
+    background 0.2s;
 }
 
 .landing-nav-link:hover {
@@ -78,7 +78,6 @@
   opacity: 0.88;
 }
 
-/* ===== HERO ===== */
 .landing-hero {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 5rem 2rem 4rem;
@@ -127,7 +126,9 @@
   padding: 0.8rem 2rem;
   border-radius: 8px;
   font-size: 1rem;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 }
 
@@ -188,7 +189,6 @@
   font-size: 0.95rem;
 }
 
-/* ===== SHARED SECTION STYLES ===== */
 .landing-section-inner {
   max-width: 1200px;
   margin: 0 auto;
@@ -203,7 +203,6 @@
   color: #1a1a2e;
 }
 
-/* ===== FEATURES ===== */
 .landing-features {
   padding: 5rem 2rem;
   background: #f8f9ff;
@@ -220,7 +219,9 @@
   border-radius: 12px;
   padding: 1.75rem;
   box-shadow: 0 2px 12px rgba(102, 126, 234, 0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
   border: 1px solid rgba(102, 126, 234, 0.1);
 }
 
@@ -248,7 +249,6 @@
   margin: 0;
 }
 
-/* ===== HOW IT WORKS ===== */
 .landing-how {
   padding: 5rem 2rem;
   background: white;
@@ -331,9 +331,15 @@
   transform: translateY(-3px);
 }
 
-.role-admin { border-top-color: #667eea; }
-.role-user  { border-top-color: #48bb78; }
-.role-guest { border-top-color: #ed8936; }
+.role-admin {
+  border-top-color: #667eea;
+}
+.role-user {
+  border-top-color: #48bb78;
+}
+.role-guest {
+  border-top-color: #ed8936;
+}
 
 .role-icon {
   font-size: 2.2rem;
@@ -364,17 +370,20 @@
 }
 
 .landing-role-card ul li::before {
-  content: '✓';
+  content: "✓";
   position: absolute;
   left: 0;
   color: #667eea;
   font-weight: 700;
 }
 
-.role-user ul li::before  { color: #48bb78; }
-.role-guest ul li::before { color: #ed8936; }
+.role-user ul li::before {
+  color: #48bb78;
+}
+.role-guest ul li::before {
+  color: #ed8936;
+}
 
-/* ===== BOTTOM CTA ===== */
 .landing-bottom-cta {
   padding: 5rem 2rem;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -398,7 +407,6 @@
   justify-content: center;
 }
 
-/* ===== FOOTER ===== */
 .landing-footer {
   background: #1a1a2e;
   color: rgba(255, 255, 255, 0.5);
@@ -407,7 +415,6 @@
   font-size: 0.85rem;
 }
 
-/* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
   .landing-hero {
     flex-direction: column;

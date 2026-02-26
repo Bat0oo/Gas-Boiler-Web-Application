@@ -1,9 +1,9 @@
 ﻿using Gas_Boiler_Backend.DTO.Alarms;
+using Gas_Boiler_Backend.Hubs;
 using Gas_Boiler_Backend.Interfaces;
 using Gas_Boiler_Backend.Models;
-using System.Text.Json;
-using Gas_Boiler_Backend.Hubs;
 using Microsoft.AspNetCore.SignalR;
+using System.Text.Json;
 
 namespace Gas_Boiler_Backend.Services
 {
@@ -226,7 +226,6 @@ namespace Gas_Boiler_Backend.Services
                     settings = await _settingsRepo.CreateDefaultAsync();
                 }
 
-                // Get all buildings
                 var buildings = await _buildingRepo.GetAllAsync();
 
                 _logger.LogInformation($"Checking alarms for {buildings.Count()} buildings");

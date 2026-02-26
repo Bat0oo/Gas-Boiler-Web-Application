@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -9,10 +9,10 @@ import {
   Tooltip,
   Legend,
   Filler,
-} from 'chart.js';
-import { Line } from 'react-chartjs-2';
-import { TemperatureDataPoint } from '../../types/chartstypes';
-import { formatChartLabel } from '../../utils/chartUtils';
+} from "chart.js";
+import { Line } from "react-chartjs-2";
+import { TemperatureDataPoint } from "../../types/chartstypes";
+import { formatChartLabel } from "../../utils/chartUtils";
 
 ChartJS.register(
   CategoryScale,
@@ -22,7 +22,7 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  Filler
+  Filler,
 );
 
 interface TemperatureChartProps {
@@ -40,10 +40,10 @@ const TemperatureChart: React.FC<TemperatureChartProps> = ({
     labels: data.map((d) => formatChartLabel(d.timestamp)),
     datasets: [
       {
-        label: 'Indoor Temperature',
+        label: "Indoor Temperature",
         data: data.map((d) => d.indoorTemp),
-        borderColor: 'rgb(239, 68, 68)',
-        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+        borderColor: "rgb(239, 68, 68)",
+        backgroundColor: "rgba(239, 68, 68, 0.1)",
         borderWidth: 2,
         tension: 0.4,
         fill: true,
@@ -51,10 +51,10 @@ const TemperatureChart: React.FC<TemperatureChartProps> = ({
         pointHoverRadius: 5,
       },
       {
-        label: 'Outdoor Temperature',
+        label: "Outdoor Temperature",
         data: data.map((d) => d.outdoorTemp),
-        borderColor: 'rgb(59, 130, 246)',
-        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        borderColor: "rgb(59, 130, 246)",
+        backgroundColor: "rgba(59, 130, 246, 0.1)",
         borderWidth: 2,
         tension: 0.4,
         fill: true,
@@ -70,7 +70,7 @@ const TemperatureChart: React.FC<TemperatureChartProps> = ({
     plugins: {
       legend: {
         display: showLegend,
-        position: 'top' as const,
+        position: "top" as const,
       },
       title: {
         display: false,
@@ -78,11 +78,11 @@ const TemperatureChart: React.FC<TemperatureChartProps> = ({
       tooltip: {
         callbacks: {
           label: function (context: any) {
-            let label = context.dataset.label || '';
+            let label = context.dataset.label || "";
             if (label) {
-              label += ': ';
+              label += ": ";
             }
-            label += context.parsed.y.toFixed(1) + '°C';
+            label += context.parsed.y.toFixed(1) + "°C";
             return label;
           },
         },
@@ -98,15 +98,15 @@ const TemperatureChart: React.FC<TemperatureChartProps> = ({
         beginAtZero: false,
         title: {
           display: true,
-          text: 'Temperature (°C)',
+          text: "Temperature (°C)",
         },
         grid: {
-          color: 'rgba(0, 0, 0, 0.05)',
+          color: "rgba(0, 0, 0, 0.05)",
         },
       },
     },
     interaction: {
-      mode: 'index' as const,
+      mode: "index" as const,
       intersect: false,
     },
   };

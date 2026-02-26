@@ -1,27 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup,Tooltip, useMapEvents } from 'react-leaflet';
-import { useSearchParams } from 'react-router-dom';
-import { LatLngExpression } from 'leaflet';
-import { useAuth } from '../context/AuthContext';
-import { buildingService } from '../services/buildingService';
-import { gasBoilerService } from '../services/gasBoilerService';
-import { BuildingMapPoint, Building } from '../types/buildingtypes';
-import { CreateBuildingPayload } from '../types/buildingtypes';
-import { CreateGasBoilerPayload } from '../types/gasBoilertypes';
-import CreateBuildingModal from './CreateBuildingModal';
-import BuildingDetailsModal from './BuildingDetailsModal';
-import CreateBoilerModal from './CreateBoilerModal';
-import EditBuildingModal from './EditBuildingModal';
-import EditBoilerModal from '../pages/MyBoilers/EditBoilerModal';
-import './GasBoilerMap.css';
-import 'leaflet/dist/leaflet.css';
+import React, { useEffect, useState } from "react";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  Tooltip,
+  useMapEvents,
+} from "react-leaflet";
+import { useSearchParams } from "react-router-dom";
+import { LatLngExpression } from "leaflet";
+import { useAuth } from "../context/AuthContext";
+import { buildingService } from "../services/buildingService";
+import { gasBoilerService } from "../services/gasBoilerService";
+import { BuildingMapPoint, Building } from "../types/buildingtypes";
+import { CreateBuildingPayload } from "../types/buildingtypes";
+import { CreateGasBoilerPayload } from "../types/gasBoilertypes";
+import CreateBuildingModal from "./CreateBuildingModal";
+import BuildingDetailsModal from "./BuildingDetailsModal";
+import CreateBoilerModal from "./CreateBoilerModal";
+import EditBuildingModal from "./EditBuildingModal";
+import EditBoilerModal from "../pages/MyBoilers/EditBoilerModal";
+import "./GasBoilerMap.css";
+import "leaflet/dist/leaflet.css";
 
-import L from 'leaflet';
+import L from "leaflet";
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  iconUrl: require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+  iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
+  iconUrl: require("leaflet/dist/images/marker-icon.png"),
+  shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
 });
 
 interface Props {
@@ -30,20 +37,27 @@ interface Props {
   zoom?: number;
 }
 
-const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoom = 7 }) => {
+const GasBoilerMap: React.FC<Props> = ({
+  token,
+  center = [44.7866, 20.4489],
+  zoom = 7,
+}) => {
   const { user } = useAuth();
-  const isAdmin = user?.role === 'Admin';
-  
+  const isAdmin = user?.role === "Admin";
+
   const [searchParams, setSearchParams] = useSearchParams();
-  
+
   const [buildings, setBuildings] = useState<BuildingMapPoint[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [createBuildingOpen, setCreateBuildingOpen] = useState(false);
-  const [newBuildingPosition, setNewBuildingPosition] = useState<L.LatLng | null>(null);
+  const [newBuildingPosition, setNewBuildingPosition] =
+    useState<L.LatLng | null>(null);
 
   const [buildingDetailsOpen, setBuildingDetailsOpen] = useState(false);
-  const [selectedBuildingId, setSelectedBuildingId] = useState<number | null>(null);
+  const [selectedBuildingId, setSelectedBuildingId] = useState<number | null>(
+    null,
+  );
 
   const [createBoilerOpen, setCreateBoilerOpen] = useState(false);
   const [selectedBuildingForBoiler, setSelectedBuildingForBoiler] = useState<{
@@ -57,12 +71,18 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
   const [editBoilerOpen, setEditBoilerOpen] = useState(false);
   const [editingBoiler, setEditingBoiler] = useState<any>(null);
 
+  // Desired temperature controls (user-only)
+  const [tempOverrides, setTempOverrides] = useState<Record<number, number>>(
+    {},
+  );
+  const [savingTempId, setSavingTempId] = useState<number | null>(null);
+
   useEffect(() => {
     loadBuildings();
   }, [token]);
 
   useEffect(() => {
-    const buildingIdFromUrl = searchParams.get('building');
+    const buildingIdFromUrl = searchParams.get("building");
     if (buildingIdFromUrl) {
       const id = parseInt(buildingIdFromUrl);
       if (!isNaN(id)) {
@@ -78,10 +98,48 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
     try {
       const data = await buildingService.getMapPoints(token);
       setBuildings(data);
+      const overrides: Record<number, number> = {};
+      data.forEach((b) => {
+        overrides[b.id] = b.desiredTemperature;
+      });
+      setTempOverrides(overrides);
     } catch (err) {
-      console.error('Error loading buildings:', err);
+      console.error("Error loading buildings:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleTempChange = async (buildingId: number, delta: number) => {
+    if (savingTempId !== null) return;
+
+    const currentTemp = tempOverrides[buildingId] ?? 20;
+    const newTemp = Math.round((currentTemp + delta) * 2) / 2;
+
+    if (newTemp < 5 || newTemp > 35) return;
+
+    setTempOverrides((prev) => ({ ...prev, [buildingId]: newTemp }));
+    setSavingTempId(buildingId);
+
+    try {
+      await buildingService.updateDesiredTemperature(
+        buildingId,
+        newTemp,
+        token,
+      );
+      setBuildings((prev) =>
+        prev.map((b) =>
+          b.id === buildingId ? { ...b, desiredTemperature: newTemp } : b,
+        ),
+      );
+    } catch {
+      // Revert on failure
+      setTempOverrides((prev) => {
+        const b = buildings.find((x) => x.id === buildingId);
+        return { ...prev, [buildingId]: b?.desiredTemperature ?? currentTemp };
+      });
+    } finally {
+      setSavingTempId(null);
     }
   };
 
@@ -91,7 +149,7 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
         e.originalEvent.preventDefault();
 
         if (isAdmin) {
-          alert('Administrators cannot create buildings. You can only view.');
+          alert("Administrators cannot create buildings. You can only view.");
           return;
         }
 
@@ -109,7 +167,7 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
       setCreateBuildingOpen(false);
       setNewBuildingPosition(null);
     } catch (err) {
-      console.error('Error creating building:', err);
+      console.error("Error creating building:", err);
       throw err;
     }
   };
@@ -121,7 +179,7 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
 
   const handleAddBoiler = (buildingId: number) => {
     if (isAdmin) {
-      alert('Administrators cannot create boilers. You can only view.');
+      alert("Administrators cannot create boilers. You can only view.");
       return;
     }
 
@@ -139,22 +197,20 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
       await loadBuildings();
       setCreateBoilerOpen(false);
       setSelectedBuildingForBoiler(null);
-      
+
       if (payload.buildingObjectId) {
         setSelectedBuildingId(payload.buildingObjectId);
         setBuildingDetailsOpen(true);
       }
     } catch (err) {
-      console.error('Error creating boiler:', err);
+      console.error("Error creating boiler:", err);
       throw err;
     }
   };
 
-  // ========== CHANGED: Added admin check ==========
   const handleEditBuilding = async (buildingId: number) => {
-    // Admin check
     if (isAdmin) {
-      alert('Administrators cannot edit buildings. This is view-only mode.');
+      alert("Administrators cannot edit buildings. This is view-only mode.");
       return;
     }
 
@@ -164,8 +220,8 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
       setBuildingDetailsOpen(false);
       setEditBuildingOpen(true);
     } catch (err) {
-      console.error('Error loading building:', err);
-      alert('Error loading building');
+      console.error("Error loading building:", err);
+      alert("Error loading building");
     }
   };
 
@@ -179,7 +235,7 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
 
   const handleEditBoiler = async (boilerId: number) => {
     if (isAdmin) {
-      alert('Administrators cannot edit boilers. This is view-only mode.');
+      alert("Administrators cannot edit boilers. This is view-only mode.");
       return;
     }
 
@@ -189,8 +245,8 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
       setBuildingDetailsOpen(false);
       setEditBoilerOpen(true);
     } catch (err) {
-      console.error('Error loading boiler:', err);
-      alert('Error loading boiler');
+      console.error("Error loading boiler:", err);
+      alert("Error loading boiler");
     }
   };
 
@@ -205,7 +261,7 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
 
   const handleDeleteBuilding = async (buildingId: number) => {
     if (isAdmin) {
-      alert('Administrators cannot delete buildings. This is view-only mode.');
+      alert("Administrators cannot delete buildings. This is view-only mode.");
       return;
     }
 
@@ -214,14 +270,14 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
       await loadBuildings();
       setBuildingDetailsOpen(false);
     } catch (err) {
-      console.error('Error deleting building:', err);
-      alert('Error deleting building');
+      console.error("Error deleting building:", err);
+      alert("Error deleting building");
     }
   };
 
   const handleDeleteBoiler = async (boilerId: number): Promise<void> => {
     if (isAdmin) {
-      alert('Administrators cannot delete boilers. This is view-only mode.');
+      alert("Administrators cannot delete boilers. This is view-only mode.");
       return;
     }
 
@@ -229,7 +285,7 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
       await gasBoilerService.deleteGasBoiler(boilerId, token);
       await loadBuildings();
     } catch (err) {
-      console.error('Error deleting boiler:', err);
+      console.error("Error deleting boiler:", err);
       throw err;
     }
   };
@@ -241,79 +297,138 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
           👔 Administrator Mode - View Only (you cannot create, edit, or delete)
         </div>
       )}
-      
+
       <MapContainer center={center} zoom={zoom} className="leaflet-map">
         <TileLayer
           attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-  {!loading &&
-  buildings.map((building) => {
-    if (!building.latitude || !building.longitude) {
-      return null;
-    }
+        {!loading &&
+          buildings.map((building) => {
+            if (!building.latitude || !building.longitude) {
+              return null;
+            }
 
-    return (
-      <Marker
-        key={building.id}
-        position={[building.latitude, building.longitude]}
-      >
-        {/* Hover Tooltip - Shows on mouse over */}
-        <Tooltip direction="top" offset={[0, -20]} opacity={0.95}>
-          <div className="marker-tooltip">
-            <div className="tooltip-title">🏢 {building.name}</div>
-            <div className="tooltip-info">
-                          {building.indoorTemperature !== undefined && building.indoorTemperature !== null && (
-                <div>🌡️ Indoor: {building.indoorTemperature.toFixed(1)}°C</div>
-              )}
-              <div>🎯 Desired: {building.desiredTemperature?.toFixed(1)}°C</div>
-              🔥 {building.boilerCount} boilers • ⚡ {building.totalMaxPower.toFixed(0)} kW
-            </div>
-          </div>
-        </Tooltip>
+            return (
+              <Marker
+                key={building.id}
+                position={[building.latitude, building.longitude]}
+              >
+                {/* Hover Tooltip - Shows on mouse over */}
+                <Tooltip direction="top" offset={[0, -20]} opacity={0.95}>
+                  <div className="marker-tooltip">
+                    <div className="tooltip-title">🏢 {building.name}</div>
+                    <div className="tooltip-info">
+                      {building.indoorTemperature !== undefined &&
+                        building.indoorTemperature !== null && (
+                          <div>
+                            🌡️ Indoor: {building.indoorTemperature.toFixed(1)}°C
+                          </div>
+                        )}
+                      <div>
+                        🎯 Desired: {building.desiredTemperature?.toFixed(1)}°C
+                      </div>
+                      🔥 {building.boilerCount} boilers • ⚡{" "}
+                      {building.totalMaxPower.toFixed(0)} kW
+                    </div>
+                  </div>
+                </Tooltip>
 
-        {/* Click Popup - Shows on click */}
-        <Popup>
-          <div className="building-popup">
-            <h3 className="building-popup-title">🏢 {building.name}</h3>
+                {/* Click Popup - Shows on click */}
+                <Popup>
+                  <div className="building-popup">
+                    <h3 className="building-popup-title">🏢 {building.name}</h3>
 
-            {building.indoorTemperature !== undefined && building.indoorTemperature !== null && (
-              <p className="building-popup-info">
-                <strong>🌡️ Indoor:</strong> {building.indoorTemperature.toFixed(1)}°C
-              </p>
-            )}
-            
-            <p className="building-popup-info">
-              <strong>🎯 Desired:</strong> {building.desiredTemperature?.toFixed(1)}°C
-            </p>
-            
-            {building.currentTemperature !== undefined && building.currentTemperature !== null && (
-              <p className="building-popup-info">
-                <strong>🌤️ Outdoor:</strong> {building.currentTemperature.toFixed(1)}°C
-              </p>
-            )}
+                    {building.indoorTemperature !== undefined &&
+                      building.indoorTemperature !== null && (
+                        <p className="building-popup-info">
+                          <strong>🌡️ Indoor:</strong>{" "}
+                          {building.indoorTemperature.toFixed(1)}°C
+                        </p>
+                      )}
 
-            <p className="building-popup-info">
-              <strong>Number of boilers:</strong> {building.boilerCount}
-            </p>
-            <p className="building-popup-info">
-              <strong>Total power:</strong> {building.totalMaxPower.toFixed(1)} kW
-            </p>
-            <p className="building-popup-info">
-              <strong>Current:</strong> {building.totalCurrentPower.toFixed(1)} kW
-            </p>
-            <button
-              onClick={() => handleBuildingClick(building.id)}
-              className="building-popup-button"
-            >
-              View Details
-            </button>
-          </div>
-        </Popup>
-      </Marker>
-    );
-  })}
+                    <div className="building-popup-info">
+                      <strong>🎯 Desired:</strong>{" "}
+                      {!isAdmin ? (
+                        <span className="popup-temp-control">
+                          <button
+                            className="popup-temp-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleTempChange(building.id, -0.5);
+                            }}
+                            disabled={
+                              savingTempId !== null ||
+                              (tempOverrides[building.id] ??
+                                building.desiredTemperature) <= 5
+                            }
+                            title="Decrease by 0.5°C"
+                          >
+                            ▼
+                          </button>
+                          <span
+                            className={
+                              savingTempId === building.id ? "temp-saving" : ""
+                            }
+                          >
+                            {(
+                              tempOverrides[building.id] ??
+                              building.desiredTemperature
+                            ).toFixed(1)}
+                            °C
+                          </span>
+                          <button
+                            className="popup-temp-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleTempChange(building.id, 0.5);
+                            }}
+                            disabled={
+                              savingTempId !== null ||
+                              (tempOverrides[building.id] ??
+                                building.desiredTemperature) >= 35
+                            }
+                            title="Increase by 0.5°C"
+                          >
+                            ▲
+                          </button>
+                        </span>
+                      ) : (
+                        `${building.desiredTemperature?.toFixed(1)}°C`
+                      )}
+                    </div>
+
+                    {building.currentTemperature !== undefined &&
+                      building.currentTemperature !== null && (
+                        <p className="building-popup-info">
+                          <strong>🌤️ Outdoor:</strong>{" "}
+                          {building.currentTemperature.toFixed(1)}°C
+                        </p>
+                      )}
+
+                    <p className="building-popup-info">
+                      <strong>Number of boilers:</strong> {building.boilerCount}
+                    </p>
+                    <p className="building-popup-info">
+                      <strong>Total power:</strong>{" "}
+                      {building.totalMaxPower.toFixed(1)} kW
+                    </p>
+                    <p className="building-popup-info">
+                      <strong>Current:</strong>{" "}
+                      {building.totalCurrentPower.toFixed(1)} kW
+                    </p>
+                    <button
+                      onClick={() => handleBuildingClick(building.id)}
+                      className="building-popup-button"
+                    >
+                      View Details
+                    </button>
+                  </div>
+                </Popup>
+              </Marker>
+            );
+          })}
 
         <MapEvents />
       </MapContainer>
@@ -347,7 +462,7 @@ const GasBoilerMap: React.FC<Props> = ({ token, center = [44.7866, 20.4489], zoo
       <CreateBoilerModal
         isOpen={createBoilerOpen}
         buildingId={selectedBuildingForBoiler?.id || null}
-        buildingName={selectedBuildingForBoiler?.name || ''}
+        buildingName={selectedBuildingForBoiler?.name || ""}
         onClose={() => {
           setCreateBoilerOpen(false);
           setSelectedBuildingForBoiler(null);

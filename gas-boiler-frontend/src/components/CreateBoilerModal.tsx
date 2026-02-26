@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { CreateGasBoilerPayload } from '../types/gasBoilertypes';
-import './CreateBoilerModal.css';
+import React, { useState } from "react";
+import { CreateGasBoilerPayload } from "../types/gasBoilertypes";
+import "./CreateBoilerModal.css";
 
 interface Props {
   isOpen: boolean;
@@ -17,7 +17,7 @@ const CreateBoilerModal: React.FC<Props> = ({
   onClose,
   onCreate,
 }) => {
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
   const [maxPower, setMaxPower] = useState(24);
   const [efficiency, setEfficiency] = useState(0.95);
   const [currentPower, setCurrentPower] = useState(0);
@@ -25,17 +25,17 @@ const CreateBoilerModal: React.FC<Props> = ({
 
   const handleSubmit = async () => {
     if (!buildingId || !name.trim()) {
-      alert('Enter boiler name');
+      alert("Enter boiler name");
       return;
     }
 
     if (maxPower <= 0) {
-      alert('Maximum power must be greater than 0');
+      alert("Maximum power must be greater than 0");
       return;
     }
 
     if (efficiency <= 0 || efficiency > 1) {
-      alert('Efficiency must be between 0 and 1 (e.g. 0.95 for 95%)');
+      alert("Efficiency must be between 0 and 1 (e.g. 0.95 for 95%)");
       return;
     }
 
@@ -51,14 +51,14 @@ const CreateBoilerModal: React.FC<Props> = ({
 
       await onCreate(payload);
 
-      setName('');
+      setName("");
       setMaxPower(24);
       setEfficiency(0.95);
       setCurrentPower(0);
       onClose();
     } catch (err) {
-      console.error('Error creating boiler:', err);
-      alert('Error creating boiler');
+      console.error("Error creating boiler:", err);
+      alert("Error creating boiler");
     } finally {
       setLoading(false);
     }
@@ -129,9 +129,13 @@ const CreateBoilerModal: React.FC<Props> = ({
             className="btn-primary"
             disabled={loading || !name.trim()}
           >
-            {loading ? 'Adding...' : 'Add Boiler'}
+            {loading ? "Adding..." : "Add Boiler"}
           </button>
-          <button onClick={onClose} className="btn-secondary" disabled={loading}>
+          <button
+            onClick={onClose}
+            className="btn-secondary"
+            disabled={loading}
+          >
             Cancel
           </button>
         </div>

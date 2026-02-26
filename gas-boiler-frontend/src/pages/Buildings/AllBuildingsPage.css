@@ -1,6 +1,6 @@
 .all-buildings-page {
   padding: 2rem;
-  max-width: 1400px;
+  max-width: 1600px;
   margin: 0 auto;
 }
 
@@ -52,7 +52,6 @@
   background: rgba(255, 255, 255, 0.3);
   transform: scale(1.1);
 }
-/* ======================================================================== */
 
 .page-header {
   margin-bottom: 2rem;
@@ -144,7 +143,7 @@
   overflow-x: auto;
   background: white;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 2rem;
 }
 
@@ -183,6 +182,7 @@
 .buildings-table td {
   padding: 1rem 0.75rem;
   color: #374151;
+  vertical-align: middle;
 }
 
 .buildings-table td.building-name {
@@ -203,25 +203,35 @@
 
 .buildings-table td.boiler-count {
   text-align: center;
+  vertical-align: middle;
+  padding: 1rem 0.75rem;
 }
 
 .has-boilers {
   display: inline-block;
   background-color: #d1fae5;
   color: #065f46;
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
+  min-width: 32px;
+  text-align: center;
 }
 
 .no-boilers {
+  display: inline-block;
+  vertical-align: middle;
   color: #9ca3af;
   font-size: 0.85rem;
 }
 
 .buildings-table td.actions {
   text-align: center;
+  vertical-align: middle;
+  min-width: 160px;
+  white-space: nowrap;
+  padding: 1rem 0.75rem;
 }
 
 .actions-wrapper {
@@ -229,6 +239,8 @@
   gap: 0.5rem;
   align-items: center;
   justify-content: center;
+  flex-wrap: nowrap;
+  vertical-align: middle;
 }
 
 .btn-view,
@@ -240,6 +252,7 @@
   font-size: 1.2rem;
   padding: 0.25rem 0.5rem;
   transition: transform 0.2s;
+  flex-shrink: 0;
 }
 
 .btn-view:hover,
@@ -251,6 +264,7 @@
 .delete-confirm {
   display: inline-flex;
   gap: 0.25rem;
+  align-items: center;
 }
 
 .btn-confirm-delete,
@@ -261,6 +275,7 @@
   font-size: 1.2rem;
   padding: 0.25rem 0.5rem;
   transition: all 0.2s;
+  flex-shrink: 0;
 }
 
 .btn-confirm-delete {
@@ -300,17 +315,17 @@
   .buildings-table {
     font-size: 0.85rem;
   }
-  
+
   .buildings-table th,
   .buildings-table td {
     padding: 0.75rem 0.5rem;
   }
-  
+
   .filter-info-box {
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .btn-clear-filter {
     align-self: flex-start;
   }
@@ -320,20 +335,20 @@
   .all-buildings-page {
     padding: 1rem;
   }
-  
+
   .table-container {
     overflow-x: scroll;
   }
-  
+
   .buildings-table {
-    min-width: 900px;
+    min-width: 1100px;
   }
-  
+
   .admin-mode-banner-sticky {
     padding: 0.6rem 1rem;
     font-size: 0.8rem;
   }
-  
+
   .banner-dismiss {
     width: 24px;
     height: 24px;
@@ -401,4 +416,66 @@
   background: #fee2e2;
   color: #991b1b;
   border: 1px solid #fca5a5;
+}
+
+.temp-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  white-space: nowrap;
+}
+
+.temp-btn {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid #c7d2fe;
+  border-radius: 4px;
+  background: #eef2ff;
+  color: #4f46e5;
+  font-size: 0.7rem;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.temp-btn:hover:not(:disabled) {
+  background: #667eea;
+  border-color: #667eea;
+  color: white;
+}
+
+.temp-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.temp-value {
+  font-weight: 600;
+  font-size: 0.88rem;
+  min-width: 48px;
+  text-align: center;
+  color: #1e293b;
+  transition: color 0.2s;
+}
+
+.temp-saving {
+  color: #667eea;
+  opacity: 0.7;
+}
+
+.buildings-table td.indoor-temp {
+  font-weight: 500;
+  text-align: center;
+}
+
+.temp-na {
+  color: #9ca3af;
+  font-style: italic;
+  font-size: 0.85rem;
 }

@@ -65,7 +65,7 @@
   text-align: center;
 }
 
-/* Modal buttons - CONSISTENT SIZING */
+/* Modal buttons */
 .modal-buttons {
   display: flex;
   justify-content: flex-end;

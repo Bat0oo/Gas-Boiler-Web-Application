@@ -12,7 +12,7 @@ export interface DashboardStats {
 }
 
 export interface RecentActivity {
-  type: string; // "building_added", "boiler_added", etc.
+  type: string;
   description: string;
   timestamp: string;
 }
