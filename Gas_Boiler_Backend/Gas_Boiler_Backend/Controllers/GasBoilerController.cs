@@ -20,10 +20,7 @@ namespace Gas_Boiler_Backend.Controllers
             var idClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return idClaim != null ? int.Parse(idClaim) : 0;
         }
-
         private bool IsAdmin() => User.IsInRole("Admin") || User.FindFirst(ClaimTypes.Role)?.Value == "Admin";
-
-        // Admin and User
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GasBoilerResponseDto>>> GetAll()
@@ -85,8 +82,6 @@ namespace Gas_Boiler_Backend.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
-
-        // User
 
         [HttpPost]
         [Authorize(Roles = "User")]

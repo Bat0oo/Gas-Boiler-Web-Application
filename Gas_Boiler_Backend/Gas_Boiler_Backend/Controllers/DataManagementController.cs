@@ -65,7 +65,7 @@ namespace Gas_Boiler_Backend.Controllers
                 return StatusCode(500, new { message = $"Error getting statistics: {ex.Message}" });
             }
         }
-  
+
         [HttpGet("export/csv")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ExportAllCsv()
