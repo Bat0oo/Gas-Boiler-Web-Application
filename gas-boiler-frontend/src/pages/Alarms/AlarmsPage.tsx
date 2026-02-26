@@ -14,9 +14,8 @@ const AlarmsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Filters
   const [filters, setFilters] = useState<AlarmFilters>({
-    isActive: true, // Show active by default
+    isActive: true,
   });
 
   useEffect(() => {
@@ -127,7 +126,6 @@ const AlarmsPage: React.FC = () => {
           <p>Monitor and manage system alerts</p>
         </div>
 
-        {/* Statistics */}
         {stats && (
           <div className="stats-grid">
             <div className="stat-card total">
@@ -149,7 +147,6 @@ const AlarmsPage: React.FC = () => {
           </div>
         )}
 
-        {/* Filters */}
         <div className="filters-section">
           <h3>Filters:</h3>
           <div className="filters-grid">
@@ -186,7 +183,6 @@ const AlarmsPage: React.FC = () => {
 
         {error && <div className="error-message">{error}</div>}
 
-        {/* Alarms List */}
         <div className="alarms-list">
           {alarms.length === 0 ? (
             <div className="no-data">

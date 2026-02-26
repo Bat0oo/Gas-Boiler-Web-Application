@@ -12,9 +12,9 @@ import RealtimeBoilerStatus from '../../components/RealtimeBoilerStatus';
 import './DashboardPage.css';
 
 const DashboardPage: React.FC = () => {
-  const {  user } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
-  
+
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [buildings, setBuildings] = useState<Building[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,13 +31,13 @@ const DashboardPage: React.FC = () => {
     setLoading(true);
     setError('');
     if (!user?.token) return;
-    
+
     try {
       const [statsData, buildingsData] = await Promise.all([
         dashboardService.getStats(user.token),
-        buildingService.getAllBuildings(user.token)
+        buildingService.getAllBuildings(user.token),
       ]);
-      
+
       setStats(statsData);
       setBuildings(buildingsData);
     } catch (err: any) {
@@ -48,43 +48,31 @@ const DashboardPage: React.FC = () => {
     }
   };
 
-const handleBuildingClick = (buildingId: number) => {
-  setSelectedBuildingId(buildingId);
-  setShowBuildingModal(true);
-};
+  const handleBuildingClick = (buildingId: number) => {
+    setSelectedBuildingId(buildingId);
+    setShowBuildingModal(true);
+  };
 
-const handleAddBoiler = (buildingId: number) => {
-  // Navigate to boilers page or show add boiler modal
-  navigate('/boilers');
-};
+  const handleAddBoiler = (_buildingId: number) => {
+    navigate('/boilers');
+  };
 
-const handleEditBuilding = (buildingId: number) => {
-  // Navigate to edit building or show edit modal
-  console.log('Edit building:', buildingId);
-};
+  const handleEditBuilding = (_buildingId: number) => {};
 
-const handleDeleteBuilding = async (buildingId: number) => {
-  try {
-    if (!user?.token) return;
-    await buildingService.deleteBuilding(buildingId, user.token);
-    setShowBuildingModal(false);
-    loadDashboard(); // Reload dashboard data
-  } catch (err) {
-    console.error('Error deleting building:', err);
-  }
-};
+  const handleDeleteBuilding = async (buildingId: number) => {
+    try {
+      if (!user?.token) return;
+      await buildingService.deleteBuilding(buildingId, user.token);
+      setShowBuildingModal(false);
+      loadDashboard();
+    } catch (err) {
+      console.error('Error deleting building:', err);
+    }
+  };
 
-const handleEditBoiler = (boilerId: number) => {
-  console.log('Edit boiler:', boilerId);
-};
+  const handleEditBoiler = (_boilerId: number) => {};
 
-const handleDeleteBoiler = async (boilerId: number) => {
-  try {
-    console.log('Delete boiler:', boilerId);
-  } catch (err) {
-    console.error('Error deleting boiler:', err);
-  }
-};
+  const handleDeleteBoiler = async (_boilerId: number): Promise<void> => {};
 
   if (loading) {
     return (
@@ -120,8 +108,6 @@ const handleDeleteBoiler = async (boilerId: number) => {
     <>
       <Navbar />
       <div className="dashboard-container">
-        
-        {/* Header */}
         <div className="dashboard-header">
           <h1>📊 Dashboard</h1>
           <p className="dashboard-subtitle">
@@ -129,7 +115,6 @@ const handleDeleteBoiler = async (boilerId: number) => {
           </p>
         </div>
 
-        {/* Main Stats Cards */}
         <div className="stats-grid">
           <div className="stat-card buildings">
             <div className="stat-icon">🏢</div>
@@ -174,7 +159,6 @@ const handleDeleteBoiler = async (boilerId: number) => {
           </div>
         </div>
 
-        {/* Alerts Section */}
         {stats.buildingsWithInsufficientCapacity > 0 && (
           <div className="alert-banner warning">
             <span className="alert-icon">⚠️</span>
@@ -186,9 +170,10 @@ const handleDeleteBoiler = async (boilerId: number) => {
             </button>
           </div>
         )}
-                <RealtimeBoilerStatus token={user!.token} buildingIds={buildings.map(b => b.id)} />
+
+        <RealtimeBoilerStatus token={user!.token} buildingIds={buildings.map(b => b.id)} />
         <PowerRequirementsWidget />
-        {/* Buildings Overview Table */}
+
         <div className="dashboard-section">
           <div className="section-header">
             <h2>🏢 Buildings Overview</h2>
@@ -226,30 +211,27 @@ const handleDeleteBoiler = async (boilerId: number) => {
                         <strong>{building.name}</strong>
                       </td>
                       <td>{building.heatingArea} m²</td>
-                                <td>
-            {building.indoorTemperature !== undefined && building.indoorTemperature !== null ? (
-              <span style={{ color: '#10b981', fontWeight: 600 }}>
-                {building.indoorTemperature.toFixed(1)}°C
-              </span>
-            ) : (
-              <span style={{ color: '#9ca3af' }}>N/A</span>
-            )}
-          </td>
-          
-          <td>{building.desiredTemperature}°C</td>
-          
-          <td>
-            {building.currentTemperature !== undefined && building.currentTemperature !== null ? (
-              <span>{building.currentTemperature.toFixed(1)}°C</span>
-            ) : (
-              <span style={{ color: '#9ca3af' }}>N/A</span>
-            )}
-          </td>
+                      <td>
+                        {building.indoorTemperature !== undefined && building.indoorTemperature !== null ? (
+                          <span style={{ color: '#10b981', fontWeight: 600 }}>
+                            {building.indoorTemperature.toFixed(1)}°C
+                          </span>
+                        ) : (
+                          <span style={{ color: '#9ca3af' }}>N/A</span>
+                        )}
+                      </td>
+                      <td>{building.desiredTemperature}°C</td>
+                      <td>
+                        {building.currentTemperature !== undefined && building.currentTemperature !== null ? (
+                          <span>{building.currentTemperature.toFixed(1)}°C</span>
+                        ) : (
+                          <span style={{ color: '#9ca3af' }}>N/A</span>
+                        )}
+                      </td>
                       <td>{building.boilerCount}</td>
                       <td>
                         {building.boilerCount > 0 ? (
                           <span className="capacity-badge">
-                            {/* Capacity is sum of boilers - would need to fetch */}
                             {building.boilerCount} boiler(s)
                           </span>
                         ) : (
@@ -257,7 +239,7 @@ const handleDeleteBoiler = async (boilerId: number) => {
                         )}
                       </td>
                       <td>
-                        <button 
+                        <button
                           onClick={(e) => {
                             e.stopPropagation();
                             handleBuildingClick(building.id);
@@ -275,13 +257,12 @@ const handleDeleteBoiler = async (boilerId: number) => {
           )}
         </div>
 
-        {/* Quick Stats Summary */}
         <div className="quick-stats">
           <div className="quick-stat-item">
             <span className="quick-stat-label">Average Heating Area:</span>
             <span className="quick-stat-value">
-              {stats.totalBuildings > 0 
-                ? (stats.totalHeatingArea / stats.totalBuildings).toFixed(0) 
+              {stats.totalBuildings > 0
+                ? (stats.totalHeatingArea / stats.totalBuildings).toFixed(0)
                 : 0} m²
             </span>
           </div>
@@ -296,14 +277,14 @@ const handleDeleteBoiler = async (boilerId: number) => {
           <div className="quick-stat-item">
             <span className="quick-stat-label">Avg Boilers per Building:</span>
             <span className="quick-stat-value">
-              {stats.totalBuildings > 0 
-                ? (stats.totalBoilers / stats.totalBuildings).toFixed(1) 
+              {stats.totalBuildings > 0
+                ? (stats.totalBoilers / stats.totalBuildings).toFixed(1)
                 : 0}
             </span>
           </div>
         </div>
-
       </div>
+
       {showBuildingModal && selectedBuildingId && (
         <BuildingDetailsModal
           isOpen={showBuildingModal}

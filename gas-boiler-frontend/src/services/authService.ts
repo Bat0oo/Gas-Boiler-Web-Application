@@ -17,7 +17,7 @@ export const authService = {
     localStorage.removeItem('user');
   },
 
-getCurrentUser: (): AuthResponse | null => {
+  getCurrentUser: (): AuthResponse | null => {
     const userStr = localStorage.getItem('user');
     if (!userStr) return null;
 
@@ -31,7 +31,6 @@ getCurrentUser: (): AuthResponse | null => {
       return null;
     }
   },
-
 
   isAuthenticated: (): boolean => {
     return !!localStorage.getItem('token');

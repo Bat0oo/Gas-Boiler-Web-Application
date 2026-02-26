@@ -113,7 +113,6 @@ const AlarmSettingsPage: React.FC = () => {
         {successMessage && <div className="success-message">{successMessage}</div>}
 
         <form onSubmit={handleSave} className="settings-form">
-          {/* Temperature Thresholds */}
           <div className="settings-section">
             <h2>🌡️ Temperature Thresholds</h2>
             <div className="settings-grid">
@@ -219,7 +218,6 @@ const AlarmSettingsPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Capacity & Cost */}
           <div className="settings-section">
             <h2>⚡ Capacity & Cost Thresholds</h2>
             <div className="settings-grid">
@@ -276,7 +274,6 @@ const AlarmSettingsPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Cooldown */}
           <div className="settings-section">
             <h2>⏱️ Alert Cooldown</h2>
             <div className="setting-item">
@@ -297,7 +294,6 @@ const AlarmSettingsPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Buttons */}
           <div className="form-actions">
             <button type="submit" disabled={saving} className="btn-save">
               {saving ? 'Saving...' : '💾 Save Settings'}

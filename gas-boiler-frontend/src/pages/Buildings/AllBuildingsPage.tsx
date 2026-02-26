@@ -5,8 +5,8 @@ import { buildingService } from '../../services/buildingService';
 import { Building } from '../../types/buildingtypes';
 import Navbar from '../../components/Navbar';
 import EditBuildingModal from '../../components/EditBuildingModal';
-import './AllBuildingsPage.css';
 import { dataManagementService } from '../../services/dataManagementService';
+import './AllBuildingsPage.css';
 
 const AllBuildingsPage: React.FC = () => {
   const { user } = useAuth();
@@ -15,19 +15,15 @@ const AllBuildingsPage: React.FC = () => {
   const isAdmin = user?.role === 'Admin';
   const filterUserId = searchParams.get('userId');
   const filterUsername = searchParams.get('username');
-  
+
   const [buildings, setBuildings] = useState<Building[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
   const [editingBuilding, setEditingBuilding] = useState<Building | null>(null);
-
   const [showBanner, setShowBanner] = useState(true);
-
   const [isExporting, setIsExporting] = useState(false);
   const [exportMessage, setExportMessage] = useState('');
-
-  // Local desired temperature overrides (building id → temp) for instant UI feedback
   const [tempOverrides, setTempOverrides] = useState<Record<number, number>>({});
   const [savingTempId, setSavingTempId] = useState<number | null>(null);
 
@@ -45,31 +41,29 @@ const AllBuildingsPage: React.FC = () => {
     }
   }, [isAdmin, filterUserId, showBanner]);
 
-const handleExportCsv = async () => {
-  setIsExporting(true);
-  setExportMessage('');
+  const handleExportCsv = async () => {
+    setIsExporting(true);
+    setExportMessage('');
 
-  try {
-    const blob = await dataManagementService.exportMyBuildingsCsv(user!.token);
-    
-    // Create download link
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `my_buildings_data_${new Date().toISOString().split('T')[0]}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(a);
+    try {
+      const blob = await dataManagementService.exportMyBuildingsCsv(user!.token);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `my_buildings_data_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
 
-    setExportMessage('Data exported successfully!');
-    setTimeout(() => setExportMessage(''), 5000);
-  } catch (err: any) {
-    setExportMessage(`Error: ${err.response?.data?.message || err.message}`);
-  } finally {
-    setIsExporting(false);
-  }
-};
+      setExportMessage('Data exported successfully!');
+      setTimeout(() => setExportMessage(''), 5000);
+    } catch (err: any) {
+      setExportMessage(`Error: ${err.response?.data?.message || err.message}`);
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   const loadBuildings = async () => {
     if (!user?.token) return;
@@ -78,7 +72,6 @@ const handleExportCsv = async () => {
     try {
       const data = await buildingService.getAllBuildings(user.token);
       setBuildings(data);
-      // Seed local temp state from fetched data
       const overrides: Record<number, number> = {};
       data.forEach(b => { overrides[b.id] = b.desiredTemperature; });
       setTempOverrides(overrides);
@@ -94,12 +87,10 @@ const handleExportCsv = async () => {
     if (savingTempId !== null) return;
 
     const currentTemp = tempOverrides[building.id] ?? building.desiredTemperature;
-    const newTemp = Math.round((currentTemp + delta) * 2) / 2; // keep 0.5 precision
+    const newTemp = Math.round((currentTemp + delta) * 2) / 2;
 
-    // Clamp to a sensible range
     if (newTemp < 5 || newTemp > 35) return;
 
-    // Optimistic update
     setTempOverrides(prev => ({ ...prev, [building.id]: newTemp }));
     setSavingTempId(building.id);
 
@@ -109,7 +100,6 @@ const handleExportCsv = async () => {
         prev.map(b => b.id === building.id ? { ...b, desiredTemperature: newTemp } : b)
       );
     } catch {
-      // Revert optimistic update on failure
       setTempOverrides(prev => ({ ...prev, [building.id]: building.desiredTemperature }));
     } finally {
       setSavingTempId(null);
@@ -140,7 +130,6 @@ const handleExportCsv = async () => {
     setBuildings(buildings.map(b =>
       b.id === updatedBuilding.id ? updatedBuilding : b
     ));
-    // Keep tempOverrides in sync so the arrow controls show the correct base value
     setTempOverrides(prev => ({ ...prev, [updatedBuilding.id]: updatedBuilding.desiredTemperature }));
     setEditingBuilding(null);
   };
@@ -194,35 +183,34 @@ const handleExportCsv = async () => {
       )}
 
       <div className="all-buildings-page">
-<div className="page-header">
-  <div className="header-left">
-    {filterUsername ? (
-      <>
-        <h1>🏢 Buildings of user: {filterUsername}</h1>
-        <p>View all buildings of user {filterUsername}</p>
-      </>
-    ) : (
-      <>
-        <h1>🏢 {isAdmin ? 'All Buildings' : 'My Buildings'}</h1>
-        <p>{isAdmin ? 'View all buildings of all users' : 'View and manage your buildings'}</p>
-      </>
-    )}
-  </div>
-  
-  {/* ADD THIS BUTTON SECTION: */}
-  {!isAdmin && !filterUsername && (
-    <div className="header-actions">
-      <button 
-        onClick={handleExportCsv} 
-        disabled={isExporting || buildings.length === 0}
-        className="btn-export"
-        title="Export your buildings data to CSV"
-      >
-        {isExporting ? '⏳ Exporting...' : '📄 Export CSV'}
-      </button>
-    </div>
-  )}
-</div>
+        <div className="page-header">
+          <div className="header-left">
+            {filterUsername ? (
+              <>
+                <h1>🏢 Buildings of user: {filterUsername}</h1>
+                <p>View all buildings of user {filterUsername}</p>
+              </>
+            ) : (
+              <>
+                <h1>🏢 {isAdmin ? 'All Buildings' : 'My Buildings'}</h1>
+                <p>{isAdmin ? 'View all buildings of all users' : 'View and manage your buildings'}</p>
+              </>
+            )}
+          </div>
+
+          {!isAdmin && !filterUsername && (
+            <div className="header-actions">
+              <button
+                onClick={handleExportCsv}
+                disabled={isExporting || buildings.length === 0}
+                className="btn-export"
+                title="Export your buildings data to CSV"
+              >
+                {isExporting ? '⏳ Exporting...' : '📄 Export CSV'}
+              </button>
+            </div>
+          )}
+        </div>
 
         {filterUsername && (
           <div className="filter-info-box">
@@ -234,14 +222,15 @@ const handleExportCsv = async () => {
             </button>
           </div>
         )}
+
         {exportMessage && (
-  <div 
-    className={`alert ${exportMessage.includes('successfully') ? 'alert-success' : 'alert-error'}`}
-    style={{ marginBottom: '1rem' }}
-  >
-    {exportMessage}
-  </div>
-)}
+          <div
+            className={`alert ${exportMessage.includes('successfully') ? 'alert-success' : 'alert-error'}`}
+            style={{ marginBottom: '1rem' }}
+          >
+            {exportMessage}
+          </div>
+        )}
 
         {error && <div className="error-message">{error}</div>}
 
