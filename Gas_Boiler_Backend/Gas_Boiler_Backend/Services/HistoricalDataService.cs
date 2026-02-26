@@ -28,7 +28,7 @@ namespace Gas_Boiler_Backend.Services
 
         public async Task RecordAllBuildingsAsync()
         {
-            _logger.LogInformation("=== Recording historical data for all buildings ===");
+            _logger.LogInformation("Recording historical data for all buildings");
 
             var buildings = await _buildingRepository.GetAllAsync();
             var timestamp = DateTime.UtcNow;
@@ -47,21 +47,18 @@ namespace Gas_Boiler_Backend.Services
                 }
             }
 
-            _logger.LogInformation($"=== Recorded data for {successCount}/{buildings.Count()} buildings ===");
+            _logger.LogInformation($"Recorded data for {successCount}/{buildings.Count()} buildings");
         }
         private async Task RecordBuildingDataAsync(BuildingObject building, DateTime timestamp)
         {
-            // Get current calculations
             var calculations = await _calculatorService.CalculateBuildingMetricsAsync(building);
 
-            // Saving previous reading
-            var previousReading = await _readingRepository.GetLatestByBuildingIdAsync(building.Id); 
+            var previousReading = await _readingRepository.GetLatestByBuildingIdAsync(building.Id);
 
             var reading = new BuildingReading
             {
                 BuildingId = building.Id,
                 Timestamp = timestamp,
-                // IndoorTemperature = calculations.IndoorTemperature,
                 IndoorTemperature = previousReading?.IndoorTemperature ?? (building.DesiredTemperature - 6.0),
                 OutdoorTemperature = calculations.OutdoorTemperature,
                 TemperatureDifference = calculations.TemperatureDifference,
@@ -86,7 +83,7 @@ namespace Gas_Boiler_Backend.Services
         }
         public async Task<SeedHistoricalDataResponse> SeedHistoricalDataAsync(int daysToGenerate = 30)
         {
-            _logger.LogInformation($"=== Seeding {daysToGenerate} days of historical data ===");
+            _logger.LogInformation($"Seeding {daysToGenerate} days of historical data");
 
             var buildings = await _buildingRepository.GetAllAsync();
             var parameters = await _parametersRepository.GetAsync();
@@ -97,20 +94,17 @@ namespace Gas_Boiler_Backend.Services
             {
                 _logger.LogInformation($"Generating data for building: {building.Name}");
 
-                // Generate readings for the past N days (hourly)
                 for (int day = daysToGenerate - 1; day >= 0; day--)
                 {
                     for (int hour = 0; hour < 24; hour++)
                     {
                         var timestamp = DateTime.UtcNow
-                            .Date // Start from midnight today
+                            .Date
                             .AddDays(-day)
                             .AddHours(hour);
 
-                        // Generate realistic weather
                         double outdoorTemp = GenerateRealisticOutdoorTemp(day, hour, random);
 
-                        // Create reading with this temperature
                         var reading = CreateReadingForBuilding(
                             building,
                             parameters,
@@ -122,7 +116,6 @@ namespace Gas_Boiler_Backend.Services
                 }
             }
 
-            // Batch insert all readings
             _logger.LogInformation($"Inserting {readings.Count} readings into database...");
             await _readingRepository.CreateManyAsync(readings);
 
@@ -134,7 +127,7 @@ namespace Gas_Boiler_Backend.Services
                 DaysGenerated = daysToGenerate
             };
 
-            _logger.LogInformation($"=== Seeding complete! {readings.Count} readings for {buildings.Count()} buildings ===");
+            _logger.LogInformation($"Seeding complete: {readings.Count} readings for {buildings.Count()} buildings");
 
             return response;
         }
@@ -177,7 +170,6 @@ namespace Gas_Boiler_Backend.Services
                 ? building.GasBoilers.Average(b => (double)b.Efficiency)
                 : (double)parameters.DefaultBoilerEfficiency;
 
-            // Calculate daily cost using gas price from parameters
             double dailyCost = (dailyEnergy / avgEfficiency) * (double)parameters.GasPricePerKwh;
 
             return new BuildingReading
@@ -201,9 +193,6 @@ namespace Gas_Boiler_Backend.Services
             };
         }
 
-        /// <summary>
-        /// Gets total count of all readings in database
-        /// </summary>
         public async Task<int> GetTotalReadingsCountAsync()
         {
             return await _readingRepository.GetCountAsync();
