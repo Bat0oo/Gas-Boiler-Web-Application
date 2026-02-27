@@ -49,6 +49,19 @@ namespace Gas_Boiler_Backend.Services
 
             _logger.LogInformation($"=== Recorded data for {successCount}/{buildings.Count()} buildings ===");
         }
+        public async Task RecordBuildingInitialReadingAsync(int buildingId)
+        {
+            var building = await _buildingRepository.GetByIdAsync(buildingId);
+            if (building == null)
+            {
+                _logger.LogWarning($"Building {buildingId} not found when attempting initial reading.");
+                return;
+            }
+
+            await RecordBuildingDataAsync(building, DateTime.UtcNow);
+            _logger.LogInformation($"Initial reading recorded for new building {building.Name} (ID: {buildingId}).");
+        }
+
         private async Task RecordBuildingDataAsync(BuildingObject building, DateTime timestamp)
         {
             // Get current calculations
