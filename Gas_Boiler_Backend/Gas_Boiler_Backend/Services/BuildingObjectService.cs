@@ -10,17 +10,20 @@ namespace Gas_Boiler_Backend.Services
         private readonly IBuildingReadingRepository _readingRepository;
         private readonly ISystemParametersRepository _systemParametersRepository;
         private readonly IWeatherService _weatherService;
+        private readonly IHistoricalDataService _historicalDataService;
 
         public BuildingObjectService(
             IBuildingObjectRepository repository,
             IBuildingReadingRepository readingRepository,
             ISystemParametersRepository systemParametersRepository,
-            IWeatherService weatherService)
+            IWeatherService weatherService,
+            IHistoricalDataService historicalDataService)
         {
             _repository = repository;
             _readingRepository = readingRepository;
             _systemParametersRepository = systemParametersRepository;
             _weatherService = weatherService;
+            _historicalDataService = historicalDataService;
         }
 
         public async Task<IEnumerable<BuildingObjectResponseDto>> GetAllBuildingsAsync(int userId, bool isAdmin)
@@ -195,6 +198,8 @@ namespace Gas_Boiler_Backend.Services
 
             await _repository.AddAsync(building);
             await _repository.SaveChangesAsync();
+
+            await _historicalDataService.RecordBuildingInitialReadingAsync(building.Id);
 
             return new BuildingObjectResponseDto
             {
