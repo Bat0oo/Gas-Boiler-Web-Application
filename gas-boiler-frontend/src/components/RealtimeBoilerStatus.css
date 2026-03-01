@@ -1,0 +1,313 @@
+.realtime-status {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+/* Header */
+.realtime-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.realtime-header h3 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.realtime-indicators {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.connection-badge {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.connection-badge.connected {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.connection-badge.disconnected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.last-update {
+  font-size: 0.85rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* Temperature Section */
+.temperature-section {
+  margin-bottom: 2rem;
+}
+
+.temperature-section h4 {
+  margin: 0 0 1rem 0;
+  color: #374151;
+  font-size: 1.1rem;
+}
+
+.temperature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.temp-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  padding: 1.5rem;
+  color: white;
+}
+
+.temp-building {
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  opacity: 0.95;
+}
+
+.temp-display {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.temp-arrow {
+  font-size: 1.5rem;
+  opacity: 0.6;
+}
+
+.temp-desired {
+  opacity: 0.8;
+  font-size: 2rem;
+}
+
+.temp-details {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+/* Boilers Section */
+.boilers-section {
+  margin-bottom: 2rem;
+}
+
+.boilers-section h4 {
+  margin: 0 0 1rem 0;
+  color: #374151;
+  font-size: 1.1rem;
+}
+
+.boilers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.boiler-card {
+  background: #f9fafb;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.boiler-card:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.boiler-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.boiler-name {
+  font-weight: 700;
+  color: #1f2937;
+  font-size: 1rem;
+}
+
+.boiler-building {
+  font-size: 0.85rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.boiler-power {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.power-bar-container {
+  width: 100%;
+  height: 24px;
+  background: #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.power-bar {
+  height: 100%;
+  transition:
+    width 0.6s ease,
+    background-color 0.3s ease;
+  border-radius: 12px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.power-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.power-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.power-max {
+  font-size: 1rem;
+  color: #6b7280;
+}
+
+.power-change {
+  background: #dbeafe;
+  color: #1e40af;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  animation: pulse-change 1.5s ease;
+}
+
+@keyframes pulse-change {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+/* Warnings Section */
+.warnings-section {
+  margin-bottom: 1.5rem;
+}
+
+.warnings-section h4 {
+  margin: 0 0 1rem 0;
+  color: #991b1b;
+  font-size: 1.1rem;
+}
+
+.warnings-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.warning-card {
+  background: #fef2f2;
+  border: 2px solid #fecaca;
+  border-radius: 10px;
+  padding: 1.25rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.warning-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.warning-content {
+  flex: 1;
+}
+
+.warning-building {
+  font-weight: 700;
+  color: #991b1b;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.warning-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  color: #7f1d1d;
+  font-size: 0.95rem;
+}
+
+.warning-deficit {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #fecaca;
+  font-weight: 600;
+  color: #991b1b;
+}
+
+/* No Data */
+.no-data {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #6b7280;
+  font-style: italic;
+  font-size: 1.1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .realtime-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .temperature-grid,
+  .boilers-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .temp-display {
+    font-size: 2rem;
+  }
+
+  .power-info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -1,0 +1,579 @@
+.building-details-modal {
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  background: white;
+  border-radius: 12px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  padding: 1.5rem;
+}
+
+.building-details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.building-details-header h2 {
+  color: #1f2937;
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 0.25rem 0.5rem;
+  transition: color 0.2s;
+}
+
+.close-button:hover {
+  color: #1f2937;
+}
+
+.building-info-box {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.building-info-box p {
+  margin: 0.5rem 0;
+  color: #374151;
+  font-size: 0.95rem;
+}
+
+.building-info-box strong {
+  color: #1f2937;
+}
+
+.section-label {
+  color: #1f2937;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #8b5cf6;
+}
+
+.building-info-box .section-label {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #10b981;
+}
+
+.building-details-divider {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 1.5rem 0;
+}
+
+/* Add Boiler Section - Centered button, no heading */
+.add-boiler-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.btn-add-boiler {
+  background-color: #8b5cf6;
+  color: white;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  min-width: 180px;
+}
+
+.btn-add-boiler:hover {
+  background-color: #7c3aed;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.no-boilers-message {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  border: 1px dashed #d1d5db;
+}
+
+/* Boilers List */
+.boilers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.boiler-card {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem;
+  transition: box-shadow 0.2s;
+}
+
+.boiler-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.boiler-card-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.boiler-info {
+  flex: 1;
+}
+
+.boiler-info h4 {
+  margin: 0 0 0.75rem 0;
+  color: #1f2937;
+  font-size: 1.1rem;
+}
+
+.boiler-details {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.boiler-details p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.boiler-details strong {
+  color: #374151;
+}
+
+/* Boiler Action Buttons */
+.boiler-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.boiler-edit-button,
+.boiler-delete-button {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  min-width: 100px;
+}
+
+.boiler-edit-button {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.boiler-edit-button:hover {
+  background-color: #2563eb;
+  transform: translateY(-1px);
+}
+
+.boiler-delete-button {
+  background-color: #ef4444;
+  color: white;
+}
+
+.boiler-delete-button:hover {
+  background-color: #dc2626;
+  transform: translateY(-1px);
+}
+
+/* Building Action Buttons*/
+.building-action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.btn-edit-building,
+.btn-delete-building,
+.btn-close {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  min-width: 130px; /* All same width */
+}
+
+.btn-edit-building {
+  background-color: #10b981;
+  color: white;
+}
+
+.btn-edit-building:hover {
+  background-color: #059669;
+  transform: translateY(-1px);
+}
+
+.btn-delete-building {
+  background-color: #ef4444;
+  color: white;
+}
+
+.btn-delete-building:hover {
+  background-color: #dc2626;
+  transform: translateY(-1px);
+}
+
+/* Close button */
+.btn-close {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.btn-close:hover {
+  background-color: #2563eb;
+  transform: translateY(-1px);
+}
+
+/* Loading message */
+.loading-message {
+  text-align: center;
+  padding: 3rem;
+  color: #6b7280;
+  font-size: 1.1rem;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .boiler-card-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .boiler-actions {
+    flex-direction: row;
+    width: 100%;
+  }
+
+  .boiler-edit-button,
+  .boiler-delete-button {
+    flex: 1;
+  }
+
+  .building-action-buttons {
+    flex-direction: column;
+  }
+
+  .btn-edit-building,
+  .btn-delete-building,
+  .btn-close {
+    width: 100%;
+  }
+}
+
+.weather-info {
+  background-color: #eff6ff;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-top: 0.75rem;
+  border: 1px solid #bfdbfe;
+}
+
+.weather-info p {
+  margin: 0.35rem 0;
+}
+
+.weather-main {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+}
+
+.temp-value {
+  font-size: 1.25rem;
+  color: #2563eb;
+  font-weight: 700;
+}
+
+.weather-desc {
+  font-size: 0.9rem;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.weather-icon {
+  width: 30px;
+  height: 30px;
+  margin-left: 0.25rem;
+}
+
+.temp-diff {
+  font-size: 0.9rem;
+  color: #059669;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #bfdbfe;
+}
+
+/* Calculations Section */
+.calculations-section {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-radius: 12px;
+  border: 2px solid #38bdf8;
+}
+
+.calculations-section h3 {
+  margin: 0 0 1rem 0;
+  color: #0c4a6e;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.calculations-section h4 {
+  margin: 1rem 0 0.75rem 0;
+  color: #0369a1;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.loading-text,
+.error-text {
+  text-align: center;
+  padding: 2rem 0;
+  color: #64748b;
+  font-style: italic;
+}
+
+.error-text {
+  color: #dc2626;
+}
+
+/* Power Summary */
+.power-summary {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  border: 1px solid #bae6fd;
+}
+
+.power-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+.power-label {
+  font-weight: 600;
+  color: #475569;
+}
+
+.power-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.power-value.required {
+  color: #dc2626;
+}
+
+.power-value.available {
+  color: #16a34a;
+}
+
+.capacity-status {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 6px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.capacity-status.sufficient {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #86efac;
+}
+
+.capacity-status.insufficient {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+
+.surplus {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #15803d;
+}
+
+.deficit {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #b91c1c;
+}
+
+/* Heat Loss Breakdown */
+.heat-loss-breakdown {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  border: 1px solid #bae6fd;
+}
+
+.breakdown-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.breakdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: #f8fafc;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.breakdown-icon {
+  font-size: 1.5rem;
+}
+
+.breakdown-label {
+  flex: 1;
+  font-weight: 500;
+  color: #475569;
+}
+
+.breakdown-value {
+  font-weight: 700;
+  color: #0c4a6e;
+  font-size: 1.1rem;
+}
+
+.breakdown-total {
+  border-top: 2px solid #e2e8f0;
+  padding-top: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.total-line {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.35rem 0;
+  color: #475569;
+}
+
+.total-line.final {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0c4a6e;
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 2px solid #cbd5e1;
+}
+
+/* Cost Estimates */
+.cost-estimates {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #bae6fd;
+}
+
+.cost-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.cost-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border-radius: 8px;
+  border: 2px solid #fbbf24;
+}
+
+.cost-period {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #92400e;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.cost-amount {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #78350f;
+  margin-bottom: 0.25rem;
+}
+
+.cost-energy {
+  font-size: 0.8rem;
+  color: #92400e;
+  font-weight: 500;
+}
+
+.cost-info {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: #64748b;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .breakdown-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cost-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .power-value {
+    font-size: 1.2rem;
+  }
+
+  .cost-amount {
+    font-size: 1.3rem;
+  }
+}

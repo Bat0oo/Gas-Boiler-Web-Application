@@ -18,7 +18,7 @@ namespace Gas_Boiler_Backend.Models
         public double GasConsumption { get; set; } // in m³
 
         [Required]
-        public double Cost { get; set; } // in RSD or selected currency
+        public double Cost { get; set; }
 
         public double OutsideTemperature { get; set; }
 

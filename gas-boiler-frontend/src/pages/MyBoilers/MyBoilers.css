@@ -1,0 +1,301 @@
+.my-boilers-page {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.admin-mode-banner-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background-color: #3b82f6;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.banner-dismiss {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.banner-dismiss:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.page-header {
+  margin-bottom: 2rem;
+}
+
+.page-header h1 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.page-header p {
+  color: #666;
+  font-size: 1rem;
+}
+
+/* Filter info box */
+.filter-info-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fef3c7;
+  border: 2px solid #f59e0b;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.filter-text {
+  color: #92400e;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.filter-text strong {
+  color: #78350f;
+  font-weight: 700;
+}
+
+.btn-clear-filter {
+  background-color: #6b7280;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btn-clear-filter:hover {
+  background-color: #4b5563;
+  transform: translateY(-1px);
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.error-message {
+  background-color: #fee;
+  color: #c33;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  border-left: 4px solid #c33;
+}
+
+.no-data {
+  text-align: center;
+  padding: 3rem;
+  background: #f9f9f9;
+  border-radius: 8px;
+  color: #666;
+}
+
+.no-data p {
+  margin: 0.5rem 0;
+}
+
+.table-container {
+  overflow-x: auto;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.boilers-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.boilers-table thead {
+  background: #f5f5f5;
+  border-bottom: 2px solid #ddd;
+}
+
+.boilers-table th {
+  padding: 1rem 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  white-space: nowrap;
+}
+
+.boilers-table th:last-child {
+  text-align: center;
+}
+
+.boilers-table tbody tr {
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s;
+}
+
+.boilers-table tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.boilers-table td {
+  padding: 1rem 0.75rem;
+  color: #555;
+}
+
+.boilers-table td.current-power {
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.boilers-table td.location {
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.boilers-table td.actions {
+  text-align: center;
+}
+
+.actions-wrapper {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-edit,
+.btn-delete {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0.25rem 0.5rem;
+  transition: transform 0.2s;
+}
+
+.btn-edit:hover {
+  transform: scale(1.2);
+}
+
+.btn-delete:hover {
+  transform: scale(1.2);
+}
+
+.delete-confirm {
+  display: inline-flex;
+  gap: 0.25rem;
+}
+
+.btn-confirm-delete,
+.btn-cancel-delete {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0.25rem 0.5rem;
+  transition: all 0.2s;
+}
+
+.btn-confirm-delete {
+  color: #dc2626;
+}
+
+.btn-cancel-delete {
+  color: #666;
+}
+
+.btn-confirm-delete:hover {
+  color: #b91c1c;
+  transform: scale(1.2);
+}
+
+.btn-cancel-delete:hover {
+  color: #333;
+  transform: scale(1.2);
+}
+
+@media (max-width: 1200px) {
+  .boilers-table {
+    font-size: 0.85rem;
+  }
+
+  .boilers-table th,
+  .boilers-table td {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .filter-info-box {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .btn-clear-filter {
+    align-self: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .my-boilers-page {
+    padding: 1rem;
+  }
+
+  .table-container {
+    overflow-x: scroll;
+  }
+
+  .boilers-table {
+    min-width: 1000px;
+  }
+
+  .admin-mode-banner-sticky {
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .banner-dismiss {
+    width: 24px;
+    height: 24px;
+    font-size: 0.9rem;
+  }
+}

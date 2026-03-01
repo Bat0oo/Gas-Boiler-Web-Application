@@ -30,15 +30,22 @@ namespace Gas_Boiler_Backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AlarmType")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<DateTime?>("AcknowledgedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("GasBoilerId")
+                    b.Property<int>("BuildingId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsResolved")
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Details")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsAcknowledged")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<string>("Message")
@@ -49,14 +56,108 @@ namespace Gas_Boiler_Backend.Migrations
                     b.Property<DateTime?>("ResolvedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Severity")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GasBoilerId");
+                    b.HasIndex("BuildingId");
+
+                    b.HasIndex("CreatedAt");
+
+                    b.HasIndex("IsActive");
+
+                    b.HasIndex("Type", "BuildingId", "CreatedAt");
 
                     b.ToTable("Alarms");
+                });
+
+            modelBuilder.Entity("Gas_Boiler_Backend.Models.AlarmSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AlertCooldownMinutes")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("CapacityAlertsEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("CapacityDeficitThreshold")
+                        .HasColumnType("float");
+
+                    b.Property<bool>("HighCostAlertsEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("HighDailyCostThreshold")
+                        .HasColumnType("float");
+
+                    b.Property<bool>("HighIndoorTempAlertsEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("HighIndoorTempThreshold")
+                        .HasColumnType("float");
+
+                    b.Property<bool>("HighOutdoorTempAlertsEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("HighOutdoorTempThreshold")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("LowIndoorTempAlertsEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("LowIndoorTempThreshold")
+                        .HasColumnType("float");
+
+                    b.Property<bool>("LowOutdoorTempAlertsEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("LowOutdoorTempThreshold")
+                        .HasColumnType("float");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AlarmSettings");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AlertCooldownMinutes = 60,
+                            CapacityAlertsEnabled = true,
+                            CapacityDeficitThreshold = 0.0,
+                            HighCostAlertsEnabled = false,
+                            HighDailyCostThreshold = 50.0,
+                            HighIndoorTempAlertsEnabled = true,
+                            HighIndoorTempThreshold = 28.0,
+                            HighOutdoorTempAlertsEnabled = true,
+                            HighOutdoorTempThreshold = 35.0,
+                            LastUpdated = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            LowIndoorTempAlertsEnabled = true,
+                            LowIndoorTempThreshold = 18.0,
+                            LowOutdoorTempAlertsEnabled = true,
+                            LowOutdoorTempThreshold = -15.0,
+                            UpdatedBy = "System"
+                        });
                 });
 
             modelBuilder.Entity("Gas_Boiler_Backend.Models.BuildingObject", b =>
@@ -82,11 +183,25 @@ namespace Gas_Boiler_Backend.Migrations
                     b.Property<double>("FloorUValue")
                         .HasColumnType("float");
 
-                    b.Property<int>("GasBoilerId")
-                        .HasColumnType("int");
-
                     b.Property<double>("HeatingArea")
                         .HasColumnType("float");
+
+                    b.Property<double>("Height")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.Property<double>("WallArea")
                         .HasColumnType("float");
@@ -102,10 +217,81 @@ namespace Gas_Boiler_Backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GasBoilerId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("BuildingObjects");
+                });
+
+            modelBuilder.Entity("Gas_Boiler_Backend.Models.BuildingReading", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<double>("AvailablePowerKw")
+                        .HasColumnType("float");
+
+                    b.Property<int>("BuildingId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("DailyCostEur")
+                        .HasColumnType("float");
+
+                    b.Property<bool>("HasSufficientCapacity")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("HeatLossWatts")
+                        .HasColumnType("float");
+
+                    b.Property<double>("IndoorTemperature")
+                        .HasColumnType("float");
+
+                    b.Property<double>("OutdoorTemperature")
+                        .HasColumnType("float");
+
+                    b.Property<double>("RequiredPowerKw")
+                        .HasColumnType("float");
+
+                    b.Property<double>("TemperatureDifference")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BuildingId");
+
+                    b.ToTable("BuildingReadings");
+                });
+
+            modelBuilder.Entity("Gas_Boiler_Backend.Models.DataManagementSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RecordingIntervalMinutes")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DataManagementSettings");
                 });
 
             modelBuilder.Entity("Gas_Boiler_Backend.Models.GasBoiler", b =>
@@ -116,6 +302,9 @@ namespace Gas_Boiler_Backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("BuildingObjectId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -125,19 +314,13 @@ namespace Gas_Boiler_Backend.Migrations
                     b.Property<double>("Efficiency")
                         .HasColumnType("float");
 
-                    b.Property<double>("Latitude")
-                        .HasColumnType("float");
-
-                    b.Property<double>("Longitude")
-                        .HasColumnType("float");
-
                     b.Property<double>("MaxPower")
                         .HasColumnType("float");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -146,6 +329,8 @@ namespace Gas_Boiler_Backend.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BuildingObjectId");
 
                     b.HasIndex("UserId");
 
@@ -185,6 +370,8 @@ namespace Gas_Boiler_Backend.Migrations
 
                     b.HasIndex("GasBoilerId");
 
+                    b.HasIndex("Timestamp");
+
                     b.ToTable("HistoricalData");
                 });
 
@@ -196,26 +383,52 @@ namespace Gas_Boiler_Backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                    b.Property<decimal>("CeilingUValue")
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("ParameterName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<decimal>("DefaultBoilerEfficiency")
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Unit")
+                    b.Property<decimal>("FloorUValue")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("GasPricePerKwh")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("GroundTemp")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("OutdoorDesignTemp")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("OutdoorInfluenceFactor")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("SafetyFactor")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("TemperatureTimeStepSeconds")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("ThermalMassCoefficient")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("UpdatedBy")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<decimal>("WallUValue")
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<double>("Value")
-                        .HasColumnType("float");
+                    b.Property<decimal>("WindowToWallRatio")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("WindowUValue")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -225,20 +438,21 @@ namespace Gas_Boiler_Backend.Migrations
                         new
                         {
                             Id = 1,
-                            Description = "Average ground temperature",
-                            ParameterName = "GroundTemperature",
-                            Unit = "°C",
-                            UpdatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Value = 10.0
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Price of natural gas per kWh",
-                            ParameterName = "GasPricePerKWh",
-                            Unit = "RSD/kWh",
-                            UpdatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Value = 5.5
+                            CeilingUValue = 0.25m,
+                            DefaultBoilerEfficiency = 0.90m,
+                            FloorUValue = 0.40m,
+                            GasPricePerKwh = 0.05m,
+                            GroundTemp = 10.0m,
+                            LastUpdated = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            OutdoorDesignTemp = -15.0m,
+                            OutdoorInfluenceFactor = 0.15m,
+                            SafetyFactor = 1.15m,
+                            TemperatureTimeStepSeconds = 60,
+                            ThermalMassCoefficient = 1200.0m,
+                            UpdatedBy = "System",
+                            WallUValue = 0.50m,
+                            WindowToWallRatio = 0.15m,
+                            WindowUValue = 1.40m
                         });
                 });
 
@@ -277,38 +491,75 @@ namespace Gas_Boiler_Backend.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Username")
+                        .IsUnique();
+
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "admin@example.com",
+                            IsBlocked = false,
+                            PasswordHash = "$2a$12$xYluxINGkkohipBPd/xZLe2cJl2Y7dSomJAu5WT8MJRkd8u6J6nJW",
+                            Role = "Admin",
+                            Username = "admin"
+                        });
                 });
 
             modelBuilder.Entity("Gas_Boiler_Backend.Models.Alarm", b =>
                 {
-                    b.HasOne("Gas_Boiler_Backend.Models.GasBoiler", "GasBoiler")
-                        .WithMany("Alarms")
-                        .HasForeignKey("GasBoilerId")
+                    b.HasOne("Gas_Boiler_Backend.Models.BuildingObject", "Building")
+                        .WithMany()
+                        .HasForeignKey("BuildingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("GasBoiler");
+                    b.Navigation("Building");
                 });
 
             modelBuilder.Entity("Gas_Boiler_Backend.Models.BuildingObject", b =>
                 {
-                    b.HasOne("Gas_Boiler_Backend.Models.GasBoiler", "GasBoiler")
-                        .WithOne("BuildingObject")
-                        .HasForeignKey("Gas_Boiler_Backend.Models.BuildingObject", "GasBoilerId")
+                    b.HasOne("Gas_Boiler_Backend.Models.User", "User")
+                        .WithMany("BuildingObjects")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Gas_Boiler_Backend.Models.BuildingReading", b =>
+                {
+                    b.HasOne("Gas_Boiler_Backend.Models.BuildingObject", "Building")
+                        .WithMany()
+                        .HasForeignKey("BuildingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("GasBoiler");
+                    b.Navigation("Building");
                 });
 
             modelBuilder.Entity("Gas_Boiler_Backend.Models.GasBoiler", b =>
                 {
+                    b.HasOne("Gas_Boiler_Backend.Models.BuildingObject", "BuildingObject")
+                        .WithMany("GasBoilers")
+                        .HasForeignKey("BuildingObjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Gas_Boiler_Backend.Models.User", "User")
                         .WithMany("GasBoilers")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("BuildingObject");
 
                     b.Navigation("User");
                 });
@@ -324,17 +575,20 @@ namespace Gas_Boiler_Backend.Migrations
                     b.Navigation("GasBoiler");
                 });
 
+            modelBuilder.Entity("Gas_Boiler_Backend.Models.BuildingObject", b =>
+                {
+                    b.Navigation("GasBoilers");
+                });
+
             modelBuilder.Entity("Gas_Boiler_Backend.Models.GasBoiler", b =>
                 {
-                    b.Navigation("Alarms");
-
-                    b.Navigation("BuildingObject");
-
                     b.Navigation("HistoricalData");
                 });
 
             modelBuilder.Entity("Gas_Boiler_Backend.Models.User", b =>
                 {
+                    b.Navigation("BuildingObjects");
+
                     b.Navigation("GasBoilers");
                 });
 #pragma warning restore 612, 618

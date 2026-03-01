@@ -28,5 +28,6 @@ namespace Gas_Boiler_Backend.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public ICollection<GasBoiler> GasBoilers { get; set; } = new List<GasBoiler>();
+        public ICollection<BuildingObject> BuildingObjects { get; set; } = new List<BuildingObject>();
     }
 }

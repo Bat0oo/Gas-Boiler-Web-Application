@@ -9,25 +9,37 @@ namespace Gas_Boiler_Backend.Models
         public int Id { get; set; }
 
         [Required]
-        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+        [MaxLength(50)]
+        public string Type { get; set; } = string.Empty; // INSUFFICIENT_CAPACITY, HIGH_INDOOR_TEMP, etc.
 
         [Required]
-        [MaxLength(50)]
-        public string AlarmType { get; set; } = string.Empty; // "InsufficientPower", "TemperatureInversion"
+        [MaxLength(20)]
+        public string Severity { get; set; } = string.Empty; // INFO, WARNING, CRITICAL
 
         [Required]
         [MaxLength(500)]
         public string Message { get; set; } = string.Empty;
 
-        public bool IsResolved { get; set; } = false;
+        public string? Details { get; set; } // JSON string with additional data
+
+        [Required]
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        public DateTime? AcknowledgedAt { get; set; }
 
         public DateTime? ResolvedAt { get; set; }
 
-        // Foreign key
         [Required]
-        public int GasBoilerId { get; set; }
+        public bool IsActive { get; set; } = true;
 
-        [ForeignKey("GasBoilerId")]
-        public GasBoiler GasBoiler { get; set; } = null!;
+        [Required]
+        public bool IsAcknowledged { get; set; } = false;
+
+        // Foreign key to Building
+        [Required]
+        public int BuildingId { get; set; }
+
+        [ForeignKey(nameof(BuildingId))]
+        public BuildingObject Building { get; set; } = null!;
     }
 }

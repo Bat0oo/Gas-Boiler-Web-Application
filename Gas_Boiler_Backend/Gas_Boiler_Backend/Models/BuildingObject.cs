@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Gas_Boiler_Backend.Models
 {
@@ -9,42 +8,72 @@ namespace Gas_Boiler_Backend.Models
         public int Id { get; set; }
 
         [Required]
-        public double HeatingArea { get; set; } // in m²
+        [MaxLength(200)]
+        public string Name { get; set; } = string.Empty;
 
         [Required]
-        public double DesiredTemperature { get; set; } // in °C
+        public int UserId { get; set; }
 
-        // Heat transfer coefficients (U-values) in W/(m²·K)
+        // Location
         [Required]
+        public double Latitude { get; set; }
+
+        [Required]
+        public double Longitude { get; set; }
+
+        // Dimensions
+        [Required]
+        [Range(0.1, double.MaxValue)]
+        public double HeatingArea { get; set; } // m² (floor area to be heated)
+
+        [Required]
+        [Range(0.1, 10)]
+        public double Height { get; set; } = 2.7; // m (ceiling height)
+
+        // Calculated property: Volume
+        public double Volume => HeatingArea * Height; // m³
+
+        // Temperature
+        [Required]
+        [Range(-50, 50)]
+        public double DesiredTemperature { get; set; } // °C
+
+        // U-values (thermal transmittance W/m²·K)
+        [Required]
+        [Range(0, 5)]
         public double WallUValue { get; set; }
 
         [Required]
+        [Range(0, 5)]
         public double WindowUValue { get; set; }
 
         [Required]
+        [Range(0, 5)]
         public double CeilingUValue { get; set; }
 
         [Required]
+        [Range(0, 5)]
         public double FloorUValue { get; set; }
 
-        // Surface areas in m²
+        // Surface areas (m²)
         [Required]
+        [Range(0, double.MaxValue)]
         public double WallArea { get; set; }
 
         [Required]
+        [Range(0, double.MaxValue)]
         public double WindowArea { get; set; }
 
         [Required]
+        [Range(0, double.MaxValue)]
         public double CeilingArea { get; set; }
 
         [Required]
+        [Range(0, double.MaxValue)]
         public double FloorArea { get; set; }
 
-        // Foreign key
-        [Required]
-        public int GasBoilerId { get; set; }
-
-        [ForeignKey("GasBoilerId")]
-        public GasBoiler GasBoiler { get; set; } = null!;
+        // Navigation properties
+        public User? User { get; set; }
+        public ICollection<GasBoiler> GasBoilers { get; set; } = new List<GasBoiler>();
     }
 }

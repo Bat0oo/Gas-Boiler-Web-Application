@@ -2,6 +2,7 @@ namespace Gas_Boiler_Backend
 {
     public class WeatherForecast
     {
+        // TODO: REMOVE
         public DateOnly Date { get; set; }
 
         public int TemperatureC { get; set; }
