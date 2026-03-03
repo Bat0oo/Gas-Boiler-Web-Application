@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gas Boiler Web Application — Full Technical Documentation</title>
+<style>
+  /* ── Reset & base ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 14px; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f8fafc;
+    color: #1e293b;
+    line-height: 1.65;
+  }
+
+  /* ── Page layout ── */
+  .page { max-width: 1050px; margin: 0 auto; padding: 40px 48px; background: #fff; }
+
+  /* ── Cover ── */
+  .cover {
+    text-align: center;
+    padding: 80px 0 60px;
+    border-bottom: 3px solid #3b82f6;
+    margin-bottom: 60px;
+  }
+  .cover h1 { font-size: 2.6rem; color: #1e3a5f; }
+  .cover .subtitle { font-size: 1.15rem; color: #64748b; margin-top: 14px; }
+  .cover .meta { margin-top: 30px; font-size: 0.9rem; color: #94a3b8; }
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin: 3px;
+  }
+  .badge-blue  { background:#dbeafe; color:#1d4ed8; }
+  .badge-green { background:#dcfce7; color:#15803d; }
+  .badge-red   { background:#fee2e2; color:#b91c1c; }
+  .badge-gray  { background:#f1f5f9; color:#475569; }
+
+  /* ── TOC ── */
+  .toc { background:#f1f5f9; border-radius:10px; padding:30px 36px; margin-bottom:56px; }
+  .toc h2 { font-size:1.2rem; margin-bottom:16px; color:#1e3a5f; }
+  .toc ol { padding-left:18px; }
+  .toc li { margin-bottom:5px; }
+  .toc a { color:#3b82f6; text-decoration:none; }
+  .toc a:hover { text-decoration: underline; }
+
+  /* ── Headings ── */
+  h2.section-title {
+    font-size: 1.6rem;
+    color: #1e3a5f;
+    border-bottom: 2px solid #3b82f6;
+    padding-bottom: 8px;
+    margin: 56px 0 22px;
+  }
+  h3.sub-title {
+    font-size: 1.15rem;
+    color: #1e40af;
+    margin: 34px 0 12px;
+  }
+  h4.mini-title {
+    font-size: 0.97rem;
+    color: #334155;
+    margin: 22px 0 8px;
+    font-weight: 700;
+  }
+
+  /* ── Prose ── */
+  p { margin-bottom: 10px; }
+  ul, ol { padding-left: 22px; margin-bottom: 10px; }
+  li { margin-bottom: 4px; }
+
+  /* ── Code blocks ── */
+  pre {
+    background: #0f172a;
+    color: #e2e8f0;
+    border-radius: 8px;
+    padding: 20px 22px;
+    overflow-x: auto;
+    font-size: 0.825rem;
+    line-height: 1.6;
+    margin: 12px 0 18px;
+    border-left: 4px solid #3b82f6;
+  }
+  code { font-family: 'Consolas', 'Cascadia Code', monospace; }
+  /* inline code */
+  p code, li code {
+    background: #f1f5f9;
+    color: #be185d;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 0.87em;
+  }
+
+  /* ── Info boxes ── */
+  .info-box {
+    border-left: 4px solid #3b82f6;
+    background: #eff6ff;
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin: 16px 0;
+  }
+  .warn-box {
+    border-left: 4px solid #f59e0b;
+    background: #fffbeb;
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin: 16px 0;
+  }
+  .danger-box {
+    border-left: 4px solid #ef4444;
+    background: #fef2f2;
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin: 16px 0;
+  }
+
+  /* ── Feature grid ── */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin: 20px 0;
+  }
+  .feature-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 16px 18px;
+  }
+  .feature-card h4 { color: #1d4ed8; margin-bottom: 6px; }
+
+  /* ── Tables ── */
+  table { width:100%; border-collapse:collapse; margin:14px 0 22px; font-size:0.88rem; }
+  th { background:#1e3a5f; color:#fff; padding:9px 12px; text-align:left; }
+  td { border-bottom:1px solid #e2e8f0; padding:8px 12px; vertical-align:top; }
+  tr:nth-child(even) td { background:#f8fafc; }
+
+  /* ── Print ── */
+  @media print {
+    body { background:#fff; font-size:11px; }
+    .page { padding:20px 28px; max-width:100%; }
+    pre { break-inside: avoid; font-size:0.77rem; }
+    h2.section-title { break-before: page; }
+    .cover { break-after: page; }
+    .toc { break-after: page; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ═══════════════════════════════════════════════════════════ COVER -->
+<div class="cover">
+  <h1>⚙️ Gas Boiler Web Application</h1>
+  <p class="subtitle">Full Technical Documentation — Features, Architecture &amp; Source Code</p>
+  <div style="margin-top:24px;">
+    <span class="badge badge-blue">ASP.NET Core</span>
+    <span class="badge badge-blue">Entity Framework Core</span>
+    <span class="badge badge-blue">SignalR</span>
+    <span class="badge badge-blue">SQL Server</span>
+    <span class="badge badge-green">React 18</span>
+    <span class="badge badge-green">TypeScript</span>
+    <span class="badge badge-green">Leaflet Maps</span>
+    <span class="badge badge-green">Recharts</span>
+    <span class="badge badge-red">JWT Auth</span>
+    <span class="badge badge-gray">OpenWeatherMap API</span>
+  </div>
+  <p class="meta">Generated: March 2026 &nbsp;|&nbsp; Branch: fix-bug-no-temperatures-when-creating-building</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ TABLE OF CONTENTS -->
+<div class="toc">
+  <h2>Table of Contents</h2>
+  <ol>
+    <li><a href="#overview">Project Overview</a></li>
+    <li><a href="#tech-stack">Tech Stack &amp; Dependencies</a></li>
+    <li><a href="#architecture">Architecture Overview</a></li>
+    <li><a href="#db">Database — Models &amp; Schema</a></li>
+    <li><a href="#backend-config">Backend Configuration (Program.cs)</a></li>
+    <li><a href="#controllers">REST API Controllers</a></li>
+    <li><a href="#services">Business Logic — Services</a></li>
+    <li><a href="#background">Background Services (Hosted)</a></li>
+    <li><a href="#signalr">Real-Time — SignalR Hub</a></li>
+    <li><a href="#jwt">Authentication — JWT Helper</a></li>
+    <li><a href="#frontend-routing">Frontend — Routing</a></li>
+    <li><a href="#auth-context">Frontend — Auth Context</a></li>
+    <li><a href="#api-service">Frontend — API Service (Axios)</a></li>
+    <li><a href="#signalr-hooks">Frontend — SignalR Hooks</a></li>
+    <li><a href="#pages">Frontend — Pages</a></li>
+    <li><a href="#components">Frontend — Key Components</a></li>
+    <li><a href="#features-summary">Feature Summary Table</a></li>
+  </ol>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ 1. OVERVIEW -->
+<h2 class="section-title" id="overview">1. Project Overview</h2>
+<p>
+  The <strong>Gas Boiler Web Application</strong> is a full-stack monitoring and control system
+  for gas boilers installed in buildings. It enables users to register buildings on an interactive
+  map, attach gas boilers, monitor indoor/outdoor temperatures in real time, receive alarms for
+  anomalies, and analyse historical heating data via charts.
+</p>
+<div class="feature-grid">
+  <div class="feature-card">
+    <h4>🏢 Building Management</h4>
+    <p>Create, edit, delete buildings on an interactive OpenStreetMap map. Specify thermal properties (U-values, surface areas, desired temperature).</p>
+  </div>
+  <div class="feature-card">
+    <h4>🔥 Boiler Management</h4>
+    <p>Attach one or more gas boilers per building. Configure max power and efficiency. Real-time power output via P-controller.</p>
+  </div>
+  <div class="feature-card">
+    <h4>⚡ P-Controller (Real-Time)</h4>
+    <p>Background proportional controller runs every minute, adjusts boiler power to maintain desired indoor temperature. Pushes live updates via SignalR.</p>
+  </div>
+  <div class="feature-card">
+    <h4>🚨 Alarm System</h4>
+    <p>Automatic alarms for: insufficient capacity, high/low indoor temp, high/low outdoor temp, high daily cost. Real-time notifications via SignalR.</p>
+  </div>
+  <div class="feature-card">
+    <h4>📊 Charts &amp; Analytics</h4>
+    <p>Historical charts for temperature, heat loss, power requirements, and daily heating costs. Filter by building and date range.</p>
+  </div>
+  <div class="feature-card">
+    <h4>📁 Data Management</h4>
+    <p>Admin can configure recording interval, generate test data, export CSV, and clear all historical data.</p>
+  </div>
+  <div class="feature-card">
+    <h4>👥 User Management</h4>
+    <p>Role-based access (Admin / User). Admin can view all data, block/unblock users. Each user sees only their own buildings.</p>
+  </div>
+  <div class="feature-card">
+    <h4>⚙️ System Parameters</h4>
+    <p>Admin configures global default U-values, gas price, safety factor, boiler efficiency, thermal mass, temperature step — used in heat-loss calculations.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ 2. TECH STACK -->
+<h2 class="section-title" id="tech-stack">2. Tech Stack &amp; Dependencies</h2>
+<table>
+  <tr><th>Layer</th><th>Technology / Library</th><th>Purpose</th></tr>
+  <tr><td>Backend runtime</td><td>ASP.NET Core 8 (C#)</td><td>Web API server</td></tr>
+  <tr><td>ORM</td><td>Entity Framework Core + SQL Server</td><td>Database access, migrations</td></tr>
+  <tr><td>Real-time</td><td>Microsoft SignalR</td><td>Push live updates to clients</td></tr>
+  <tr><td>Authentication</td><td>JWT Bearer + BCrypt.Net</td><td>Token auth, password hashing</td></tr>
+  <tr><td>External API</td><td>OpenWeatherMap API</td><td>Current outdoor temperature per location</td></tr>
+  <tr><td>API docs</td><td>Swagger / Swashbuckle</td><td>Interactive API explorer (dark theme)</td></tr>
+  <tr><td>Frontend runtime</td><td>React 18 + TypeScript</td><td>SPA</td></tr>
+  <tr><td>Maps</td><td>React-Leaflet + Leaflet + OpenStreetMap</td><td>Interactive map with markers</td></tr>
+  <tr><td>Charts</td><td>Recharts</td><td>Temperature, power, cost, heat-loss charts</td></tr>
+  <tr><td>HTTP client</td><td>Axios</td><td>REST API calls with JWT interceptor</td></tr>
+  <tr><td>SignalR client</td><td>@microsoft/signalr</td><td>Real-time connection to BoilerHub</td></tr>
+  <tr><td>Routing</td><td>React Router v6</td><td>Client-side routing</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════════════ 3. ARCHITECTURE -->
+<h2 class="section-title" id="architecture">3. Architecture Overview</h2>
+<p>The backend follows a layered <strong>Repository + Service + Controller</strong> pattern with dependency injection registered in <code>Program.cs</code>.</p>
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                   React (TypeScript) SPA                    │
+│  Pages / Components → Services (Axios) → JWT interceptor   │
+│  useSignalR hook → @microsoft/signalr client               │
+└────────────────────────────┬────────────────────────────────┘
+                             │ HTTPS REST + WebSocket
+┌────────────────────────────▼────────────────────────────────┐
+│               ASP.NET Core 8 Web API                        │
+│                                                             │
+│  Controllers → Services → Repositories → AppDbContext       │
+│                                                             │
+│  Background Services:                                       │
+│   ├─ BoilerControlBackgroundService  (P-controller, 1min)  │
+│   └─ DataRecordingBackgroundService  (configurable interval)│
+│                                                             │
+│  SignalR Hub: /boilerHub                                    │
+│   Broadcasts: IndoorTemperatureUpdated, NewAlarm, etc.      │
+│                                                             │
+│  External: OpenWeatherMap API  (outdoor temp per location)  │
+└────────────────────────────┬────────────────────────────────┘
+                             │ EF Core
+┌────────────────────────────▼────────────────────────────────┐
+│              SQL Server Database                             │
+│  Tables: Users, BuildingObjects, GasBoilers,                │
+│          BuildingReadings, HistoricalData, Alarms,          │
+│          AlarmSettings, SystemParameters,                   │
+│          DataManagementSettings                             │
+└─────────────────────────────────────────────────────────────┘</code></pre>
+
+<h3 class="sub-title">DI Registration Summary (<code>Program.cs</code>)</h3>
+<p>All repositories are registered as <code>Scoped</code>, services as <code>Scoped</code>, background services as <code>HostedService</code>, and the weather HTTP client as a typed <code>HttpClient</code>.</p>
+
+<!-- ═══════════════════════════════════════════════════════ 4. DATABASE -->
+<h2 class="section-title" id="db">4. Database — Models &amp; Schema</h2>
+
+<h3 class="sub-title">4.1 User</h3>
+<p><strong>File:</strong> <code>Models/User.cs</code> | <strong>Table:</strong> <code>Users</code></p>
+<pre><code>public class User
+{
+    [Key] public int Id { get; set; }
+    [Required][MaxLength(100)] public string Username { get; set; }
+    [Required][EmailAddress][MaxLength(100)] public string Email { get; set; }
+    [Required] public string PasswordHash { get; set; }         // BCrypt
+    [Required][MaxLength(20)] public string Role { get; set; }  // "Admin" | "User"
+    public bool IsBlocked { get; set; } = false;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    // Navigation
+    public ICollection&lt;GasBoiler&gt; GasBoilers { get; set; }
+    public ICollection&lt;BuildingObject&gt; BuildingObjects { get; set; }
+}</code></pre>
+<ul>
+  <li>Unique indexes on <code>Email</code> and <code>Username</code></li>
+  <li>Seed: admin user (id=1, username="admin")</li>
+  <li>Delete restricted — cannot delete user who still has buildings</li>
+</ul>
+
+<h3 class="sub-title">4.2 BuildingObject</h3>
+<p><strong>File:</strong> <code>Models/BuildingObject.cs</code> | <strong>Table:</strong> <code>BuildingObjects</code></p>
+<pre><code>public class BuildingObject
+{
+    [Key] public int Id { get; set; }
+    [Required][MaxLength(200)] public string Name { get; set; }
+    [Required] public int UserId { get; set; }
+
+    // Location
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
+
+    // Dimensions
+    public double HeatingArea { get; set; }   // m² — floor area
+    public double Height { get; set; } = 2.7; // m — ceiling height
+    public double Volume => HeatingArea * Height; // computed
+
+    // Temperature target
+    public double DesiredTemperature { get; set; } // °C  [-50..50]
+
+    // U-values (W/m²·K)
+    public double WallUValue { get; set; }
+    public double WindowUValue { get; set; }
+    public double CeilingUValue { get; set; }
+    public double FloorUValue { get; set; }
+
+    // Surface areas (m²)
+    public double WallArea { get; set; }
+    public double WindowArea { get; set; }
+    public double CeilingArea { get; set; }
+    public double FloorArea { get; set; }
+
+    // Navigation
+    public User? User { get; set; }
+    public ICollection&lt;GasBoiler&gt; GasBoilers { get; set; }
+}</code></pre>
+
+<h3 class="sub-title">4.3 GasBoiler</h3>
+<p><strong>File:</strong> <code>Models/GasBoiler.cs</code> | <strong>Table:</strong> <code>GasBoilers</code></p>
+<pre><code>public class GasBoiler
+{
+    [Key] public int Id { get; set; }
+    [Required][MaxLength(200)] public string Name { get; set; }
+    [Required] public double MaxPower { get; set; }        // kW
+    [Required][Range(0,1)] public double Efficiency { get; set; } // 0.0–1.0
+    public double CurrentPower { get; set; } = 0;          // kW (set by P-controller)
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
+    [Required] public int UserId { get; set; }
+    [Required] public int BuildingObjectId { get; set; }
+
+    // Navigation
+    public User User { get; set; }
+    public BuildingObject BuildingObject { get; set; }
+    public ICollection&lt;HistoricalData&gt; HistoricalData { get; set; }
+}</code></pre>
+<ul><li>Deleting a BuildingObject cascades to its boilers and their historical data</li></ul>
+
+<h3 class="sub-title">4.4 BuildingReading</h3>
+<p><strong>File:</strong> <code>Models/BuildingReading.cs</code> | <strong>Table:</strong> <code>BuildingReadings</code></p>
+<p>Snapshot recorded by the background service at each interval. Contains all real-time values for a building at a point in time.</p>
+<pre><code>public class BuildingReading
+{
+    [Key] public int Id { get; set; }
+    [Required] public int BuildingId { get; set; }
+    [Required] public DateTime Timestamp { get; set; }
+
+    public double IndoorTemperature { get; set; }
+    public double OutdoorTemperature { get; set; }
+    public double TemperatureDifference { get; set; }
+    public double HeatLossWatts { get; set; }
+    public double RequiredPowerKw { get; set; }
+    public double AvailablePowerKw { get; set; }
+    public bool HasSufficientCapacity { get; set; }
+    public double DailyCostEur { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+}</code></pre>
+
+<h3 class="sub-title">4.5 HistoricalData</h3>
+<p><strong>File:</strong> <code>Models/HistoricalData.cs</code> | <strong>Table:</strong> <code>HistoricalData</code></p>
+<p>Per-boiler historical snapshot (power output, gas consumption, cost). Used for charts.</p>
+<pre><code>public class HistoricalData
+{
+    [Key] public int Id { get; set; }
+    [Required] public DateTime Timestamp { get; set; }
+    [Required] public double PowerOutput { get; set; }    // kW
+    [Required] public double GasConsumption { get; set; } // m³
+    [Required] public double Cost { get; set; }
+    public double OutsideTemperature { get; set; }
+    public double InsideTemperature { get; set; }
+    [Required] public int GasBoilerId { get; set; }
+    public GasBoiler GasBoiler { get; set; }
+}</code></pre>
+
+<h3 class="sub-title">4.6 Alarm</h3>
+<p><strong>File:</strong> <code>Models/Alarm.cs</code> | <strong>Table:</strong> <code>Alarms</code></p>
+<pre><code>public class Alarm
+{
+    [Key] public int Id { get; set; }
+    [Required][MaxLength(50)]  public string Type { get; set; }     // INSUFFICIENT_CAPACITY, HIGH_INDOOR_TEMP, ...
+    [Required][MaxLength(20)]  public string Severity { get; set; } // INFO | WARNING | CRITICAL
+    [Required][MaxLength(500)] public string Message { get; set; }
+    public string? Details { get; set; }  // JSON with extra data
+
+    public DateTime CreatedAt { get; set; }
+    public DateTime? AcknowledgedAt { get; set; }
+    public DateTime? ResolvedAt { get; set; }
+
+    [Required] public bool IsActive { get; set; } = true;
+    [Required] public bool IsAcknowledged { get; set; } = false;
+    [Required] public int BuildingId { get; set; }
+    public BuildingObject Building { get; set; }
+}</code></pre>
+<p>Alarm types: <code>INSUFFICIENT_CAPACITY</code>, <code>HIGH_INDOOR_TEMP</code>, <code>LOW_INDOOR_TEMP</code>, <code>HIGH_OUTDOOR_TEMP</code>, <code>LOW_OUTDOOR_TEMP</code>, <code>HIGH_DAILY_COST</code></p>
+
+<h3 class="sub-title">4.7 AlarmSettings</h3>
+<p><strong>File:</strong> <code>Models/AlarmSettings.cs</code> — Singleton row (id=1) — global thresholds for alarm detection.</p>
+<pre><code>public class AlarmSettings
+{
+    public double HighIndoorTempThreshold { get; set; }  = 28.0;  // °C
+    public double LowIndoorTempThreshold { get; set; }   = 18.0;  // °C
+    public double HighOutdoorTempThreshold { get; set; } = 35.0;  // °C
+    public double LowOutdoorTempThreshold { get; set; }  = -15.0; // °C
+    public double HighDailyCostThreshold { get; set; }   = 50.0;  // EUR
+    public double CapacityDeficitThreshold { get; set; } = 0.0;   // kW
+    public int    AlertCooldownMinutes { get; set; }     = 60;    // prevent spam
+
+    // Enable/disable per type
+    public bool CapacityAlertsEnabled { get; set; }       = true;
+    public bool HighIndoorTempAlertsEnabled { get; set; } = true;
+    public bool LowIndoorTempAlertsEnabled { get; set; }  = true;
+    public bool HighOutdoorTempAlertsEnabled { get; set; }= true;
+    public bool LowOutdoorTempAlertsEnabled { get; set; } = true;
+    public bool HighCostAlertsEnabled { get; set; }       = false; // disabled by default
+}</code></pre>
+
+<h3 class="sub-title">4.8 SystemParameters</h3>
+<p><strong>File:</strong> <code>Models/SystemParameters.cs</code> — Singleton (id=1) — admin-configurable defaults used in heat-loss calculations.</p>
+<pre><code>public class SystemParameters
+{
+    // Default U-values (W/m²·K)
+    public decimal WallUValue    { get; set; }   // [0.1..3.0]
+    public decimal WindowUValue  { get; set; }   // [0.5..10.0]
+    public decimal CeilingUValue { get; set; }   // [0.1..3.0]
+    public decimal FloorUValue   { get; set; }   // [0.1..3.0]
+
+    // Design temperatures
+    public decimal OutdoorDesignTemp { get; set; } // [-30..5] °C
+    public decimal GroundTemp        { get; set; } // [0..20] °C
+
+    // Economic
+    public decimal GasPricePerKwh { get; set; }   // EUR/kWh
+
+    // Building physics
+    public decimal WindowToWallRatio      { get; set; } = 0.15m;
+    public decimal SafetyFactor           { get; set; } = 1.15m;
+    public decimal DefaultBoilerEfficiency{ get; set; } = 0.90m;
+
+    // P-controller parameters
+    public decimal OutdoorInfluenceFactor    { get; set; } = 0.15m;
+    public decimal ThermalMassCoefficient    { get; set; } = 1200.0m; // J/(m³·K)
+    public int     TemperatureTimeStepSeconds{ get; set; } = 60;      // seconds
+}</code></pre>
+
+<h3 class="sub-title">4.9 DataManagementSettings</h3>
+<p><strong>File:</strong> <code>Models/DataManagementSettings.cs</code> — Controls how often the background recording service runs.</p>
+<pre><code>public class DataManagementSettings
+{
+    public int RecordingIntervalMinutes { get; set; } = 60; // [1..1440]
+    public DateTime LastUpdated { get; set; }
+    public string UpdatedBy { get; set; }
+}</code></pre>
+
+<!-- ═══════════════════════════════════════════════════════ 5. PROGRAM.CS -->
+<h2 class="section-title" id="backend-config">5. Backend Configuration (<code>Program.cs</code>)</h2>
+<p>All dependency injection, CORS, JWT, and middleware is configured here.</p>
+<pre><code>// Database
+builder.Services.AddDbContext&lt;AppDbContext&gt;(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Repositories (Scoped)
+builder.Services.AddScoped&lt;IUserRepository, UserRepository&gt;();
+builder.Services.AddScoped&lt;IBuildingObjectRepository, BuildingObjectRepository&gt;();
+builder.Services.AddScoped&lt;ISystemParametersRepository, SystemParametersRepository&gt;();
+builder.Services.AddScoped&lt;IGasBoilerRepository, GasBoilerRepository&gt;();
+builder.Services.AddScoped&lt;IBuildingReadingRepository, BuildingReadingRepository&gt;();
+builder.Services.AddScoped&lt;IDataManagementSettingsRepository, DataManagementSettingsRepository&gt;();
+builder.Services.AddScoped&lt;IAlarmRepository, AlarmRepository&gt;();
+builder.Services.AddScoped&lt;IAlarmSettingsRepository, AlarmSettingsRepository&gt;();
+
+// Services (Scoped)
+builder.Services.AddScoped&lt;IAuthService, AuthService&gt;();
+builder.Services.AddScoped&lt;IGasBoilerService, GasBoilerService&gt;();
+builder.Services.AddScoped&lt;IBuildingObjectService, BuildingObjectService&gt;();
+builder.Services.AddScoped&lt;ISystemParametersService, SystemParametersService&gt;();
+builder.Services.AddScoped&lt;IBuildingCalculatorService, BuildingCalculatorService&gt;();
+builder.Services.AddScoped&lt;IDashboardService, DashboardService&gt;();
+builder.Services.AddScoped&lt;IHistoricalDataService, HistoricalDataService&gt;();
+builder.Services.AddScoped&lt;IDataManagementService, DataManagementService&gt;();
+builder.Services.AddScoped&lt;IAlarmService, AlarmService&gt;();
+
+// Background Services
+builder.Services.AddHostedService&lt;DataRecordingBackgroundService&gt;();
+builder.Services.AddHostedService&lt;BoilerControlBackgroundService&gt;();
+
+// Weather HTTP client
+builder.Services.AddHttpClient&lt;IWeatherService, OpenWeatherService&gt;();
+
+// JWT Authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options => {
+        options.TokenValidationParameters = new TokenValidationParameters {
+            ValidateIssuer = true, ValidateAudience = true,
+            ValidateLifetime = true, ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtSettings["Issuer"],
+            ValidAudience = jwtSettings["Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!))
+        };
+        // Allow JWT in query string for SignalR WebSocket
+        options.Events = new JwtBearerEvents {
+            OnMessageReceived = context => {
+                var accessToken = context.Request.Query["access_token"];
+                if (!string.IsNullOrEmpty(accessToken) &amp;&amp;
+                    context.HttpContext.Request.Path.StartsWithSegments("/boilerHub"))
+                    context.Token = accessToken;
+                return Task.CompletedTask;
+            }
+        };
+    });
+
+// CORS (allows React dev server)
+builder.Services.AddCors(options => options.AddPolicy("AllowAll", policy =>
+    policy.WithOrigins("http://localhost:3000", "https://localhost:3000")
+          .AllowAnyMethod().AllowAnyHeader().AllowCredentials()));
+
+builder.Services.AddSignalR();
+
+// SignalR hub endpoint
+app.MapHub&lt;BoilerHub&gt;("/boilerHub");</code></pre>
+
+<!-- ═══════════════════════════════════════════════════════ 6. CONTROLLERS -->
+<h2 class="section-title" id="controllers">6. REST API Controllers</h2>
+
+<h3 class="sub-title">6.1 AuthController — <code>POST /api/auth/register</code> &amp; <code>POST /api/auth/login</code></h3>
+<p>No <code>[Authorize]</code> — public endpoints. Delegates to <code>IAuthService</code>.</p>
+<pre><code>[Route("api/[controller]")]
+[ApiController]
+public class AuthController : ControllerBase
+{
+    [HttpPost("register")]
+    public async Task&lt;IActionResult&gt; Register([FromBody] RegisterDto dto)
+    {
+        var response = await _authService.RegisterAsync(dto); // validates uniqueness, hashes pw, returns JWT
+        return Ok(response);
+    }
+
+    [HttpPost("login")]
+    public async Task&lt;IActionResult&gt; Login([FromBody] LoginDto dto)
+    {
+        var response = await _authService.LoginAsync(dto); // verifies pw + IsBlocked, returns JWT
+        return Ok(response);
+    }
+}</code></pre>
+
+<h3 class="sub-title">6.2 BuildingObjectController — <code>/api/BuildingObject</code></h3>
+<p>All endpoints require <code>[Authorize]</code>. Create/Update/Delete require role <code>User</code>.</p>
+<table>
+  <tr><th>Method</th><th>Route</th><th>Description</th></tr>
+  <tr><td>GET</td><td>/api/BuildingObject</td><td>List buildings (admin sees all, user sees own)</td></tr>
+  <tr><td>GET</td><td>/api/BuildingObject/{id}</td><td>Get building details</td></tr>
+  <tr><td>GET</td><td>/api/BuildingObject/map</td><td>Get map points (lat/lng + summary)</td></tr>
+  <tr><td>POST</td><td>/api/BuildingObject</td><td>Create building [User role]</td></tr>
+  <tr><td>PUT</td><td>/api/BuildingObject/{id}</td><td>Update building [User role]</td></tr>
+  <tr><td>PATCH</td><td>/api/BuildingObject/{id}/desired-temperature</td><td>Update desired temp [User role]</td></tr>
+  <tr><td>DELETE</td><td>/api/BuildingObject/{id}</td><td>Delete building [User role]</td></tr>
+  <tr><td>GET</td><td>/api/BuildingObject/{id}/calculations</td><td>Get heat-loss metrics (calls BuildingCalculatorService)</td></tr>
+</table>
+
+<h3 class="sub-title">6.3 GasBoilerController — <code>/api/GasBoiler</code></h3>
+<table>
+  <tr><th>Method</th><th>Route</th><th>Description</th></tr>
+  <tr><td>GET</td><td>/api/GasBoiler</td><td>List boilers</td></tr>
+  <tr><td>GET</td><td>/api/GasBoiler/{id}</td><td>Get single boiler</td></tr>
+  <tr><td>GET</td><td>/api/GasBoiler/map</td><td>Map points</td></tr>
+  <tr><td>POST</td><td>/api/GasBoiler</td><td>Create boiler [User]</td></tr>
+  <tr><td>PUT</td><td>/api/GasBoiler/{id}</td><td>Update boiler [User]</td></tr>
+  <tr><td>DELETE</td><td>/api/GasBoiler/{id}</td><td>Delete boiler [User]</td></tr>
+</table>
+
+<h3 class="sub-title">6.4 AlarmsController — <code>/api/Alarms</code></h3>
+<table>
+  <tr><th>Method</th><th>Route</th><th>Auth</th><th>Description</th></tr>
+  <tr><td>GET</td><td>/api/Alarms</td><td>Any</td><td>List alarms with optional filters (isActive, isAcknowledged, severity, type)</td></tr>
+  <tr><td>GET</td><td>/api/Alarms/active</td><td>Any</td><td>Only active alarms</td></tr>
+  <tr><td>GET</td><td>/api/Alarms/stats</td><td>Any</td><td>Count by type and severity</td></tr>
+  <tr><td>GET</td><td>/api/Alarms/{id}</td><td>Any</td><td>Single alarm</td></tr>
+  <tr><td>POST</td><td>/api/Alarms/{id}/acknowledge</td><td>Any</td><td>Mark acknowledged</td></tr>
+  <tr><td>POST</td><td>/api/Alarms/{id}/resolve</td><td>Admin</td><td>Mark resolved (inactive)</td></tr>
+  <tr><td>DELETE</td><td>/api/Alarms/{id}</td><td>Admin</td><td>Permanently delete</td></tr>
+  <tr><td>GET</td><td>/api/Alarms/settings</td><td>Any</td><td>Get alarm thresholds</td></tr>
+  <tr><td>PUT</td><td>/api/Alarms/settings</td><td>Admin</td><td>Update thresholds + triggers recheck</td></tr>
+  <tr><td>POST</td><td>/api/Alarms/check</td><td>Admin</td><td>Manual alarm check trigger</td></tr>
+</table>
+
+<h3 class="sub-title">6.5 DashboardController — <code>GET /api/Dashboard/stats</code></h3>
+<p>Returns <code>DashboardStatsDto</code>: total buildings, boilers, heating area, required power, costs, buildings with insufficient capacity.</p>
+
+<h3 class="sub-title">6.6 HistoricalDataController — <code>/api/HistoricalData</code></h3>
+<table>
+  <tr><th>Method</th><th>Route</th><th>Auth</th><th>Description</th></tr>
+  <tr><td>GET</td><td>/building/{buildingId}</td><td>Any</td><td>Readings for one building, optional date range</td></tr>
+  <tr><td>GET</td><td>/</td><td>Any</td><td>All readings (admin sees all, user sees own buildings)</td></tr>
+  <tr><td>GET</td><td>/count</td><td>Any</td><td>Total readings count</td></tr>
+  <tr><td>POST</td><td>/seed?days=30</td><td>Admin</td><td>Generate synthetic historical data (1–365 days)</td></tr>
+  <tr><td>POST</td><td>/record</td><td>Admin</td><td>Trigger manual recording now</td></tr>
+  <tr><td>DELETE</td><td>/clear</td><td>Admin</td><td>Clear all historical data</td></tr>
+</table>
+
+<h3 class="sub-title">6.7 SystemParametersController — <code>/api/SystemParameters</code></h3>
+<ul>
+  <li><code>GET</code> — Any authenticated user can read parameters</li>
+  <li><code>PUT</code> — Admin only — updates global physics/economic parameters</li>
+</ul>
+
+<h3 class="sub-title">6.8 UserController — <code>/api/User</code></h3>
+<table>
+  <tr><th>Method</th><th>Route</th><th>Auth</th><th>Description</th></tr>
+  <tr><td>GET</td><td>/</td><td>Admin</td><td>List all users</td></tr>
+  <tr><td>GET</td><td>/{id}</td><td>Own or Admin</td><td>Get user profile</td></tr>
+  <tr><td>GET</td><td>/me</td><td>Any</td><td>Current user from JWT</td></tr>
+  <tr><td>PUT</td><td>/{id}</td><td>Own or Admin</td><td>Update username/email/password</td></tr>
+  <tr><td>DELETE</td><td>/{id}</td><td>Own or Admin</td><td>Delete account</td></tr>
+  <tr><td>POST</td><td>/{id}/block</td><td>Admin</td><td>Block user (prevents login)</td></tr>
+  <tr><td>POST</td><td>/{id}/unblock</td><td>Admin</td><td>Unblock user</td></tr>
+</table>
+
+<h3 class="sub-title">6.9 DataManagementController — <code>/api/DataManagement</code></h3>
+<table>
+  <tr><th>Method</th><th>Route</th><th>Auth</th><th>Description</th></tr>
+  <tr><td>GET</td><td>/settings</td><td>Admin</td><td>Recording interval config</td></tr>
+  <tr><td>PUT</td><td>/settings</td><td>Admin</td><td>Update recording interval</td></tr>
+  <tr><td>GET</td><td>/statistics</td><td>Admin</td><td>Total readings, buildings, date range</td></tr>
+  <tr><td>GET</td><td>/export/csv</td><td>Admin</td><td>Export ALL data as CSV download</td></tr>
+  <tr><td>GET</td><td>/export/csv/my-buildings</td><td>Any</td><td>Export own buildings as CSV</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════════════ 7. SERVICES -->
+<h2 class="section-title" id="services">7. Business Logic — Services</h2>
+
+<h3 class="sub-title">7.1 AuthService (<code>Services/AuthService.cs</code>)</h3>
+<p>Handles registration (unique email/username validation, BCrypt hashing) and login (BCrypt verify, blocked check). Returns <code>AuthResponseDto</code> containing the JWT token.</p>
+<pre><code>// Login flow
+var user = await _userRepository.GetByEmailAsync(dto.Email);
+if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
+    throw new Exception("Invalid email or password");
+if (user.IsBlocked)
+    throw new Exception("Your account has been blocked.");
+var token = _jwtHelper.GenerateJwtToken(user);</code></pre>
+
+<h3 class="sub-title">7.2 BuildingCalculatorService (<code>Services/BuildingCalculatorService.cs</code>)</h3>
+<p>Core heat-loss calculation engine. Formula: <strong>Q = U × A × ΔT</strong></p>
+<pre><code>// Heat loss per element (Watts)
+double wallLoss    = building.WallUValue    * building.WallArea    * tempDiff;
+double windowLoss  = building.WindowUValue  * building.WindowArea  * tempDiff;
+double ceilingLoss = building.CeilingUValue * building.CeilingArea * tempDiff;
+double floorLoss   = building.FloorUValue   * building.FloorArea   * tempDiffGround; // uses ground temp
+
+// Apply safety factor
+double totalHeatLoss = (wallLoss + windowLoss + ceilingLoss + floorLoss) * safetyFactor;
+double requiredPowerKw = totalHeatLoss / 1000.0;
+
+// Cost calculation
+double dailyEnergyKwh = (totalHeatLoss * 24) / 1000.0;
+double dailyCost  = (dailyEnergyKwh / avgEfficiency) * gasPricePerKwh;
+double monthlyCost = dailyCost * 30;
+double annualCost  = dailyCost * 365;</code></pre>
+<p>Uses <strong>OpenWeatherMap API</strong> for live outdoor temp, falls back to design temp if API fails.</p>
+
+<h3 class="sub-title">7.3 AlarmService (<code>Services/AlarmService.cs</code>)</h3>
+<p>Checks each building's latest <code>BuildingReading</code> against alarm thresholds. Creates new <code>Alarm</code> records and broadcasts via SignalR. Cooldown period prevents alarm spam.</p>
+<pre><code>// Alarm check for one building
+if (settings.CapacityAlertsEnabled &amp;&amp; !reading.HasSufficientCapacity)
+    await CheckCapacityAlarm(building, reading, settings);
+
+if (settings.HighIndoorTempAlertsEnabled &amp;&amp;
+    reading.IndoorTemperature > settings.HighIndoorTempThreshold)
+    await CheckHighIndoorTempAlarm(building, reading, settings);
+
+// ... (6 alarm types total)
+
+// After creating an alarm — push via SignalR
+await _hubContext.Clients.All.SendAsync("NewAlarm", new {
+    alarmId, type, severity, message, buildingId, buildingName, timestamp
+});</code></pre>
+
+<h3 class="sub-title">7.4 OpenWeatherService (<code>Services/OpenWeatherService.cs</code>)</h3>
+<p>Typed <code>HttpClient</code> calling <code>api.openweathermap.org/data/2.5/weather</code> with lat/lon. Deserialises JSON response. Falls back to 0°C if the API is unavailable.</p>
+<pre><code>var url = $"https://api.openweathermap.org/data/2.5/weather" +
+          $"?lat={latitude}&amp;lon={longitude}&amp;appid={_apiKey}&amp;units=metric";
+var response = await _httpClient.GetAsync(url);
+// Returns WeatherInfo { Temperature, Description, Humidity, WindSpeed, Icon }</code></pre>
+
+<!-- ═══════════════════════════════════════════════════════ 8. BACKGROUND SERVICES -->
+<h2 class="section-title" id="background">8. Background Services (Hosted)</h2>
+
+<h3 class="sub-title">8.1 BoilerControlBackgroundService (<code>Services/BoilerControlBackgroundService.cs</code>)</h3>
+<p>Runs <strong>every 1 minute</strong>. Implements a Proportional (P) controller to regulate indoor temperature.</p>
+<pre><code>// Constants
+private const double Kp = 1.5;       // proportional gain
+private const double Deadband = 0.3; // ±0.3°C tolerance
+
+// Per building:
+var error = building.DesiredTemperature - indoorTemp;
+var feedForward = reading.HeatLossWatts / 1000.0; // kW
+
+if (indoorTemp > building.DesiredTemperature)
+    newTotalPower = 0;                      // above target → boilers OFF
+else if (Math.Abs(error) &lt;= Deadband)
+    newTotalPower = feedForward;            // within deadband → maintain heat loss
+else
+    newTotalPower = Math.Clamp(feedForward + error * Kp, 0, totalAvailablePower);
+
+// Distribute equally across boilers
+var powerPerBoiler = newTotalPower / boilers.Count;
+foreach (var boiler in boilers)
+    boiler.CurrentPower = Math.Clamp(powerPerBoiler, 0, boiler.MaxPower);</code></pre>
+
+<h4 class="mini-title">Indoor Temperature Calculation</h4>
+<p>Physics-based model using building volume and thermal mass:</p>
+<pre><code>var heatGenerated = boilers.Sum(b => b.CurrentPower * b.Efficiency * 1000.0); // W
+var heatLost = reading.HeatLossWatts;
+var netHeat = heatGenerated - heatLost;
+
+var energyChange = netHeat * timeStep;                    // Joules
+var deltaT = energyChange / (thermalMass * volume);       // °C change
+var newIndoor = previousIndoor + deltaT;
+
+// Realistic clamp
+newIndoor = Math.Clamp(newIndoor,
+    reading.OutdoorTemperature - 10,
+    building.DesiredTemperature + 15);</code></pre>
+
+<p>After calculation, broadcasts via SignalR:</p>
+<pre><code>await _hubContext.Clients.All.SendAsync("IndoorTemperatureUpdated", new {
+    buildingId, buildingName, temperature, desiredTemperature,
+    error, outdoorTemperature, hasBoilers, timestamp
+});</code></pre>
+
+<h3 class="sub-title">8.2 DataRecordingBackgroundService (<code>Services/DataRecordingBackgroundService.cs</code>)</h3>
+<p>Runs at a <strong>configurable interval</strong> (stored in <code>DataManagementSettings</code>, default 60 min). Polls for interval changes every 30 seconds — <strong>no restart needed</strong> after changing the interval.</p>
+<pre><code>while (!stoppingToken.IsCancellationRequested)
+{
+    int intervalMinutes = await GetRecordingIntervalAsync(); // reads DB
+    await RecordDataAsync();  // calls HistoricalDataService + AlarmService.CheckAndCreateAlarmsAsync()
+
+    // Wait with interval-change detection
+    var elapsed = 0;
+    while (elapsed &lt; intervalMinutes * 60 &amp;&amp; !stoppingToken.IsCancellationRequested)
+    {
+        await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
+        elapsed += 30;
+        var newInterval = await GetRecordingIntervalAsync();
+        if (newInterval != intervalMinutes) break; // interval changed — restart cycle
+    }
+}</code></pre>
+
+<!-- ═══════════════════════════════════════════════════════ 9. SIGNALR -->
+<h2 class="section-title" id="signalr">9. Real-Time — SignalR Hub</h2>
+
+<h3 class="sub-title">BoilerHub (<code>Hubs/BoilerHub.cs</code>)</h3>
+<p>Simple hub with connection/disconnection logging. Actual broadcast messages are sent by services via <code>IHubContext&lt;BoilerHub&gt;</code>.</p>
+<pre><code>public class BoilerHub : Hub
+{
+    public override async Task OnConnectedAsync()
+    {
+        var username = Context.User?.FindFirst(ClaimTypes.Name)?.Value;
+        _logger.LogInformation($"Client connected: {username} ({Context.ConnectionId})");
+        await base.OnConnectedAsync();
+    }
+    // OnDisconnectedAsync logs disconnect
+}</code></pre>
+
+<h4 class="mini-title">SignalR Events pushed by the backend</h4>
+<table>
+  <tr><th>Event Name</th><th>Pushed by</th><th>Payload</th></tr>
+  <tr><td><code>IndoorTemperatureUpdated</code></td><td>BoilerControlBackgroundService (1 min)</td><td>buildingId, buildingName, temperature, desiredTemperature, error, outdoorTemperature, hasBoilers</td></tr>
+  <tr><td><code>NewAlarm</code></td><td>AlarmService.CheckAndCreateAlarmsAsync()</td><td>alarmId, type, severity, message, buildingId, buildingName, timestamp</td></tr>
+</table>
+
+<div class="info-box">
+  <strong>JWT in WebSocket:</strong> The standard Authorization header cannot be set by browsers for WebSocket connections.
+  SignalR sends the JWT as a query parameter <code>?access_token=...</code>.
+  The backend intercepts it in <code>JwtBearerEvents.OnMessageReceived</code> and sets <code>context.Token</code>.
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ 10. JWT -->
+<h2 class="section-title" id="jwt">10. Authentication — JWT Helper (<code>Helpers/JwtHelper.cs</code>)</h2>
+<pre><code>public string GenerateJwtToken(User user)
+{
+    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!));
+    var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+    var claims = new[]
+    {
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        new Claim(ClaimTypes.Name,  user.Username),
+        new Claim(ClaimTypes.Email, user.Email),
+        new Claim(ClaimTypes.Role,  user.Role)       // "Admin" | "User"
+    };
+
+    var token = new JwtSecurityToken(
+        issuer:   jwtSettings["Issuer"],
+        audience: jwtSettings["Audience"],
+        claims:   claims,
+        expires:  DateTime.UtcNow.AddMinutes(ExpirationMinutes),
+        signingCredentials: credentials);
+
+    return new JwtSecurityTokenHandler().WriteToken(token);
+}</code></pre>
+
+<!-- ═══════════════════════════════════════════════════════ 11. ROUTING -->
+<h2 class="section-title" id="frontend-routing">11. Frontend — Routing (<code>src/routes/AppRoutes.tsx</code>)</h2>
+<p>Role-based routing via <code>useAuth()</code> context. Unauthenticated users are redirected to <code>/login</code>.</p>
+<table>
+  <tr><th>Path</th><th>Component</th><th>Role</th></tr>
+  <tr><td>/admin/map</td><td>AdminMap</td><td>Admin</td></tr>
+  <tr><td>/admin/users</td><td>UsersPage</td><td>Admin</td></tr>
+  <tr><td>/admin/system-parameters</td><td>SystemParametersPage</td><td>Admin</td></tr>
+  <tr><td>/buildings</td><td>AllBuildingsPage</td><td>Admin + User</td></tr>
+  <tr><td>/my-boilers</td><td>MyBoilersPage</td><td>Admin + User</td></tr>
+  <tr><td>/charts</td><td>ChartsPage</td><td>Admin + User</td></tr>
+  <tr><td>/profile</td><td>Profile</td><td>Any</td></tr>
+  <tr><td>/profile/:id</td><td>Profile</td><td>Admin</td></tr>
+  <tr><td>/data-management</td><td>DataManagementPage</td><td>Admin</td></tr>
+  <tr><td>/alarms</td><td>AlarmsPage</td><td>Admin + User</td></tr>
+  <tr><td>/alarm-settings</td><td>AlarmSettingsPage</td><td>Admin</td></tr>
+  <tr><td>/map</td><td>Map (GasBoilerMap)</td><td>User</td></tr>
+  <tr><td>/parameters</td><td>ViewSystemParametersPage</td><td>User</td></tr>
+</table>
+<p>Default redirect: Admin → <code>/admin/map</code>, User → <code>/map</code>.</p>
+
+<!-- ═══════════════════════════════════════════════════════ 12. AUTH CONTEXT -->
+<h2 class="section-title" id="auth-context">12. Frontend — Auth Context (<code>src/context/AuthContext.tsx</code>)</h2>
+<p>Global React context that holds the authenticated user and exposes <code>login</code>, <code>register</code>, <code>logout</code>. Persists token and user to <code>localStorage</code>.</p>
+<pre><code>interface AuthContextType {
+  user: AuthResponse | null;   // { token, username, email, role, userId }
+  login: (data: LoginData) => Promise&lt;void&gt;;
+  register: (data: RegisterData) => Promise&lt;void&gt;;
+  logout: () => void;
+  isAuthenticated: boolean;
+  isAdmin: boolean;            // user?.role === "Admin"
+  loading: boolean;
+}
+
+// On login:
+const response = await authService.login(data);
+localStorage.setItem("token", response.token);
+localStorage.setItem("user", JSON.stringify(response));
+setUser(response);</code></pre>
+
+<!-- ═══════════════════════════════════════════════════════ 13. API SERVICE -->
+<h2 class="section-title" id="api-service">13. Frontend — API Service (<code>src/services/apiService.ts</code>)</h2>
+<p>Centralised Axios instance with automatic JWT injection:</p>
+<pre><code>const apiClient = axios.create({
+  baseURL: process.env.REACT_APP_API_BASE_URL || "http://localhost:5000/api",
+  headers: { "Content-Type": "application/json" },
+});
+
+// Request interceptor — auto-attach JWT
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});</code></pre>
+<p>All domain services (<code>buildingService</code>, <code>gasBoilerService</code>, <code>alarmService</code>, etc.) import <code>apiClient</code> and call the appropriate REST endpoints.</p>
+
+<!-- ═══════════════════════════════════════════════════════ 14. SIGNALR HOOKS -->
+<h2 class="section-title" id="signalr-hooks">14. Frontend — SignalR Hooks</h2>
+
+<h3 class="sub-title">14.1 useSignalR (<code>src/hooks/useSignalR.ts</code>)</h3>
+<p>Manages the SignalR <code>HubConnection</code> lifecycle. Exponential backoff reconnect, max 30 s delay.</p>
+<pre><code>export const useSignalR = (hubUrl: string, token: string): SignalRConnection => {
+  const connection = new signalR.HubConnectionBuilder()
+    .withUrl(hubUrl, { accessTokenFactory: () => token })
+    .withAutomaticReconnect({
+      nextRetryDelayInMilliseconds: (ctx) =>
+        Math.min(2000 * Math.pow(2, ctx.previousRetryCount), 30000)
+    })
+    .build();
+
+  // start connection, expose { connection, isConnected, error }
+};</code></pre>
+
+<h3 class="sub-title">14.2 useSignalREvent (<code>src/hooks/useSignalR.ts</code>)</h3>
+<p>Registers/deregisters a typed event handler on a hub connection:</p>
+<pre><code>export const useSignalREvent = &lt;T&gt;(
+  connection: HubConnection | null,
+  eventName: string,
+  handler: (data: T) => void
+) => {
+  useEffect(() => {
+    if (!connection) return;
+    connection.on(eventName, handler);
+    return () => connection.off(eventName, handler);
+  }, [connection, eventName, handler]);
+};</code></pre>
+
+<h3 class="sub-title">14.3 useRealtimeBoilers (<code>src/hooks/useRealtimeBoilers.ts</code>)</h3>
+<p>Subscribes to <code>IndoorTemperatureUpdated</code>, <code>BoilerPowerUpdated</code>, and <code>CapacityWarning</code> events. Returns Maps keyed by buildingId/boilerId.</p>
+<pre><code>export const useRealtimeBoilers = (token: string) => {
+  const { connection, isConnected } = useSignalR("https://localhost:44314/boilerHub", token);
+
+  useSignalREvent&lt;IndoorTempUpdate&gt;(connection, "IndoorTemperatureUpdated", (data) => {
+    setTemperatures(prev => { const m = new Map(prev); m.set(data.buildingId, data); return m; });
+    setLastUpdate(new Date());
+  });
+
+  // Also handles BoilerPowerUpdated, CapacityWarning
+  return { boilerPowers, temperatures, capacityWarnings, lastUpdate, isConnected };
+};</code></pre>
+
+<!-- ═══════════════════════════════════════════════════════ 15. PAGES -->
+<h2 class="section-title" id="pages">15. Frontend — Pages</h2>
+
+<h3 class="sub-title">15.1 Dashboard (<code>src/pages/DashboardPage/DashboardPage.tsx</code>)</h3>
+<p>Landing page after login. Shows aggregate stats and a buildings table with real-time indoor/outdoor temperatures.</p>
+<ul>
+  <li>Loads <code>dashboardService.getStats()</code> + <code>buildingService.getAllBuildings()</code> in parallel</li>
+  <li>Shows stat cards: Total Buildings, Total Boilers, Required Power, Daily Cost</li>
+  <li>Capacity warning banner if any buildings have insufficient capacity</li>
+  <li>Embeds <code>&lt;RealtimeBoilerStatus&gt;</code> (SignalR live updates) and <code>&lt;PowerRequirementsWidget&gt;</code></li>
+  <li>Clicking a building row opens <code>&lt;BuildingDetailsModal&gt;</code></li>
+</ul>
+
+<h3 class="sub-title">15.2 Map (<code>src/pages/Map/Map.tsx</code>)</h3>
+<p>User-facing map page. Wraps <code>&lt;GasBoilerMap&gt;</code> with <code>Navbar</code>.</p>
+
+<h3 class="sub-title">15.3 Admin Map (<code>src/pages/Admin/AdminMap.tsx</code>)</h3>
+<p>Admin-only map, identical component but in view-only mode. Admins cannot create/edit/delete.</p>
+
+<h3 class="sub-title">15.4 Charts Page (<code>src/pages/ChartsPage.tsx</code>)</h3>
+<p>Visualises historical <code>BuildingReading</code> data per building with 4 Recharts:</p>
+<ul>
+  <li><strong>TemperatureChart</strong> — indoor vs outdoor over time</li>
+  <li><strong>PowerChart</strong> — required vs available boiler capacity</li>
+  <li><strong>CostChart</strong> — daily heating cost (EUR)</li>
+  <li><strong>HeatLossChart</strong> — thermal losses in Watts</li>
+</ul>
+<p>Filters: building selector + date range (Last 7 days / Last 30 days / Custom).</p>
+<pre><code>// Chart data processing (src/utils/chartUtils.ts)
+const temperatureData = processTemperatureData(readings);  // { time, indoor, outdoor }
+const powerData       = processPowerData(readings);         // { time, required, available }
+const costData        = processCostData(readings);          // { time, cost }
+const heatLossData    = processHeatLossData(readings);      // { time, heatLoss }</code></pre>
+
+<h3 class="sub-title">15.5 Alarms Page (<code>src/pages/Alarms/AlarmsPage.tsx</code>)</h3>
+<p>Lists all alarms with filters (active only, unacknowledged only). Shows stats: total, active, acknowledged, resolved.</p>
+<ul>
+  <li>Any user can acknowledge their own building alarms</li>
+  <li>Admin can additionally resolve and delete alarms</li>
+  <li>Severity colour coding: CRITICAL=red, WARNING=amber, INFO=blue</li>
+</ul>
+
+<h3 class="sub-title">15.6 Alarm Settings Page (<code>src/pages/Alarms/AlarmSettingsPage.tsx</code>)</h3>
+<p>Admin-only form to configure global alarm thresholds, enable/disable alarm types, and set cooldown period.</p>
+
+<h3 class="sub-title">15.7 Data Management Page (<code>src/pages/DataManagement/DataManagementPage.tsx</code>)</h3>
+<p>Admin-only panel with four sections:</p>
+<ol>
+  <li><strong>Background Recording Service</strong> — change interval (1 min to 24 h), applied without restart</li>
+  <li><strong>Statistics</strong> — total readings, buildings tracked, date range (auto-refreshes every 30 s)</li>
+  <li><strong>Generate Test Data</strong> — seeds 30 days synthetic data</li>
+  <li><strong>Export CSV</strong> — downloads all data as a CSV file</li>
+  <li><strong>Danger Zone</strong> — triple-confirmation clear all historical data</li>
+</ol>
+
+<h3 class="sub-title">15.8 System Parameters Page (<code>src/pages/Admin/SystemParametersPage.tsx</code>)</h3>
+<p>Admin form to update U-values, gas price, design temperatures, safety factor, thermal mass coefficient, and temperature time step.</p>
+
+<h3 class="sub-title">15.9 Users Page (<code>src/pages/Admin/UsersPage.tsx</code>)</h3>
+<p>Admin-only user list with block/unblock actions and clickable profile links.</p>
+
+<h3 class="sub-title">15.10 All Buildings Page (<code>src/pages/Buildings/AllBuildingsPage.tsx</code>)</h3>
+<p>Table view of all buildings with their latest readings (indoor temp, outdoor temp, capacity status, daily cost).</p>
+
+<h3 class="sub-title">15.11 My Boilers (<code>src/pages/MyBoilers/MyBoilers.tsx</code>)</h3>
+<p>List of user's boilers with current power, max power, efficiency. Edit and delete via <code>EditBoilerModal</code>.</p>
+
+<h3 class="sub-title">15.12 Profile (<code>src/pages/Profile/Profile.tsx</code>)</h3>
+<p>Shows username, email, role. User can update username/email/password. Admin can view any user's profile at <code>/profile/:id</code>.</p>
+
+<h3 class="sub-title">15.13 View System Parameters (<code>src/pages/ViewSystemParametersPage.tsx</code>)</h3>
+<p>Read-only view of current system parameters for regular users.</p>
+
+<!-- ═══════════════════════════════════════════════════════ 16. COMPONENTS -->
+<h2 class="section-title" id="components">16. Frontend — Key Components</h2>
+
+<h3 class="sub-title">16.1 GasBoilerMap (<code>src/components/GasBoilerMap.tsx</code>)</h3>
+<p>The core interactive map component using <strong>React-Leaflet</strong>. Default center: <code>[44.7866, 20.4489]</code> (Belgrade, Serbia).</p>
+<ul>
+  <li><strong>Right-click on map</strong> → opens <code>CreateBuildingModal</code> with clicked lat/lng</li>
+  <li><strong>Marker tooltip</strong> (hover) → shows building name, indoor temp, desired temp, boiler count</li>
+  <li><strong>Marker popup</strong> (click) → shows full info + desired temperature control (▼/▲ ±0.5°C) for users. Admin sees read-only.</li>
+  <li>Admin mode banner shown at top when logged in as admin</li>
+</ul>
+<pre><code>// Temperature controls in popup (User only)
+&lt;button onClick={() => handleTempChange(building.id, -0.5)}&gt;▼&lt;/button&gt;
+  {currentTemp.toFixed(1)}°C
+&lt;button onClick={() => handleTempChange(building.id, +0.5)}&gt;▲&lt;/button&gt;
+
+// Calls: buildingService.updateDesiredTemperature(buildingId, newTemp, token)
+// Endpoint: PATCH /api/BuildingObject/{id}/desired-temperature</code></pre>
+
+<h3 class="sub-title">16.2 AlarmBell (<code>src/components/AlarmBell.tsx</code>)</h3>
+<p>Bell icon in the navbar showing unacknowledged alarm count badge. Connects to SignalR to receive <code>NewAlarm</code> events in real time.</p>
+<pre><code>// Real-time: on NewAlarm event
+const handleNewAlarm = useCallback((data: NewAlarmEvent) => {
+    loadActiveAlarms();         // refresh list
+    playNotificationSound();    // Audio("/notification.mp3")
+    showBrowserNotification(data); // browser Notification API
+}, []);</code></pre>
+
+<h3 class="sub-title">16.3 RealtimeBoilerStatus (<code>src/components/RealtimeBoilerStatus.tsx</code>)</h3>
+<p>Embedded in the Dashboard. Shows live connection status (🟢/🔴), indoor temperature cards per building, boiler power bars with colour coding, and capacity warning cards.</p>
+<pre><code>// Power bar colour
+const getPowerColor = (power, maxPower) => {
+    const pct = (power / maxPower) * 100;
+    if (pct > 80) return "#ef4444"; // red
+    if (pct > 50) return "#f59e0b"; // amber
+    return "#10b981";               // green
+};</code></pre>
+
+<h3 class="sub-title">16.4 BuildingDetailsModal (<code>src/components/BuildingDetailsModal.tsx</code>)</h3>
+<p>Modal showing full building info: dimensions, thermal properties, U-values, current readings (indoor/outdoor temp, heat loss, required power, cost), and a list of attached boilers with their current power. Contains action buttons for Edit Building, Add Boiler, Delete.</p>
+
+<h3 class="sub-title">16.5 CreateBuildingModal (<code>src/components/CreateBuildingModal.tsx</code>)</h3>
+<p>Form modal triggered by right-click on map. Collects: name, heating area, ceiling height, desired temperature, wall/window/ceiling/floor U-values and areas. Position is pre-filled from the click coordinates.</p>
+
+<h3 class="sub-title">16.6 EditBuildingModal / EditBoilerModal</h3>
+<p>Pre-populated forms for updating existing building or boiler data.</p>
+
+<h3 class="sub-title">16.7 CreateBoilerModal (<code>src/components/CreateBoilerModal.tsx</code>)</h3>
+<p>Form to attach a new boiler to an existing building. Collects: name, max power (kW), efficiency (%).</p>
+
+<h3 class="sub-title">16.8 PowerRequirementsWidget (<code>src/components/PowerRequirementsWidget.tsx</code>)</h3>
+<p>Standalone widget showing each building's heat-loss calculation summary (from <code>GET /api/BuildingObject/{id}/calculations</code>).</p>
+
+<h3 class="sub-title">16.9 Navbar (<code>src/components/Navbar.tsx</code>)</h3>
+<p>Responsive navigation bar. Different links shown for Admin vs User. Contains <code>&lt;AlarmBell&gt;</code> and logout button.</p>
+
+<h3 class="sub-title">16.10 ProtectedRoute (<code>src/components/ProtectedRoute.tsx</code>)</h3>
+<p>Wrapper that redirects unauthenticated users to <code>/login</code> and (optionally) non-admin users away from admin-only pages.</p>
+
+<!-- ═══════════════════════════════════════════════════════ 17. FEATURE SUMMARY -->
+<h2 class="section-title" id="features-summary">17. Feature Summary Table</h2>
+<table>
+  <tr><th>#</th><th>Feature</th><th>Backend</th><th>Frontend</th><th>Real-time?</th></tr>
+  <tr>
+    <td>1</td><td>User Registration &amp; Login</td>
+    <td>AuthController, AuthService, JwtHelper, BCrypt</td>
+    <td>Login.tsx, Register.tsx, AuthContext</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>2</td><td>Role-Based Access (Admin/User)</td>
+    <td>[Authorize(Roles="Admin")], ClaimTypes.Role</td>
+    <td>ProtectedRoute, AppRoutes, isAdmin checks</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>3</td><td>User Block/Unblock</td>
+    <td>UserController.BlockUser/UnblockUser, UserService</td>
+    <td>UsersPage.tsx</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>4</td><td>Building CRUD + Map Placement</td>
+    <td>BuildingObjectController, BuildingObjectService</td>
+    <td>GasBoilerMap, CreateBuildingModal, EditBuildingModal</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>5</td><td>Desired Temperature Adjustment</td>
+    <td>PATCH /api/BuildingObject/{id}/desired-temperature</td>
+    <td>GasBoilerMap popup ▲▼ buttons</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>6</td><td>Boiler CRUD</td>
+    <td>GasBoilerController, GasBoilerService</td>
+    <td>CreateBoilerModal, EditBoilerModal, MyBoilers</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>7</td><td>Heat-Loss Calculation</td>
+    <td>BuildingCalculatorService (Q=U·A·ΔT)</td>
+    <td>BuildingDetailsModal, PowerRequirementsWidget</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>8</td><td>Live Outdoor Temperature</td>
+    <td>OpenWeatherService (OpenWeatherMap API)</td>
+    <td>Used in calculations, shown on map/dashboard</td>
+    <td>No (on-demand)</td>
+  </tr>
+  <tr>
+    <td>9</td><td>P-Controller (Boiler Regulation)</td>
+    <td>BoilerControlBackgroundService (1 min loop)</td>
+    <td>RealtimeBoilerStatus, useRealtimeBoilers</td>
+    <td><strong>Yes</strong> (SignalR)</td>
+  </tr>
+  <tr>
+    <td>10</td><td>Indoor Temperature Simulation</td>
+    <td>BoilerControlBackgroundService.CalculateIndoorTemperature()</td>
+    <td>DashboardPage buildings table, map marker tooltip</td>
+    <td><strong>Yes</strong> (SignalR)</td>
+  </tr>
+  <tr>
+    <td>11</td><td>Automatic Data Recording</td>
+    <td>DataRecordingBackgroundService + HistoricalDataService</td>
+    <td>DataManagementPage (interval config)</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>12</td><td>Alarm Detection &amp; Creation</td>
+    <td>AlarmService.CheckAndCreateAlarmsAsync() — 6 types</td>
+    <td>AlarmsPage, AlarmBell</td>
+    <td><strong>Yes</strong> (SignalR NewAlarm)</td>
+  </tr>
+  <tr>
+    <td>13</td><td>Alarm Acknowledge / Resolve / Delete</td>
+    <td>AlarmsController, AlarmService</td>
+    <td>AlarmsPage, AlarmBell dropdown</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>14</td><td>Alarm Settings Configuration</td>
+    <td>AlarmsController PUT /settings, AlarmService.UpdateSettingsAsync()</td>
+    <td>AlarmSettingsPage (Admin only)</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>15</td><td>Browser Alarm Notification</td>
+    <td>—</td>
+    <td>AlarmBell: Notification API + audio</td>
+    <td><strong>Yes</strong></td>
+  </tr>
+  <tr>
+    <td>16</td><td>Historical Charts</td>
+    <td>HistoricalDataController, BuildingReadingRepository</td>
+    <td>ChartsPage (Temperature, Power, Cost, HeatLoss)</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>17</td><td>Dashboard Overview</td>
+    <td>DashboardController, DashboardService</td>
+    <td>DashboardPage stats cards + buildings table</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>18</td><td>System Parameters Management</td>
+    <td>SystemParametersController, SystemParametersService</td>
+    <td>SystemParametersPage (Admin), ViewSystemParametersPage (User)</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>19</td><td>Recording Interval Control</td>
+    <td>DataManagementController, DataManagementSettings</td>
+    <td>DataManagementPage</td>
+    <td>No (picks up dynamically)</td>
+  </tr>
+  <tr>
+    <td>20</td><td>Test Data Seed</td>
+    <td>POST /api/HistoricalData/seed?days=30</td>
+    <td>DataManagementPage "Generate Test Data"</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>21</td><td>CSV Export</td>
+    <td>DataManagementController /export/csv, /export/csv/my-buildings</td>
+    <td>DataManagementPage "Export CSV" button</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>22</td><td>Clear Historical Data</td>
+    <td>DELETE /api/HistoricalData/clear</td>
+    <td>DataManagementPage Danger Zone (triple confirm)</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>23</td><td>Interactive Map (OSM)</td>
+    <td>—</td>
+    <td>GasBoilerMap (React-Leaflet + OpenStreetMap tiles)</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>24</td><td>Swagger API Explorer</td>
+    <td>Swashbuckle, dark theme CSS</td>
+    <td>—</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>25</td><td>Automatic SignalR Reconnect</td>
+    <td>—</td>
+    <td>useSignalR (exponential backoff, max 30s)</td>
+    <td><strong>Yes</strong></td>
+  </tr>
+</table>
+
+<div style="margin-top: 60px; padding-top: 24px; border-top: 1px solid #e2e8f0; text-align: center; color: #94a3b8; font-size: 0.82rem;">
+  Gas Boiler Web Application — Technical Documentation &nbsp;|&nbsp; Generated March 2026
+</div>
+
+</div><!-- /.page -->
+</body>
+</html>
