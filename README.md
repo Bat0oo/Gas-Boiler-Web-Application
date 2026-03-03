@@ -48,9 +48,9 @@ npm run dev
 
 ### Access the Application
 
-- Frontend: `http://localhost:5173`
-- Backend API: `http://localhost:5000`
-- Swagger: `http://localhost:5000/swagger`
+- Frontend: `http://localhost:3000`
+- Backend API: `https://localhost:44314/api`
+- Swagger: `https://localhost:44314/swagger/index.html`
 
 ### Default Admin Credentials
 
